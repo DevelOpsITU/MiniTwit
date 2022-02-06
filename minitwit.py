@@ -8,7 +8,7 @@
     :copyright: (c) 2010 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
-
+import os
 import re
 import time
 import sqlite3
@@ -29,6 +29,11 @@ log_level = logging.DEBUG
 logging.getLogger('').handlers = []
 logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
 
+jaeger_hostname = 'localhost'
+
+if os.getenv("JAEGER_HOSTNAME"):
+    jaeger_hostname = os.getenv("JAEGER_HOSTNAME")
+
 config = Config(
     config={ # usually read from some yaml config
         'sampler': {
@@ -36,7 +41,7 @@ config = Config(
             'param': 1,
         },
         'local_agent': {
-            'reporting_host': 'jaeger',
+            'reporting_host': jaeger_hostname,
             'reporting_port': '6831',
         },
         'logging': True,

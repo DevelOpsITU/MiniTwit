@@ -1,3 +1,5 @@
+import os
+
 import requests
 import json
 import datetime
@@ -5,19 +7,27 @@ import pytz
 
 
 def log( msg : str):
-  host = 'Thor'
+  container_name = 'Thor'
+  if os.getenv("HOSTNAME"):
+      container_name = os.getenv("HOSTNAME")
+
   curr_datetime = datetime.datetime.now(pytz.timezone('Europe/Copenhagen'))
   curr_datetime = curr_datetime.isoformat('T')
 
+  loki_hostname = 'localhost'
+
+  if os.getenv("LOKI_HOSTNAME"):
+      loki_hostname = os.getenv("LOKI_HOSTNAME")
+
   # push msg log into grafana-loki
-  url = 'http://loki:3100/api/prom/push'
+  url = 'http://'+loki_hostname+':3100/api/prom/push'
   headers = {
       'Content-type': 'application/json'
   }
   payload = {
       'streams': [
           {
-              'labels': '{source=\"MiniTwit\",app=\"MiniTwit\", host=\"' + host + '\"}',
+              'labels': '{source=\"MiniTwit\",app=\"MiniTwit\", host=\"' + container_name + '\"}',
               'entries': [
                   {
                       'ts': curr_datetime,
