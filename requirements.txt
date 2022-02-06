@@ -1,6 +1,6 @@
 Flask>=2.0
 Jinja2>=3.0
 Werkzeug>=2.0
-jaeger-client
-pytz
-requests
+jaeger-client>=4.8.0
+pytz>=2021.3
+requests>=2.27.1
