@@ -27,7 +27,7 @@ def log( msg : str):
   payload = {
       'streams': [
           {
-              'labels': '{source=\"MiniTwit\",app=\"MiniTwit\", host=\"' + container_name + '\"}',
+              'labels': '{source=\"MiniTwit\",app=\"MiniTwit\", hostname=\"' + container_name + '\"}',
               'entries': [
                   {
                       'ts': curr_datetime,
