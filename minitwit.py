@@ -251,7 +251,7 @@ def login():
                     error = 'Invalid username'
                     return render_template('login.html', error=error)
                 with tracer.start_span("Verify password", child_of=span) as span:   
-                    if check_password_hash(user['pw_hash'],
+                    if not check_password_hash(user['pw_hash'],
                                                 request.form['password']):
                         error = 'Invalid password'
                         return render_template('login.html', error=error)
