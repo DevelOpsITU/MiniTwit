@@ -52,11 +52,30 @@ config = Config(
 # this call also sets opentracing.tracer
 tracer = config.initialize_tracer()
 
-with tracer.start_span('TestSpan') as span:
+with tracer.start_span('Test timespan') as span:
     span.log_kv({'event': 'test message', 'life': 42})
+    log("Doing test trace path=/ traceID={:x}".format(span.trace_id))
 
-    with tracer.start_span('ChildSpan', child_of=span) as child_span:
-        child_span.log_kv({'event': 'down below'})
+    with tracer.start_span('Stair case example', child_of=span) as span:
+        with tracer.start_span('Stair case task1', child_of=span) as span:
+            time.sleep(1)
+        with tracer.start_span('Stair case task2', child_of=span) as span:
+            time.sleep(1)
+        with tracer.start_span('Stair case task3', child_of=span) as span:
+            time.sleep(1)
+
+    with tracer.start_span('parallel case example', child_of=span) as span:
+        #span.log("Setup parallel")
+        time.sleep(0.1)
+        span.log_event("Task setup done", "More information here")
+        with tracer.start_span('parallel case task1', child_of=span) as span:
+            with tracer.start_span('parallel case task2', child_of=span) as span:
+                with tracer.start_span('parallel case task3', child_of=span) as span:
+                    time.sleep(1)
+
+    with tracer.start_span('End task', child_of=span) as span:
+        time.sleep(0.5)
+
 
 #time.sleep(2)   # yield to IOLoop to flush the spans - https://github.com/jaegertracing/jaeger-client-python/issues/50
 #tracer.close()  # flush any buffered spans
@@ -73,8 +92,8 @@ app = Flask(__name__)
 
 def connect_db():
     """Returns a new connection to the database."""
-    return sqlite3.connect(DATABASE)
-
+    #return sqlite3.connect('C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db') 
+    return sqlite3.connect('/tmp/minitwit.db') 
 
 def init_db():
     """Creates the database tables."""
@@ -167,7 +186,8 @@ def public_timeline():
 def user_timeline(username):
     """Display's a users tweets."""
     with tracer.start_span('GET /<username>') as span:
-        log(str(request.remote_addr) + " " + str(request.method) + " path=/" + username +" traceID={:x}".format(span.trace_id))
+        log(str(request.remote_addr) + " " + str(request.method) + " " + str(request.endpoint) + " path=/username traceID={:x}".format(span.trace_id))
+
         profile_user = query_db('select * from user where username = ?',
                                 [username], one=True)
         if profile_user is None:
@@ -313,4 +333,4 @@ app.debug = DEBUG
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=False)
