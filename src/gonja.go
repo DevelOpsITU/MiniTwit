@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
 	"net/http"
 )
@@ -19,7 +20,7 @@ func examplePage(w http.ResponseWriter, r *http.Request) {
 		name string
 	}
 	var g structType
-	g.user = false
+	g.user = true
 	g.name = "jonas"
 
 	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
@@ -30,7 +31,14 @@ func examplePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", examplePage)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	http.ListenAndServe(":8080", nil)
+	router := gin.Default()
+	router.SetTrustedProxies(nil)
+
+	router.Static("/static", "./static")
+	router.GET("/", func(c *gin.Context) {
+		examplePage(c.Writer, c.Request)
+	})
+
+	router.Run(":8080")
+	//router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
