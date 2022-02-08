@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -43,14 +42,13 @@ func initDb() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(query)
 	if _, err := db.Exec(string(query)); err != nil {
 		panic(err)
 	}
 }
 
 // example database usage
-func getAllMessages() {
+func getAllMessages(w http.ResponseWriter, r *http.Request) {
 	db := connectDb()
 	query := "SELECT * FROM message"
 	result, err := db.Query(query)
@@ -67,7 +65,7 @@ func getAllMessages() {
 		if err != nil {
 			panic(err.Error())
 		}
-		fmt.Println(msg.Text)
+		w.Write([]byte(msg.Text))
 		messages = append(messages, msg)
 	}
 }
@@ -75,7 +73,7 @@ func getAllMessages() {
 /****************************************
 *			 	HANDLERS				*
 ****************************************/
-func deez(w http.ResponseWriter, r *http.Request) {
+func hello(w http.ResponseWriter, r *http.Request) {
 	data := "Hello World"
 	w.Write([]byte(data))
 	return
@@ -86,8 +84,17 @@ func deez(w http.ResponseWriter, r *http.Request) {
 ****************************************/
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/deez", deez)
-	http.Handle("/", r)
-	getAllMessages()
+
+	r.HandleFunc("/hello", hello)
+
+	// Serve static files (css)
+	fileServer := http.FileServer(http.Dir("static"))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fileServer))
+
+	// Serve index page on all unhandled routes
+	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./templates/timeline.html")
+	})
+
 	http.ListenAndServe(":8080", r)
 }
