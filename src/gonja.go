@@ -34,6 +34,12 @@ func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
 	router.Static("/static", "./static")
 	router.GET("/", func(c *gin.Context) {
 		examplePage(c.Writer, c.Request)
