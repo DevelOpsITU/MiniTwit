@@ -5,5 +5,10 @@
 
 <body>
 My first name is {{ first_name }}. My last name is {{ last_name }}.
+
+{% if g.user %}
+    <p> It worked!  {{g.name}} was here! </p>
+{% endif %}
+
 </body>
 </html>

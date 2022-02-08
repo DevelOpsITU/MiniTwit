@@ -14,7 +14,15 @@ var tpl = gonja.Must(gonja.FromFile("templates/example.html"))
 
 func examplePage(w http.ResponseWriter, r *http.Request) {
 	// Execute the template per HTTP request
-	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark"})
+	type structType struct {
+		user bool
+		name string
+	}
+	var g structType
+	g.user = false
+	g.name = "jonas"
+
+	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
