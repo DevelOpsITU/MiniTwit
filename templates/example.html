@@ -1,14 +1,13 @@
-<!doctype html>
+{% extends "templates/append.html" %}
+{% block title %}Sign In{% endblock %}
+{% block body %}
 
-<html><head><title>{% block title %}Welcome{% endblock %}</title></head>
-<link rel=stylesheet type=text/css href="/static/style.css">
-
-<body>
-My first name is {{ first_name }}. My last name is {{ last_name }}.
+<p> My first name is {{ first_name }}. My last name is {{ last_name }}. </p>
 
 {% if g.user %}
     <p> It worked!  {{g.name}} was here! </p>
 {% endif %}
 
-</body>
-</html>
+
+
+{% endblock %}
