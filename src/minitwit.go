@@ -6,11 +6,16 @@ import (
 	"net/http"
 )
 
+func addNumbers(n1 int, n2 int) int {
+	return n1 + n2
+}
+
 // Pre-compiling the templates at application startup using the
 // little Must()-helper function (Must() will panic if FromFile()
 // or FromString() will return with an error - that's it).
 // It's faster to pre-compile it anywhere at startup and only
 // execute the template later.
+
 var tpl = gonja.Must(gonja.FromFile("templates/example.html"))
 
 func examplePage(w http.ResponseWriter, r *http.Request) {
