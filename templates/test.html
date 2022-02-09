@@ -1,0 +1,14 @@
+
+
+{% block title %}Sign In{% endblock %}
+{% block body %}
+
+<p> My first name is {{ first_name }}. My last name is {{ last_name }}. </p>
+
+{% if g.user %}
+    <p> It worked!  {{g.name}} was here! </p>
+{% endif %}
+
+
+
+{% endblock %}
