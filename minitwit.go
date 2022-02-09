@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/flosch/pongo2/v5" // antivirus does not seem to like this
+	// "github.com/flosch/pongo2/v5" // antivirus does not seem to like this (!OBS known problem on windows for go https://go.dev/doc/faq#virus)
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -77,13 +78,50 @@ func getAllMessages(w http.ResponseWriter, r *http.Request) {
 /****************************************
 *		  		 PONGO2					*
 ****************************************/
-var tplExample = pongo2.Must(pongo2.FromFile("templates/test.html"))
+/*var tplExample = pongo2.Must(pongo2.FromFile("templates/test.html"))
 
 func testPage(w http.ResponseWriter, r *http.Request) {
 	err := tplExample.ExecuteWriter(pongo2.Context{"first_name": r.FormValue("deez?")}, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}*/
+
+/****************************************
+*		   	 GO TEMPLATES				*
+****************************************/
+var t *template.Template
+
+// findings: variable names MUST be capitalized? idk why
+type User struct {
+	User bool
+	Name string
+}
+
+type Data struct {
+	FirstName string
+	LastName  string
+	G         User
+}
+
+func initTemplates() {
+	t = template.Must(template.ParseFiles("templates/test_layout.html", "templates/test.html"))
+}
+
+func url_css() string {
+	return "static/style.css"
+}
+
+func templatetest(w http.ResponseWriter, r *http.Request) {
+	data := Data{
+		"Kaare",
+		"Børsting",
+		User{
+			true,
+			"boer",
+		},
+	}
+	t.ExecuteTemplate(w, "layout", data)
 }
 
 /****************************************
@@ -99,12 +137,17 @@ func hello(w http.ResponseWriter, r *http.Request) {
 *			 	  MAIN					*
 ****************************************/
 func main() {
+	initTemplates()
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/hello", hello)
 
 	// pongo2 template testpage
-	r.HandleFunc("/test", testPage)
+	// r.HandleFunc("/test", testPage)
+
+	// go templates
+	r.HandleFunc("/template", templatetest)
 
 	// Serve static files (css)
 	fileServer := http.FileServer(http.Dir("static"))

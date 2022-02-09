@@ -1,4 +1,14 @@
+{{ define "layout" }}
+
 <!doctype html>
-<title>{% block title %}Welcome{% endblock %} | MiniTwit</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div>Layout</div>
+<head>
+    <link rel=stylesheet type=text/css href="static/style.css">
+
+    <title>{{ block "title" .}}Welcome{{ end }} | MiniTwit</title>
+</head>
+<p>{{.FirstName}}</p>
+<body>
+    {{ block "body" .}}{{ end }}
+</body>
+
+{{ end }}

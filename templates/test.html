@@ -1,14 +1,10 @@
+{{ define "title" }} Sign In {{ end }}
+{{ define "body" }}
 
+<p> My first name is {{ .FirstName }}. My last name is {{ .LastName }}. </p>
 
-{% block title %}Sign In{% endblock %}
-{% block body %}
+{{ if .G.User }}
+    <p> It worked!  {{.G.Name}} was here! </p>
+{{ end }}
 
-<p> My first name is {{ first_name }}. My last name is {{ last_name }}. </p>
-
-{% if g.user %}
-    <p> It worked!  {{g.name}} was here! </p>
-{% endif %}
-
-
-
-{% endblock %}
+{{ end }}
