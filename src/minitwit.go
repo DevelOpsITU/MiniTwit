@@ -1,9 +1,10 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
-	"net/http"
 )
 
 func addNumbers(n1 int, n2 int) int {
@@ -20,13 +21,15 @@ var tpl = gonja.Must(gonja.FromFile("templates/example.html"))
 
 func examplePage(w http.ResponseWriter, r *http.Request) {
 	// Execute the template per HTTP request
+
+	type User struct {
+		username string
+	}
 	type structType struct {
-		user bool
-		name string
+		user User
 	}
 	var g structType
-	g.user = true
-	g.name = "jonas"
+	//g.user.username = "jonas"
 
 	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
 	if err != nil {
