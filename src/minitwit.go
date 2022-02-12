@@ -47,6 +47,7 @@ func getCookie(c *gin.Context) (Session, error) {
 // execute the template later.
 
 var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
+var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 
 // Route /
 func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
@@ -105,6 +106,18 @@ func getGavaterUrl(email string, size int) string {
 	return strings.Join(str, "")
 }
 
+func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+
+	if r.Method == http.MethodPost {
+
+	}
+	out, err := loginTemplate.Execute(gonja.Context{"g": ""})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write([]byte(out))
+}
+
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -122,6 +135,15 @@ func main() {
 	router.GET("/public", func(c *gin.Context) {
 		handlePublicTimeline(c.Writer, c.Request, c)
 	})
+
+	router.GET("/login", func(c *gin.Context) {
+		handleLogin(c.Writer, c.Request, c)
+	})
+
+	router.POST("/login", func(c *gin.Context) {
+		handleLogin(c.Writer, c.Request, c)
+	})
+
 	router.LoadHTMLFiles("./src/test.html")
 
 	/*
