@@ -108,6 +108,9 @@ func getGavaterUrl(email string, size int) string {
 
 func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
+	//var error = ""
+	GetAllMessages()
+
 	if r.Method == http.MethodPost {
 
 	}
