@@ -44,7 +44,7 @@ func main() {
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "pong",
+			"message": "pongA",
 		})
 	})
 
@@ -52,6 +52,18 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		examplePage(c.Writer, c.Request)
 	})
+	router.LoadHTMLFiles("./src/test.html")
+
+	/*
+	 FOR TESTING GO TOOL 'FRESH': 'go install github.com/pilu/fresh'
+	 TRY TO RUN COMMAND: 'fresh -c my_fresh_runner.conf' AND
+	 THEN MAKE CHANGES TO THE 'test.html' OR 'minitwit.go' FILES.
+	 IF NO ERROR, THEN FRESH SHOULD BUILD AND RUN THE 'minitwit.go' CODE.
+	 THE CHANGES SHOULD BE SEEN REFLECTED ON 'http://localhost:8080/test/test.html'.
+
+	 OBS: MAYBE TURN OFF AUTO-SAVING, SO STUFF IS ONLY BUILD AND RAN, WHEN YOU WANT IT TO.
+	*/
+	router.Static("/test", "./src")
 
 	router.Run(":8080")
 	//router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
