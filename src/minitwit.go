@@ -1,10 +1,13 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
 	"net/http"
+	"strings"
 )
 
 type User struct {
@@ -77,19 +80,27 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 	}
 
 	type Message struct {
-		Email    string
-		Username string
-		Pub_date string
-		Text     string
+		GavatarUrl string
+		Username   string
+		Pub_date   string
+		Text       string
 	}
 
-	var messages = []Message{{"User@email.com", "user1", "dato", "Twit1"}, {"User2@email.com", "user2", "dato", "Twit2"}}
+	var messages = []Message{{getGavaterUrl("User@email.com", 48), "user1", "dato", "Twit1"}, {getGavaterUrl("User2@email.com", 48), "user2", "dato", "Twit2"}}
 	//print(string(request))
 	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": messages})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
+}
+
+func getGavaterUrl(email string, size int) string {
+	data := []byte(strings.ToLower(strings.TrimSpace(email)))
+	hash := md5.Sum(data)
+	hashStr := hex.EncodeToString(hash[:])
+	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", string(size)}
+	return strings.Join(str, "")
 }
 
 func main() {
