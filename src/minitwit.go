@@ -46,7 +46,7 @@ func getCookie(c *gin.Context) (Session, error) {
 // It's faster to pre-compile it anywhere at startup and only
 // execute the template later.
 
-var tpl = gonja.Must(gonja.FromFile("templates/timeline.html"))
+var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 
 // Route /
 func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
@@ -62,7 +62,7 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	//set g = "None" if g.user should return false in jinja
 
-	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
+	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -89,7 +89,7 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 
 	var messages = []Message{{getGavaterUrl("User@email.com", 48), "user1", "dato", "Twit1"}, {getGavaterUrl("User2@email.com", 48), "user2", "dato", "Twit2"}}
 	//print(string(request))
-	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": messages})
+	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": messages})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
