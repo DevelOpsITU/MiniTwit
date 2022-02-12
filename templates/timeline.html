@@ -1,5 +1,13 @@
 {% extends "templates/layout.html" %}
-{% block title %}Sign In{% endblock %}
+{% block title %}
+    {% if request.endpoint == 'public_timeline' %}
+        Public Timeline
+    {% elif request.endpoint == 'user_timeline' %}
+        {{ profile_user.username }}'s Timeline
+    {% else %}
+        My Timeline
+    {% endif %}
+{% endblock %}
 {% block body %}
 
 <p> My first name is {{ first_name }}. My last name is {{ last_name }}. </p>

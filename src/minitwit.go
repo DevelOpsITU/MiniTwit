@@ -17,6 +17,10 @@ type Session struct {
 	Messages []string
 }
 
+type Request struct {
+	Endpoint string
+}
+
 func getCookie(c *gin.Context) (Session, error) {
 	var g Session
 	cookie, err := c.Cookie("session")
@@ -63,8 +67,9 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 }
 
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
-
-	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": ""})
+	var request = Request{r.URL.Path}
+	//print(string(request))
+	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
