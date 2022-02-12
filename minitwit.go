@@ -2,12 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 
 	// "github.com/flosch/pongo2/v5" // antivirus does not seem to like this (!OBS known problem on windows for go https://go.dev/doc/faq#virus)
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -90,7 +92,8 @@ func testPage(w http.ResponseWriter, r *http.Request) {
 /****************************************
 *		   	 GO TEMPLATES				*
 ****************************************/
-var t *template.Template
+var registerSite *template.Template
+var loginSite *template.Template
 
 // findings: variable names MUST be capitalized? idk why
 type User struct {
@@ -98,14 +101,21 @@ type User struct {
 	Name string
 }
 
+type UserRegisterRequest struct {
+	UserName string
+	Password string
+}
+
 type Data struct {
 	FirstName string
 	LastName  string
+	Error     string
 	G         User
 }
 
 func initTemplates() {
-	t = template.Must(template.ParseFiles("templates/test_layout.html", "templates/test.html"))
+	registerSite = template.Must(template.ParseFiles("templates/test_layout.html", "templates/test.html"))
+	loginSite = template.Must(template.ParseFiles("templates/test_layout.html", "templates/test_after.html"))
 }
 
 func url_css() string {
@@ -113,15 +123,31 @@ func url_css() string {
 }
 
 func templatetest(w http.ResponseWriter, r *http.Request) {
-	data := Data{
-		"Kaare",
-		"Børsting",
-		User{
-			true,
-			"boer",
-		},
+
+	fmt.Println(r.Method)
+	if r.Method == "GET" {
+		data := Data{
+			"Kaare",
+			"Børsting",
+			"",
+			User{
+				true,
+				"boer",
+			},
+		}
+		registerSite.ExecuteTemplate(w, "layout", data)
+	} else {
+		r.ParseForm()
+		user := new(UserRegisterRequest)
+		decoder := schema.NewDecoder()
+		decodeErr := decoder.Decode(user, r.PostForm)
+		if decodeErr != nil {
+			panic("Error mapping parsed form data to struct : " + decodeErr.Error())
+		}
+		fmt.Println(user)
+
+		loginSite.ExecuteTemplate(w, "layout", nil)
 	}
-	t.ExecuteTemplate(w, "layout", data)
 }
 
 /****************************************
