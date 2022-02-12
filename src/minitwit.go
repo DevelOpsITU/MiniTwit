@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -99,7 +100,8 @@ func getGavaterUrl(email string, size int) string {
 	data := []byte(strings.ToLower(strings.TrimSpace(email)))
 	hash := md5.Sum(data)
 	hashStr := hex.EncodeToString(hash[:])
-	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", string(size)}
+
+	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", strconv.Itoa(size)}
 	return strings.Join(str, "")
 }
 
