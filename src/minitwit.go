@@ -2,10 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
+	"net/http"
 )
 
 type User struct {
@@ -68,8 +67,25 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	var request = Request{r.URL.Path}
+
+	if request.Endpoint == "/public" {
+		request.Endpoint = "public_timeline"
+	} else if len(request.Endpoint) > 1 {
+		request.Endpoint = "user_timeline"
+	} else {
+		request.Endpoint = ""
+	}
+
+	type Message struct {
+		Email    string
+		Username string
+		Pub_date string
+		Text     string
+	}
+
+	var messages = []Message{{"User@email.com", "user1", "dato", "Twit1"}, {"User2@email.com", "user2", "dato", "Twit2"}}
 	//print(string(request))
-	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request})
+	out, err := tpl.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": messages})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

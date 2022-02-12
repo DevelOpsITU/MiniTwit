@@ -1,16 +1,48 @@
 {% extends "templates/layout.html" %}
 {% block title %}
-    {% if request.endpoint == 'public_timeline' %}
+    {% if request.Endpoint == 'public_timeline' %}
         Public Timeline
-    {% elif request.endpoint == 'user_timeline' %}
+    {% elif request.Endpoint == 'user_timeline' %}
         {{ profile_user.username }}'s Timeline
     {% else %}
         My Timeline
     {% endif %}
 {% endblock %}
 {% block body %}
+<h2>
+{% if request.Endpoint == 'public_timeline' %}
+    Public Timeline
+{% elif request.Endpoint == 'user_timeline' %}
+    {{ profile_user.username }}'s Timeline
+{% else %}
+    My Timeline
+{% endif %}
+</h2>
+
+
+
+
+
 
 <p> My first name is {{ first_name }}. My last name is {{ last_name }}. </p>
+
+
+
+<ul class=messages>
+    {% for message in messages %}
+    <!-- TODO: Add Gravater link here -->
+    <li><img src="{{ message.Email }}"><p>
+        <!-- TODO: Add User timeline link here -->
+        <strong><a href="/{{ message.Username}}">{{ message.Username }}</a></strong>
+        {{ message.Text }}
+        <!-- TODO: Format correctly here -->
+        <small>&mdash; {{ message.Pub_date }}</small>
+        {% else %}
+    <li><em>There's no message so far.</em>
+        {% endfor %}
+</ul>
+
+
 
 {% if g.user %}
     <p> It worked!  {{g.user.username}} was here! </p>
