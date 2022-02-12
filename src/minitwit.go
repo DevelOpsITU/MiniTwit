@@ -35,7 +35,6 @@ func examplePage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	g.User.Username = "jonas"
 	g.Message = true
 	g.Messages = append(g.Messages, "testerasd", "message 2")
-
 	cookie, err := c.Cookie("session")
 
 	// If there is no cookie
@@ -49,6 +48,8 @@ func examplePage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
 		fmt.Printf("Cookie set to: %s \n", cookie)
 	} else {
+		g.Message = false
+		g.Messages = nil
 		data, _ := json.Marshal(g)
 		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
 		print("\n")
