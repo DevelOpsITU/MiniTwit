@@ -33,6 +33,8 @@ func examplePage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	}
 	var g structType
 	g.User.Username = "jonas"
+	g.Message = true
+	g.Messages = append(g.Messages, "testerasd", "message 2")
 
 	cookie, err := c.Cookie("session")
 
@@ -44,9 +46,14 @@ func examplePage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		if err != nil {
 			return
 		}
-		print(string(data))
 		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+		fmt.Printf("Cookie set to: %s \n", cookie)
 	} else {
+		data, _ := json.Marshal(g)
+		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+		print("\n")
+		fmt.Printf("Cookie set to: %s \n", string(data))
+		fmt.Printf("Cookie recived with value: %s \n", cookie)
 		json.Unmarshal([]byte(cookie), &g)
 
 	}
