@@ -143,9 +143,23 @@ func getCookie(c *gin.Context) (Session, error) {
 		//data,_ := json.Marshal(g)
 		//c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
 		json.Unmarshal([]byte(cookie), &g)
-		print("Found Cookie:", string([]byte(cookie)))
-		return g, nil
+		//println("Found Cookie:", string([]byte(cookie)))
+
 	}
+
+	newCookie := g
+	newCookie.Message = false
+	newCookie.Messages = nil
+	setCookie(c, newCookie)
+
+	return g, nil
+
+}
+
+func setCookie(c *gin.Context, session Session) {
+
+	data, _ := json.Marshal(session)
+	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
 }
 
 // Pre-compiling the templates at application startup using the
@@ -160,7 +174,7 @@ var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 // Route /
 func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	// Execute the template per HTTP request
-
+	request := getEndpoint(r)
 	var g Session
 	g, err := getCookie(c)
 
@@ -171,14 +185,14 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	//set g = "None" if g.user should return false in jinja
 
-	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": g})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
 }
 
-func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func getEndpoint(r *http.Request) Request {
 	var request = Request{r.URL.Path}
 
 	if request.Endpoint == "/public" {
@@ -188,12 +202,17 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 	} else {
 		request.Endpoint = ""
 	}
+	return request
+}
+
+func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+	request := getEndpoint(r)
 
 	messages := GetAllMessages()
 
 	twits := CovertMessagesToTwits(&messages)
 	//print(string(request))
-	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": twits})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": "", "request": request, "messages": twits})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
