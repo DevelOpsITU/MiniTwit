@@ -28,15 +28,24 @@ type Request struct {
 	Endpoint string
 }
 
+type Twit struct {
+	GavatarUrl string
+	Username   string
+	Pub_date   string
+	Text       string
+}
+
 /****************************************
 *		   DATABASE ENTITIES			*
 ****************************************/
 type Message struct {
 	MessageId int
 	AuthorId  int
+	Username  string
 	Text      string
 	Pubdate   int64
 	Flagged   bool
+	Email     string
 }
 
 type User struct {
@@ -78,9 +87,9 @@ func InitDb() {
 }
 
 // example Database usage
-func GetAllMessages() {
+func GetAllMessages() []Message {
 	db := ConnectDb()
-	query := "SELECT * FROM message"
+	query := string("select message.message_id , message.author_id , user.username , message.text , message.pub_date ,  user.email from message, user where message.flagged = 0 and message.author_id = user.user_id order by message.pub_date desc limit 30")
 	result, err := db.Query(query)
 	if err != nil {
 		panic(err)
@@ -91,13 +100,13 @@ func GetAllMessages() {
 
 	for result.Next() {
 		var msg Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Text, &msg.Pubdate, &msg.Flagged)
+		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
 			panic(err.Error())
 		}
 		messages = append(messages, msg)
 	}
-	//fmt.Printf("%+v\n", messages)
+	return messages
 }
 
 func GetUserFromDb(username string) User {
@@ -180,20 +189,25 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 		request.Endpoint = ""
 	}
 
-	type Message struct {
-		GavatarUrl string
-		Username   string
-		Pub_date   string
-		Text       string
-	}
+	messages := GetAllMessages()
 
-	var messages = []Message{{getGavaterUrl("User@email.com", 48), "user1", "dato", "Twit1"}, {getGavaterUrl("User2@email.com", 48), "user2", "dato", "Twit2"}}
+	twits := CovertMessagesToTwits(&messages)
 	//print(string(request))
-	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": messages})
+	out, err := timelineTemplate.Execute(gonja.Context{"first_name": "Christian", "last_name": "Mark", "g": "", "request": request, "messages": twits})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
+}
+
+func CovertMessagesToTwits(messages *[]Message) []Twit {
+	var twits []Twit
+	for _, message := range *messages {
+		twits = append(twits, Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
+	}
+	print(twits)
+	return twits
+
 }
 
 func getGavaterUrl(email string, size int) string {
