@@ -1,18 +1,11 @@
-package main
+package tool
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"io/ioutil"
+	"log"
 )
-
-const DATABASE = "./minitwit.db"
-
-//const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
-const PER_PAGE = 30
-const DEBUG = true
-const SECRET_KEY = "development key"
 
 /****************************************
 *		   DATABASE ENTITIES			*
@@ -24,6 +17,20 @@ type Message struct {
 	Pubdate   int64
 	Flagged   bool
 }
+
+type User struct {
+	User_id  int
+	Username string
+	Email    string
+	pw_hash  string
+}
+
+const DATABASE = "./minitwit.db"
+
+//const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+const PER_PAGE = 30
+const DEBUG = true
+const SECRET_KEY = "development key"
 
 /****************************************
 *			DATABASE RELATED			*
@@ -69,5 +76,26 @@ func GetAllMessages() {
 		}
 		messages = append(messages, msg)
 	}
-	fmt.Printf("%+v\n", messages)
+	//fmt.Printf("%+v\n", messages)
+}
+
+func GetUserFromDb(username string) {
+	db := ConnectDb()
+	stmt, err := db.Prepare("SELECT x.* FROM 'user' x WHERE username like '?'")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	result := stmt.QueryRow(username)
+
+	var user User
+	err = result.Scan(&user.User_id, &user.Username, &user.Email, &user.pw_hash)
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+
+	}
+
 }

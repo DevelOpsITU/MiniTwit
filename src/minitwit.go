@@ -2,18 +2,22 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/noirbizarre/gonja"
+	"golang.org/x/crypto/pbkdf2"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-type User struct {
-	Username string
-}
 type Session struct {
 	User     User
 	Message  bool
@@ -23,6 +27,101 @@ type Session struct {
 type Request struct {
 	Endpoint string
 }
+
+/****************************************
+*		   DATABASE ENTITIES			*
+****************************************/
+type Message struct {
+	MessageId int
+	AuthorId  int
+	Text      string
+	Pubdate   int64
+	Flagged   bool
+}
+
+type User struct {
+	User_id  int
+	Username string
+	Email    string
+	pw_hash  string
+}
+
+const DATABASE = "/tmp/minitwit.db"
+
+//const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+const PER_PAGE = 30
+const DEBUG = true
+const SECRET_KEY = "development key"
+
+/****************************************
+*			DATABASE RELATED			*
+****************************************/
+func ConnectDb() *sql.DB {
+	db, err := sql.Open("sqlite3", DATABASE)
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
+// setup
+func InitDb() {
+	db := ConnectDb()
+	query, err := ioutil.ReadFile("schema.sql")
+	if err != nil {
+		panic(err)
+	}
+	if _, err := db.Exec(string(query)); err != nil {
+		panic(err)
+	}
+}
+
+// example Database usage
+func GetAllMessages() {
+	db := ConnectDb()
+	query := "SELECT * FROM message"
+	result, err := db.Query(query)
+	if err != nil {
+		panic(err)
+	}
+	defer result.Close()
+
+	var messages []Message
+
+	for result.Next() {
+		var msg Message
+		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Text, &msg.Pubdate, &msg.Flagged)
+		if err != nil {
+			panic(err.Error())
+		}
+		messages = append(messages, msg)
+	}
+	//fmt.Printf("%+v\n", messages)
+}
+
+func GetUserFromDb(username string) User {
+	db := ConnectDb()
+	//TODO: Prepared statements
+	strs := []string{"SELECT x.* FROM 'user' x WHERE username like '", username, "'"}
+	query := strings.Join(strs, "")
+	row, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var user User
+	for row.Next() { // Iterate and fetch the records from result cursor
+		row.Scan(&user.User_id, &user.Username, &user.Email, &user.pw_hash)
+	}
+
+	return user
+
+}
+
+/****************************************
+*			REST OF PROGRAM				*
+****************************************/
 
 func getCookie(c *gin.Context) (Session, error) {
 	var g Session
@@ -109,11 +208,59 @@ func getGavaterUrl(email string, size int) string {
 func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	//var error = ""
-	GetAllMessages()
+	//GetAllMessages()
 
 	if r.Method == http.MethodPost {
+		username := c.PostForm("username")
+		pw := c.PostForm("password")
+		print(pw)
+		print(username)
+		user := GetUserFromDb(username)
+		print(user.pw_hash)
+
+		s := strings.Split(user.pw_hash, ":")
+
+		s2 := strings.Split(s[2], "$")
+
+		pwIteration := s2[0]
+		pwSalt := s2[1]
+		pwHash := s2[2]
+		fmt.Println(pwIteration)
+		fmt.Println(pwSalt)
+		fmt.Println(pwHash)
+
+		salt := []byte(user.pw_hash[21:37])
+		pwIteration_int, _ := strconv.Atoi(pwIteration)
+
+		dk := pbkdf2.Key([]byte(pw), []byte(pwSalt), pwIteration_int, 32, sha256.New)
+
+		fmt.Printf("\nsha256: %x\n", []byte(dk))
+		fmt.Printf("salt: %x\n", string(salt))
+		fmt.Println("len(salt)", len(salt),
+			"\nlen(hashed)", len(dk))
+
+		if hex.EncodeToString(dk) != pwHash {
+			// Invalid
+			print("Invalid password")
+			c.Redirect(http.StatusFound, "/login")
+
+			return
+		} else {
+			// User is authenticated
+
+			var g = Session{
+				User:     user,
+				Message:  true,
+				Messages: []string{"You were successfully registered and can login now"},
+			}
+			data, _ := json.Marshal(g)
+			c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+			c.Redirect(http.StatusFound, "/")
+			return
+		}
 
 	}
+
 	out, err := loginTemplate.Execute(gonja.Context{"g": ""})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
