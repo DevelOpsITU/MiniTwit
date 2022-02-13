@@ -3,9 +3,9 @@
 <title>{% block title %}Welcome{% endblock %} | MiniTwit</title>
 <link rel=stylesheet type=text/css href="/static/style.css">
 
-<div class=page></div>
+<div class=page>
     <h1>MiniTwit</h1>
-    <div class=navigation></div>
+    <div class=navigation>
     {% if g.user %}
         <a href="/">my timeline</a> |
         <a href="/public">public timeline</a> |
@@ -16,8 +16,6 @@
         <a href="/login">sign in</a>
     {% endif %}
     </div>
-    
-    <p>Hello from newLayout.html</p>
 
     {% if g.Message %}
     <ul class=flashes>
@@ -33,4 +31,5 @@
     <div class=footer>
         MiniTwit &mdash; A Go` Application
     </div>
+</div>
 </div>
