@@ -275,7 +275,6 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		print(username)
 		user := GetUserFromDb(username)
 		print(user.pw_hash)
-
 		s := strings.Split(user.pw_hash, ":")
 
 		s2 := strings.Split(s[2], "$")
