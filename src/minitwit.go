@@ -497,11 +497,12 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 }
 
 func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
-	var g Session
-	g, err := getCookie(c)
+	_, err := getCookie(c)
 
-	if err != nil || g.User.Username == "" {
+	if err == nil {
+		// If there are a cookie in the session i.e. no error when getting it
 		c.Redirect(http.StatusFound, "/")
+		return
 	}
 
 	er := ""
