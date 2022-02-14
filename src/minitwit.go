@@ -103,7 +103,9 @@ func GetUserMessages(id int) []Message {
 		message.pub_date, 
 		user.email 
 		FROM message, user 
-		WHERE message.flagged = 0 and user.user_id = (?) 
+		WHERE message.flagged = 0 AND 
+		user.user_id = (?) AND
+		user.user_id = message.author_id
 		ORDER BY message.pub_date DESC 
 		LIMIT 30`)
 	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
@@ -254,6 +256,77 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
+}
+
+func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+	data, err := getCookie(c)
+	g = data
+
+	// If there is no cookie / no user logged in
+	if err != nil || g.User.Username == "" {
+		c.Redirect(http.StatusFound, "/public")
+	}
+
+	whom_id := GetUserFromDb(username)
+
+	// TODO: check if followed before trying this
+	db := ConnectDb()
+
+	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = query.Exec(g.User.User_id, whom_id.User_id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer query.Close()
+
+	// set Message in cookie
+	cookie := Session{
+		User:     g.User,
+		Message:  true,
+		Messages: []string{"You are no longer following " + username},
+	}
+	newdata, _ := json.Marshal(cookie)
+	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	c.Redirect(http.StatusFound, "/")
+}
+
+func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+	data, err := getCookie(c)
+	g = data
+
+	// If there is no cookie / no user logged in
+	if err != nil || g.User.Username == "" {
+		c.Redirect(http.StatusFound, "/public")
+	}
+
+	whom_id := GetUserFromDb(username)
+
+	db := ConnectDb()
+
+	query, err := db.Prepare("INSERT INTO follower (who_id, whom_id) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = query.Exec(g.User.User_id, whom_id.User_id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer query.Close()
+
+	// set Message in cookie
+	cookie := Session{
+		User:     g.User,
+		Message:  true,
+		Messages: []string{"You are now following " + username},
+	}
+	newdata, _ := json.Marshal(cookie)
+	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	c.Redirect(http.StatusFound, "/")
 }
 
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
@@ -483,6 +556,18 @@ func main() {
 	router.GET("/:user", func(c *gin.Context) {
 		username := c.Param("user")
 		handleUserTimeline(c.Writer, c.Request, c, username)
+	})
+
+	// Follow
+	router.GET("/:user/follow", func(c *gin.Context) {
+		username := c.Param("user")
+		handleFollowUser(c.Writer, c.Request, c, username)
+	})
+
+	// Unfollow
+	router.GET("/:user/unfollow", func(c *gin.Context) {
+		username := c.Param("user")
+		handleUnFollowUser(c.Writer, c.Request, c, username)
 	})
 
 	router.LoadHTMLFiles("./src/test.html")
