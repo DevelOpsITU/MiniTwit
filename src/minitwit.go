@@ -149,11 +149,12 @@ func getCookie(c *gin.Context) (Session, error) {
 		//println("Found Cookie:", string([]byte(cookie)))
 
 	}
-
+	fmt.Println(g)
 	newCookie := g
 	newCookie.Message = false
 	newCookie.Messages = nil
 	setCookie(c, newCookie)
+	fmt.Println(newCookie)
 
 	return g, nil
 
@@ -174,12 +175,14 @@ func setCookie(c *gin.Context, session Session) {
 var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 
+var g Session
+
 // Route /
 func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	// Execute the template per HTTP request
 	request := getEndpoint(r)
-	var g Session
-	g, err := getCookie(c)
+	data, err := getCookie(c)
+	g = data
 
 	// If there is no cookie
 	if err != nil || g.User.Username == "" {
@@ -215,7 +218,7 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 
 	twits := CovertMessagesToTwits(&messages)
 	//print(string(request))
-	out, err := timelineTemplate.Execute(gonja.Context{"g": "", "request": request, "messages": twits})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -304,6 +307,18 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	w.Write([]byte(out))
 }
 
+func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+	// reset cookie
+	g := Session{
+		User:     User{},
+		Message:  true,
+		Messages: []string{"You were logged out"},
+	}
+	data, _ := json.Marshal(g)
+	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+	c.Redirect(http.StatusFound, "/")
+}
+
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -328,6 +343,11 @@ func main() {
 
 	router.POST("/login", func(c *gin.Context) {
 		handleLogin(c.Writer, c.Request, c)
+	})
+
+	// Logout
+	router.GET("/logout", func(c *gin.Context) {
+		handleLogout(c.Writer, c.Request, c)
 	})
 
 	router.LoadHTMLFiles("./src/test.html")
