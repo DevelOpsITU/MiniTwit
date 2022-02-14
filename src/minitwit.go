@@ -8,7 +8,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-  
+	"io"
+
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -92,6 +93,39 @@ func InitDb() {
 }
 
 // example Database usage
+func GetUserMessages(id int) []Message {
+	db := ConnectDb()
+	query := string(`SELECT 
+		message.message_id, 
+		message.author_id, 
+		user.username, 
+		message.text, 
+		message.pub_date, 
+		user.email 
+		FROM message, user 
+		WHERE message.flagged = 0 and user.user_id = (?) 
+		ORDER BY message.pub_date DESC 
+		LIMIT 30`)
+	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
+	if err != nil {
+		panic(err)
+	}
+	defer result.Close()
+
+	var messages []Message
+
+	for result.Next() {
+		var msg Message
+		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
+		fmt.Println(msg)
+		if err != nil {
+			panic(err.Error())
+		}
+		messages = append(messages, msg)
+	}
+	return messages
+}
+
 func GetAllMessages() []Message {
 	db := ConnectDb()
 	query := string("select message.message_id , message.author_id , user.username , message.text , message.pub_date ,  user.email from message, user where message.flagged = 0 and message.author_id = user.user_id order by message.pub_date desc limit 30")
@@ -222,6 +256,19 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	w.Write([]byte(out))
 }
 
+func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+
+	user := GetUserFromDb(username)
+
+	messages := GetUserMessages(user.User_id)
+	twits := CovertMessagesToTwits(&messages)
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": r, "messages": twits})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write([]byte(out))
+}
+
 func getEndpoint(r *http.Request) Request {
 	var request = Request{r.URL.Path}
 
@@ -341,12 +388,12 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 }
 
 func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
-    var g Session
-    g, err := getCookie(c)
-    
-     if err != nil || g.User.Username == "" {
-          c.Redirect(http.StatusFound, "/")
-     }
+	var g Session
+	g, err := getCookie(c)
+
+	if err != nil || g.User.Username == "" {
+		c.Redirect(http.StatusFound, "/")
+	}
 
 	er := ""
 	if r.Method == http.MethodPost {
@@ -422,12 +469,20 @@ func main() {
 	// Logout
 	router.GET("/logout", func(c *gin.Context) {
 		handleLogout(c.Writer, c.Request, c)
+	})
+
 	// Register
 	router.GET("/register", func(c *gin.Context) {
 		handleRegister(c.Writer, c.Request, c)
 	})
 	router.POST("/register", func(c *gin.Context) {
 		handleRegister(c.Writer, c.Request, c)
+	})
+
+	// User timeline
+	router.GET("/:user", func(c *gin.Context) {
+		username := c.Param("user")
+		handleUserTimeline(c.Writer, c.Request, c, username)
 	})
 
 	router.LoadHTMLFiles("./src/test.html")
