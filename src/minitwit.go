@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"time"
 
 	"io/ioutil"
 	"log"
@@ -119,7 +120,6 @@ func GetUserMessages(id int) []Message {
 	for result.Next() {
 		var msg Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		fmt.Println(msg)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -208,12 +208,10 @@ func getCookie(c *gin.Context) (Session, error) {
 		//println("Found Cookie:", string([]byte(cookie)))
 
 	}
-	fmt.Println(g)
 	newCookie := g
 	newCookie.Message = false
 	newCookie.Messages = nil
 	setCookie(c, newCookie)
-	fmt.Println(newCookie)
 
 	return g, nil
 
@@ -326,6 +324,44 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 	}
 	newdata, _ := json.Marshal(cookie)
 	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	c.Redirect(http.StatusFound, "/")
+}
+
+func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+	data, err := getCookie(c)
+	g = data
+
+	// If there is no cookie / no user logged in
+	if err != nil || g.User.Username == "" {
+		c.Redirect(http.StatusFound, "/public")
+	}
+
+	// Insert message into db
+	if c.PostForm("text") != "" {
+		db := ConnectDb()
+
+		query, err := db.Prepare(`INSERT INTO message (author_id, text, pub_date, flagged) 
+			VALUES (?, ?, ?, 0)`)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = query.Exec(g.User.User_id, c.PostForm("text"), time.Now().Unix())
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer query.Close()
+
+		var g = Session{
+			User:     g.User,
+			Message:  true,
+			Messages: []string{"Your message was recorded"},
+		}
+		data, _ := json.Marshal(g)
+		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+		c.Redirect(http.StatusFound, "/")
+	}
 	c.Redirect(http.StatusFound, "/")
 }
 
@@ -470,7 +506,6 @@ func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	er := ""
 	if r.Method == http.MethodPost {
-		fmt.Println((GetUserFromDb(c.PostForm("username"))))
 		if c.PostForm("username") == "" {
 			er = "You have to enter a username"
 		} else if c.PostForm("email") == "" || !strings.Contains(c.PostForm("email"), "@") {
@@ -568,6 +603,11 @@ func main() {
 	router.GET("/:user/unfollow", func(c *gin.Context) {
 		username := c.Param("user")
 		handleUnFollowUser(c.Writer, c.Request, c, username)
+	})
+
+	// Add message
+	router.GET("/add_message", func(c *gin.Context) {
+		handleAddMessage(c.Writer, c.Request, c)
 	})
 
 	router.LoadHTMLFiles("./src/test.html")
