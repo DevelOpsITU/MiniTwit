@@ -2,11 +2,13 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+  
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -112,6 +114,27 @@ func GetAllMessages() []Message {
 	return messages
 }
 
+func AddUserToDb(username string, email string, password string) {
+	db := ConnectDb()
+	salt := make([]byte, 4)
+	io.ReadFull(rand.Reader, salt)
+
+	pwIteration_int, _ := strconv.Atoi("50000")
+	dk := pbkdf2.Key([]byte(password), salt, pwIteration_int, 32, sha256.New)
+
+	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
+	query, err := db.Prepare("INSERT INTO user(username, email, pw_hash) values (?,?,?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = query.Exec(username, email, pw_hashed)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer query.Close()
+}
+
 func GetUserFromDb(username string) User {
 	db := ConnectDb()
 	//TODO: Prepared statements
@@ -174,6 +197,7 @@ func setCookie(c *gin.Context, session Session) {
 
 var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
+var registerTemplate = gonja.Must(gonja.FromFile("templates/register.html"))
 
 var g Session
 
@@ -256,7 +280,6 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		print(username)
 		user := GetUserFromDb(username)
 		print(user.pw_hash)
-
 		s := strings.Split(user.pw_hash, ":")
 
 		s2 := strings.Split(s[2], "$")
@@ -268,15 +291,17 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		fmt.Println(pwSalt)
 		fmt.Println(pwHash)
 
-		salt := []byte(user.pw_hash[21:37])
+		//salt := []byte(user.pw_hash[21:37]) // TODO: what is this used for?
 		pwIteration_int, _ := strconv.Atoi(pwIteration)
 
 		dk := pbkdf2.Key([]byte(pw), []byte(pwSalt), pwIteration_int, 32, sha256.New)
 
 		fmt.Printf("\nsha256: %x\n", []byte(dk))
-		fmt.Printf("salt: %x\n", string(salt))
-		fmt.Println("len(salt)", len(salt),
-			"\nlen(hashed)", len(dk))
+
+		// TODO: same as l.293 (What is thi used for?)
+		//fmt.Printf("salt: %x\n", string(salt))
+		//fmt.Println("len(salt)", len(salt),
+		//	"\nlen(hashed)", len(dk))
 
 		if hex.EncodeToString(dk) != pwHash {
 			// Invalid
@@ -290,7 +315,7 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 			var g = Session{
 				User:     user,
 				Message:  true,
-				Messages: []string{"You were successfully registered and can login now"},
+				Messages: []string{"You were successfully logged in"},
 			}
 			data, _ := json.Marshal(g)
 			c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
@@ -299,8 +324,57 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		}
 
 	}
+	cookie, err := getCookie(c)
+	if err != nil {
+		out, err := loginTemplate.Execute(gonja.Context{"g": ""})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.Write([]byte(out))
+	} else {
+		out, err := loginTemplate.Execute(gonja.Context{"g": cookie})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.Write([]byte(out))
+	}
+}
 
-	out, err := loginTemplate.Execute(gonja.Context{"g": ""})
+func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+    var g Session
+    g, err := getCookie(c)
+    
+     if err != nil || g.User.Username == "" {
+          c.Redirect(http.StatusFound, "/")
+     }
+
+	er := ""
+	if r.Method == http.MethodPost {
+		fmt.Println((GetUserFromDb(c.PostForm("username"))))
+		if c.PostForm("username") == "" {
+			er = "You have to enter a username"
+		} else if c.PostForm("email") == "" || !strings.Contains(c.PostForm("email"), "@") {
+			er = "Your have to enter a valid email address"
+		} else if c.PostForm("password") == "" {
+			er = "You have to enter a password"
+		} else if c.PostForm("password") != c.PostForm("password2") {
+			er = "The two passwords do not match"
+		} else if GetUserFromDb(c.PostForm("username")) != (User{}) {
+			er = "The username is already taken"
+		} else {
+			AddUserToDb(c.PostForm("username"), c.PostForm("email"), c.PostForm("password"))
+			var g = Session{
+				User:     User{},
+				Message:  true,
+				Messages: []string{"You were successfully registered and can login now"},
+			}
+			data, _ := json.Marshal(g)
+			c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+	}
+	out, err := registerTemplate.Execute(gonja.Context{"g": "", "error": er})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -348,6 +422,12 @@ func main() {
 	// Logout
 	router.GET("/logout", func(c *gin.Context) {
 		handleLogout(c.Writer, c.Request, c)
+	// Register
+	router.GET("/register", func(c *gin.Context) {
+		handleRegister(c.Writer, c.Request, c)
+	})
+	router.POST("/register", func(c *gin.Context) {
+		handleRegister(c.Writer, c.Request, c)
 	})
 
 	router.LoadHTMLFiles("./src/test.html")
