@@ -58,7 +58,9 @@ type User struct {
 
 // const DATABASE = "/tmp/minitwit.db"
 // const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+//const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
 const DATABASE = "H:/repos/MiniTwit/minitwit.db"
+
 const PER_PAGE = 30
 const DEBUG = true
 const SECRET_KEY = "development key"
