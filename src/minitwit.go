@@ -7,15 +7,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/noirbizarre/gonja"
-	"golang.org/x/crypto/pbkdf2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/noirbizarre/gonja"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 type Session struct {
@@ -55,9 +56,9 @@ type User struct {
 	pw_hash  string
 }
 
-const DATABASE = "/tmp/minitwit.db"
-
-//const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+// const DATABASE = "/tmp/minitwit.db"
+// const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+const DATABASE = "H:/repos/MiniTwit/minitwit.db"
 const PER_PAGE = 30
 const DEBUG = true
 const SECRET_KEY = "development key"
