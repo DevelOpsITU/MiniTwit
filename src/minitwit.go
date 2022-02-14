@@ -336,6 +336,12 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 }
 
 func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+    var g Session
+    g, err := getCookie(c)
+    
+     if err != nil || g.User.Username == "" {
+          c.Redirect(http.StatusFound, "/")
+     }
 
 	er := ""
 	if r.Method == http.MethodPost {
