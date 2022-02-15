@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/pbkdf2"
@@ -12,14 +13,16 @@ import (
 	"io/ioutil"
 	"log"
 	"minitwit/src/models"
+	"os"
 	"strconv"
 	"strings"
 )
 
-// const DATABASE = "/tmp/minitwit.db"
+const DATABASE = "/tmp/minitwit.db"
+
 // const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
 //const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
-const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
+//const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
 
 //const DATABASE = "H:/repos/MiniTwit/minitwit.db"
 
@@ -48,6 +51,18 @@ func InitDb() {
 	}
 	if _, err := db.Exec(string(query)); err != nil {
 		panic(err)
+	}
+}
+
+func TestConnection() {
+	//For Sqlite we simply look for the database file
+	if _, err := os.Stat(DATABASE); errors.Is(err, os.ErrNotExist) {
+		//Does not exist
+		fmt.Fprintln(os.Stderr,
+			"\n--------------------------------------------------------------\n"+
+				"\t File "+DATABASE+" does not exists, exiting..\n"+
+				"--------------------------------------------------------------")
+		os.Exit(1)
 	}
 }
 
