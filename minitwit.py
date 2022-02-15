@@ -31,12 +31,12 @@ app = Flask(__name__)
 
 
 def connect_db():
-    """Returns a new connection to the database."""
+    """Returns a new connection to the Database."""
     return sqlite3.connect(DATABASE)
 
 
 def init_db():
-    """Creates the database tables."""
+    """Creates the Database tables."""
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql') as f:
             db.cursor().executescript(f.read().decode("UTF-8"))
@@ -44,7 +44,7 @@ def init_db():
 
 
 def query_db(query, args=(), one=False):
-    """Queries the database and returns a list of dictionaries."""
+    """Queries the Database and returns a list of dictionaries."""
     cur = g.db.execute(query, args)
     rv = [dict((cur.description[idx][0], value)
                for idx, value in enumerate(row)) for row in cur.fetchall()]
@@ -71,7 +71,7 @@ def gravatar_url(email, size=80):
 
 @app.before_request
 def before_request():
-    """Make sure we are connected to the database each request and look
+    """Make sure we are connected to the Database each request and look
     up the current user so that we know he's there.
     """
     g.db = connect_db()
@@ -83,7 +83,7 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    """Closes the database again at the end of the request."""
+    """Closes the Database again at the end of the request."""
     g.db.close()
     return response
 

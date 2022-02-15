@@ -16,7 +16,7 @@ import tempfile
 class MiniTwitTestCase(unittest.TestCase):
 
     def setUp(self):
-        """Before each test, set up a blank database"""
+        """Before each test, set up a blank Database"""
         self.db = tempfile.NamedTemporaryFile()
         self.app = minitwit.app.test_client()
         minitwit.DATABASE = self.db.name
