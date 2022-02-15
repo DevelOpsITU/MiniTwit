@@ -29,7 +29,7 @@ var g models.Session
 
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
-	user := database.GetUserFromDb(username)
+	user, _ := database.GetUserFromDb(username)
 
 	messages := database.GetUserMessages(user.User_id)
 	twits := convertMessagesToTwits(&messages)

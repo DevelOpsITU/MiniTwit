@@ -129,7 +129,7 @@ func AddUserToDb(username string, email string, password string) {
 	defer query.Close()
 }
 
-func GetUserFromDb(username string) models.User {
+func GetUserFromDb(username string) (models.User, error) {
 	db := ConnectDb()
 	//TODO: Prepared statements
 	strs := []string{"SELECT x.* FROM 'user' x WHERE username like '", username, "'"}
@@ -137,6 +137,7 @@ func GetUserFromDb(username string) models.User {
 	row, err := db.Query(query)
 	if err != nil {
 		log.Fatal(err)
+		return models.User{}, err
 	}
 	defer row.Close()
 	var user models.User
@@ -144,6 +145,6 @@ func GetUserFromDb(username string) models.User {
 		row.Scan(&user.User_id, &user.Username, &user.Email, &user.Pw_hash)
 	}
 
-	return user
+	return user, nil
 
 }

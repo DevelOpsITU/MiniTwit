@@ -43,19 +43,22 @@ func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 			er = "You have to enter a password"
 		} else if c.PostForm("password") != c.PostForm("password2") {
 			er = "The two passwords do not match"
-		} else if database.GetUserFromDb(c.PostForm("username")) != (models.User{}) {
-			er = "The username is already taken"
 		} else {
-			database.AddUserToDb(c.PostForm("username"), c.PostForm("email"), c.PostForm("password"))
-			var g = models.Session{
-				User:     models.User{},
-				Message:  true,
-				Messages: []string{"You were successfully registered and can login now"},
+			user, err := database.GetUserFromDb(c.PostForm("username"))
+			if err == nil {
+				er = "The username is already taken"
+			} else {
+				database.AddUserToDb(c.PostForm("username"), c.PostForm("email"), c.PostForm("password"))
+				var g = models.Session{
+					User:     user,
+					Message:  true,
+					Messages: []string{"You were successfully registered and can login now"},
+				}
+				data, _ := json.Marshal(g)
+				c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+				c.Redirect(http.StatusFound, "/login")
+				return
 			}
-			data, _ := json.Marshal(g)
-			c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
-			c.Redirect(http.StatusFound, "/login")
-			return
 		}
 	}
 	out, err := registerTemplate.Execute(gonja.Context{"g": "", "error": er})

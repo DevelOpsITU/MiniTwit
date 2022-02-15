@@ -39,7 +39,7 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id := database.GetUserFromDb(username)
+	whom_id, _ := database.GetUserFromDb(username)
 
 	// TODO: check if followed before trying this
 	db := database.ConnectDb()
@@ -75,7 +75,7 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id := database.GetUserFromDb(username)
+	whom_id, _ := database.GetUserFromDb(username)
 
 	db := database.ConnectDb()
 
