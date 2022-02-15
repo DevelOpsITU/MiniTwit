@@ -7,8 +7,10 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	"io/ioutil"
@@ -551,6 +553,12 @@ func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+
+	if _, err := os.Stat(DATABASE); errors.Is(err, os.ErrNotExist) {
+		//Does not exist
+		fmt.Fprintln(os.Stderr, "--------------- File "+DATABASE+" does not exists---------------")
+		os.Exit(1)
+	}
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
