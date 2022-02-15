@@ -7,7 +7,14 @@ import (
 	"net/http"
 )
 
-func HandleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func logoutHandlers(router *gin.Engine) {
+
+	router.GET("/logout", func(c *gin.Context) {
+		handleLogout(c.Writer, c.Request, c)
+	})
+}
+
+func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	// reset cookie
 	g := models.Session{
 		User:     models.User{},

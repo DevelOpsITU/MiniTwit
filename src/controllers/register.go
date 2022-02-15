@@ -11,9 +11,20 @@ import (
 	"strings"
 )
 
+func registerHandlers(router *gin.Engine) {
+
+	router.GET("/register", func(c *gin.Context) {
+		handleRegister(c.Writer, c.Request, c)
+	})
+	router.POST("/register", func(c *gin.Context) {
+		handleRegister(c.Writer, c.Request, c)
+	})
+
+}
+
 var registerTemplate = gonja.Must(gonja.FromFile("templates/register.html"))
 
-func HandleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	_, err := functions.GetCookie(c)
 
 	if err == nil {

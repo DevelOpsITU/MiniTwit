@@ -10,7 +10,27 @@ import (
 	"net/http"
 )
 
-func HandleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func userHandlers(router *gin.Engine) {
+
+	router.GET("/:user/follow", func(c *gin.Context) {
+		username := c.Param("user")
+		handleFollowUser(c.Writer, c.Request, c, username)
+	})
+
+	router.GET("/:user/unfollow", func(c *gin.Context) {
+		username := c.Param("user")
+		handleUnFollowUser(c.Writer, c.Request, c, username)
+	})
+
+	// User timeline
+	router.GET("/:user", func(c *gin.Context) {
+		username := c.Param("user")
+		handleUserTimeline(c.Writer, c.Request, c, username)
+	})
+
+}
+
+func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 	data, err := functions.GetCookie(c)
 	g = data
 
@@ -46,7 +66,7 @@ func HandleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	c.Redirect(http.StatusFound, "/")
 }
 
-func HandleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 	data, err := functions.GetCookie(c)
 	g = data
 

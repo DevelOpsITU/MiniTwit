@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/pbkdf2"
 	"io"
 	"io/ioutil"

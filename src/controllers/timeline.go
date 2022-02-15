@@ -13,11 +13,21 @@ import (
 	"strings"
 )
 
+func timelineHandlers(router *gin.Engine) {
+	router.GET("/", func(c *gin.Context) {
+		handleTimeline(c.Writer, c.Request, c)
+	})
+	router.GET("/public", func(c *gin.Context) {
+		handlePublicTimeline(c.Writer, c.Request, c)
+	})
+
+}
+
 var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 
 var g models.Session
 
-func HandleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
 	user := database.GetUserFromDb(username)
 
@@ -30,7 +40,7 @@ func HandleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	w.Write([]byte(out))
 }
 
-func HandleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	// Execute the template per HTTP request
 	request := functions.GetEndpoint(r)
 	data, err := functions.GetCookie(c)
@@ -50,7 +60,7 @@ func HandleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	w.Write([]byte(out))
 }
 
-func HandlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	request := functions.GetEndpoint(r)
 
 	messages := database.GetAllMessages()

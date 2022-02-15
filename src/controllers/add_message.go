@@ -11,7 +11,16 @@ import (
 	"time"
 )
 
-func HandleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func addMessageHandlers(router *gin.Engine) {
+
+	// Add message
+	router.GET("/add_message", func(c *gin.Context) {
+		handleAddMessage(c.Writer, c.Request, c)
+	})
+
+}
+
+func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	data, err := functions.GetCookie(c)
 	g = data
 

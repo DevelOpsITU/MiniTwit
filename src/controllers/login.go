@@ -16,9 +16,20 @@ import (
 	"strings"
 )
 
+func loginHandlers(router *gin.Engine) {
+
+	router.GET("/login", func(c *gin.Context) {
+		handleLogin(c.Writer, c.Request, c)
+	})
+
+	router.POST("/login", func(c *gin.Context) {
+		handleLogin(c.Writer, c.Request, c)
+	})
+}
+
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 
-func HandleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	//var error = ""
 	//GetAllMessages()
