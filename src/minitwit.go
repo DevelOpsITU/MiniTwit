@@ -2,16 +2,14 @@ package main
 
 import (
 	"crypto/md5"
-	"crypto/rand"
 	"crypto/sha256"
-	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
+	"minitwit/src/database"
+	"minitwit/src/models"
 	"time"
 
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -23,179 +21,12 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-type Session struct {
-	User     User
-	Message  bool
-	Messages []string
-}
-
-type Request struct {
-	Endpoint string
-}
-
-type Twit struct {
-	GavatarUrl string
-	Username   string
-	Pub_date   string
-	Text       string
-}
-
-/****************************************
-*		   DATABASE ENTITIES			*
-****************************************/
-type Message struct {
-	MessageId int
-	AuthorId  int
-	Username  string
-	Text      string
-	Pubdate   int64
-	Flagged   bool
-	Email     string
-}
-
-type User struct {
-	User_id  int
-	Username string
-	Email    string
-	pw_hash  string
-}
-
-// const DATABASE = "/tmp/minitwit.db"
-// const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
-//const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
-const DATABASE = "H:/repos/MiniTwit/minitwit.db"
-
-const PER_PAGE = 30
-const DEBUG = true
-const SECRET_KEY = "development key"
-
-/****************************************
-*			DATABASE RELATED			*
-****************************************/
-func ConnectDb() *sql.DB {
-	db, err := sql.Open("sqlite3", DATABASE)
-	if err != nil {
-		panic(err)
-	}
-
-	return db
-}
-
-// setup
-func InitDb() {
-	db := ConnectDb()
-	query, err := ioutil.ReadFile("schema.sql")
-	if err != nil {
-		panic(err)
-	}
-	if _, err := db.Exec(string(query)); err != nil {
-		panic(err)
-	}
-}
-
-// example Database usage
-func GetUserMessages(id int) []Message {
-	db := ConnectDb()
-	query := string(`SELECT 
-		message.message_id, 
-		message.author_id, 
-		user.username, 
-		message.text, 
-		message.pub_date, 
-		user.email 
-		FROM message, user 
-		WHERE message.flagged = 0 AND 
-		user.user_id = (?) AND
-		user.user_id = message.author_id
-		ORDER BY message.pub_date DESC 
-		LIMIT 30`)
-	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
-	if err != nil {
-		panic(err)
-	}
-	defer result.Close()
-
-	var messages []Message
-
-	for result.Next() {
-		var msg Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			panic(err.Error())
-		}
-		messages = append(messages, msg)
-	}
-	return messages
-}
-
-func GetAllMessages() []Message {
-	db := ConnectDb()
-	query := string("select message.message_id , message.author_id , user.username , message.text , message.pub_date ,  user.email from message, user where message.flagged = 0 and message.author_id = user.user_id order by message.pub_date desc limit 30")
-	result, err := db.Query(query)
-	if err != nil {
-		panic(err)
-	}
-	defer result.Close()
-
-	var messages []Message
-
-	for result.Next() {
-		var msg Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			panic(err.Error())
-		}
-		messages = append(messages, msg)
-	}
-	return messages
-}
-
-func AddUserToDb(username string, email string, password string) {
-	db := ConnectDb()
-	salt := make([]byte, 4)
-	io.ReadFull(rand.Reader, salt)
-
-	pwIteration_int, _ := strconv.Atoi("50000")
-	dk := pbkdf2.Key([]byte(password), salt, pwIteration_int, 32, sha256.New)
-
-	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
-	query, err := db.Prepare("INSERT INTO user(username, email, pw_hash) values (?,?,?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = query.Exec(username, email, pw_hashed)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer query.Close()
-}
-
-func GetUserFromDb(username string) User {
-	db := ConnectDb()
-	//TODO: Prepared statements
-	strs := []string{"SELECT x.* FROM 'user' x WHERE username like '", username, "'"}
-	query := strings.Join(strs, "")
-	row, err := db.Query(query)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer row.Close()
-	var user User
-	for row.Next() { // Iterate and fetch the records from result cursor
-		row.Scan(&user.User_id, &user.Username, &user.Email, &user.pw_hash)
-	}
-
-	return user
-
-}
-
 /****************************************
 *			REST OF PROGRAM				*
 ****************************************/
 
-func getCookie(c *gin.Context) (Session, error) {
-	var g Session
+func getCookie(c *gin.Context) (models.Session, error) {
+	var g models.Session
 	cookie, err := c.Cookie("session")
 
 	// If there is no cookie
@@ -217,7 +48,7 @@ func getCookie(c *gin.Context) (Session, error) {
 
 }
 
-func setCookie(c *gin.Context, session Session) {
+func setCookie(c *gin.Context, session models.Session) {
 
 	data, _ := json.Marshal(session)
 	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
@@ -233,7 +64,7 @@ var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 var registerTemplate = gonja.Must(gonja.FromFile("templates/register.html"))
 
-var g Session
+var g models.Session
 
 // Route /
 func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
@@ -265,10 +96,10 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id := GetUserFromDb(username)
+	whom_id := database.GetUserFromDb(username)
 
 	// TODO: check if followed before trying this
-	db := ConnectDb()
+	db := database.ConnectDb()
 
 	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
 	if err != nil {
@@ -282,7 +113,7 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	defer query.Close()
 
 	// set Message in cookie
-	cookie := Session{
+	cookie := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are no longer following " + username},
@@ -301,9 +132,9 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id := GetUserFromDb(username)
+	whom_id := database.GetUserFromDb(username)
 
-	db := ConnectDb()
+	db := database.ConnectDb()
 
 	query, err := db.Prepare("INSERT INTO follower (who_id, whom_id) VALUES (?, ?)")
 	if err != nil {
@@ -317,7 +148,7 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 	defer query.Close()
 
 	// set Message in cookie
-	cookie := Session{
+	cookie := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are now following " + username},
@@ -338,7 +169,7 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	// Insert message into db
 	if c.PostForm("text") != "" {
-		db := ConnectDb()
+		db := database.ConnectDb()
 
 		query, err := db.Prepare(`INSERT INTO message (author_id, text, pub_date, flagged) 
 			VALUES (?, ?, ?, 0)`)
@@ -353,7 +184,7 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		}
 		defer query.Close()
 
-		var g = Session{
+		var g = models.Session{
 			User:     g.User,
 			Message:  true,
 			Messages: []string{"Your message was recorded"},
@@ -367,9 +198,9 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
-	user := GetUserFromDb(username)
+	user := database.GetUserFromDb(username)
 
-	messages := GetUserMessages(user.User_id)
+	messages := database.GetUserMessages(user.User_id)
 	twits := CovertMessagesToTwits(&messages)
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": r, "messages": twits})
 	if err != nil {
@@ -378,8 +209,8 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	w.Write([]byte(out))
 }
 
-func getEndpoint(r *http.Request) Request {
-	var request = Request{r.URL.Path}
+func getEndpoint(r *http.Request) models.Request {
+	var request = models.Request{r.URL.Path}
 
 	if request.Endpoint == "/public" {
 		request.Endpoint = "public_timeline"
@@ -394,7 +225,7 @@ func getEndpoint(r *http.Request) Request {
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	request := getEndpoint(r)
 
-	messages := GetAllMessages()
+	messages := database.GetAllMessages()
 
 	twits := CovertMessagesToTwits(&messages)
 	//print(string(request))
@@ -405,10 +236,10 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 	w.Write([]byte(out))
 }
 
-func CovertMessagesToTwits(messages *[]Message) []Twit {
-	var twits []Twit
+func CovertMessagesToTwits(messages *[]models.Message) []models.Twit {
+	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
+		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
 	}
 	print(twits)
 	return twits
@@ -434,9 +265,9 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		pw := c.PostForm("password")
 		print(pw)
 		print(username)
-		user := GetUserFromDb(username)
-		print(user.pw_hash)
-		s := strings.Split(user.pw_hash, ":")
+		user := database.GetUserFromDb(username)
+		print(user.Pw_hash)
+		s := strings.Split(user.Pw_hash, ":")
 
 		s2 := strings.Split(s[2], "$")
 
@@ -468,7 +299,7 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		} else {
 			// User is authenticated
 
-			var g = Session{
+			var g = models.Session{
 				User:     user,
 				Message:  true,
 				Messages: []string{"You were successfully logged in"},
@@ -515,12 +346,12 @@ func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 			er = "You have to enter a password"
 		} else if c.PostForm("password") != c.PostForm("password2") {
 			er = "The two passwords do not match"
-		} else if GetUserFromDb(c.PostForm("username")) != (User{}) {
+		} else if database.GetUserFromDb(c.PostForm("username")) != (models.User{}) {
 			er = "The username is already taken"
 		} else {
-			AddUserToDb(c.PostForm("username"), c.PostForm("email"), c.PostForm("password"))
-			var g = Session{
-				User:     User{},
+			database.AddUserToDb(c.PostForm("username"), c.PostForm("email"), c.PostForm("password"))
+			var g = models.Session{
+				User:     models.User{},
 				Message:  true,
 				Messages: []string{"You were successfully registered and can login now"},
 			}
@@ -539,8 +370,8 @@ func handleRegister(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	// reset cookie
-	g := Session{
-		User:     User{},
+	g := models.Session{
+		User:     models.User{},
 		Message:  true,
 		Messages: []string{"You were logged out"},
 	}
