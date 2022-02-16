@@ -31,7 +31,7 @@
                 <a class=follow href="/{{ profile_user.Username }}/follow">Follow user</a>.
             {% endif %}
             </div>
-            {% elif request.Endpoint == 'timeline' %}
+        {% elif request.Endpoint == 'timeline' %}
             <div class=twitbox>
                 <h3>What's on your mind {{ g.User.Username }}?</h3>
                 <form action="/add_message" method=post>

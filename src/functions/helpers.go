@@ -45,7 +45,7 @@ func GetEndpoint(r *http.Request) models.Request {
 	} else if len(request.Endpoint) > 1 {
 		request.Endpoint = "user_timeline"
 	} else {
-		request.Endpoint = ""
+		request.Endpoint = "timeline"
 	}
 	return request
 }
