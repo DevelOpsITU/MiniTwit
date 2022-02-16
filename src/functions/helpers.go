@@ -2,9 +2,10 @@ package functions
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"minitwit/src/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetCookie(c *gin.Context) (models.Session, error) {

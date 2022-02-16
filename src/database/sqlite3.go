@@ -6,22 +6,23 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/crypto/pbkdf2"
 	"io"
 	"io/ioutil"
 	"log"
 	"minitwit/src/models"
 	"strconv"
 	"strings"
+
+	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // const DATABASE = "/tmp/minitwit.db"
 // const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
 //const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
-const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
+//const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
 
-//const DATABASE = "H:/repos/MiniTwit/minitwit.db"
+const DATABASE = "H:/repos/MiniTwit/minitwit.db"
 
 const PER_PAGE = 30
 const DEBUG = true

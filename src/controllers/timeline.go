@@ -3,14 +3,16 @@ package controllers
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
+	"fmt"
 	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/models"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func timelineHandlers(router *gin.Engine) {
@@ -29,12 +31,14 @@ var g models.Session
 
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
+	request := functions.GetEndpoint(r)
 	user := database.GetUserFromDb(username)
 
 	messages := database.GetUserMessages(user.User_id)
 	twits := convertMessagesToTwits(&messages)
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": r, "messages": twits})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
+		fmt.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
