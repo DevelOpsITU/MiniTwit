@@ -22,6 +22,7 @@ func addMessageHandlers(router *gin.Engine) {
 }
 
 func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+
 	data, err := functions.GetCookie(c)
 	g = data
 

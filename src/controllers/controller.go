@@ -11,6 +11,7 @@ var HttpHandlers = []interface{}{
 	registerHandlers,
 	timelineHandlers,
 	staticHandlers,
+	addMessageHandlers,
 }
 
 // HandleRESTRequests - handles the rest requests
