@@ -3,7 +3,6 @@ package controllers
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/models"
@@ -38,7 +37,6 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	twits := convertMessagesToTwits(&messages)
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
-		fmt.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
@@ -50,14 +48,15 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	data, err := functions.GetCookie(c)
 	g = data
 
-	// If there is no cookie
 	if err != nil || g.User.Username == "" {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	//set g = "None" if g.user should return false in jinja
+	user := database.GetUserFromDb(g.User.Username)
+	messages := database.GetUserMessages(g.User.User_id)
+	twits := convertMessagesToTwits(&messages)
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
