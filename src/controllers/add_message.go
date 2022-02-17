@@ -2,25 +2,27 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"log"
 	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/models"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func addMessageHandlers(router *gin.Engine) {
 
 	// Add message
-	router.GET("/add_message", func(c *gin.Context) {
+	router.POST("/add_message", func(c *gin.Context) {
 		handleAddMessage(c.Writer, c.Request, c)
 	})
 
 }
 
 func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+
 	data, err := functions.GetCookie(c)
 	g = data
 
