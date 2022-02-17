@@ -176,3 +176,21 @@ func FollowUser(userId int, UserIdToFollow int) error {
 	defer query.Close()
 	return nil
 }
+
+func UnFollowUser(userId int, UserIdToUnFollow int) error {
+
+	db := ConnectDb()
+	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	_, err = query.Exec(userId, UserIdToUnFollow)
+
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer query.Close()
+	return nil
+}

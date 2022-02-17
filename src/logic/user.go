@@ -30,7 +30,7 @@ func CreateUser(registationUser models.RegistrationUser) (models.User, error) {
 	}
 }
 
-func FollowUser(user int, usernameToFollow string) error {
+func FollowUser(userId int, usernameToFollow string) error {
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
@@ -38,11 +38,29 @@ func FollowUser(user int, usernameToFollow string) error {
 		return err
 	}
 
-	err = database.FollowUser(user, userToFollow.User_id)
+	//TODO: Check that the user is not already following the user Issue #47
+	err = database.FollowUser(userId, userToFollow.User_id)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return nil
+}
+
+func UnFollowUser(userId int, usernameToUnFollow string) error {
+	userToUnFollow, err := database.GetUserFromDb(usernameToUnFollow)
+
+	if err != nil {
+		return err
+	}
+	// TODO: check if already following before trying this
+	err = database.UnFollowUser(userId, userToUnFollow.User_id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+
 }

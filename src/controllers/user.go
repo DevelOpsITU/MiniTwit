@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
-	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/logic"
 	"minitwit/src/models"
@@ -41,21 +39,7 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id, _ := database.GetUserFromDb(username)
-
-	// TODO: check if followed before trying this
-	db := database.ConnectDb()
-
-	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = query.Exec(g.User.User_id, whom_id.User_id)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer query.Close()
+	logic.UnFollowUser(g.User.User_id, username)
 
 	// set Message in cookie
 	cookie := models.Session{

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"minitwit/src/database"
 	"minitwit/src/functions"
+	"minitwit/src/logic"
 	"minitwit/src/models"
 	"net/http"
 	"strconv"
@@ -31,13 +32,18 @@ var g models.Session
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
 	request := functions.GetEndpoint(r)
-	user, _ := database.GetUserFromDb(username)
 
-	messages := database.GetUserMessages(user.User_id)
-	twits := convertMessagesToTwits(&messages)
+	messages, user, err := logic.GetUserMessages(username)
+	if err != nil {
+		http.Error(w, "404 - "+err.Error(), http.StatusNotFound)
+		return
+	}
+
+	twits := ConvertMessagesToTwits(&messages)
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Write([]byte(out))
 }
@@ -54,7 +60,7 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 
 	user, _ := database.GetUserFromDb(g.User.Username)
 	messages := database.GetUserMessages(g.User.User_id)
-	twits := convertMessagesToTwits(&messages)
+	twits := ConvertMessagesToTwits(&messages)
 
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
@@ -68,7 +74,7 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 
 	messages := database.GetAllMessages()
 
-	twits := convertMessagesToTwits(&messages)
+	twits := ConvertMessagesToTwits(&messages)
 	//print(string(request))
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {
@@ -77,7 +83,7 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 	w.Write([]byte(out))
 }
 
-func convertMessagesToTwits(messages *[]models.Message) []models.Twit {
+func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
 		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
