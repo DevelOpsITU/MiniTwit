@@ -13,12 +13,12 @@ import (
 
 func userHandlers(router *gin.Engine) {
 
-	router.POST("/:user/follow", func(c *gin.Context) {
+	router.GET("/:user/follow", func(c *gin.Context) {
 		username := c.Param("user")
 		handleFollowUser(c.Writer, c.Request, c, username)
 	})
 
-	router.POST("/:user/unfollow", func(c *gin.Context) {
+	router.GET("/:user/unfollow", func(c *gin.Context) {
 		username := c.Param("user")
 		handleUnFollowUser(c.Writer, c.Request, c, username)
 	})
