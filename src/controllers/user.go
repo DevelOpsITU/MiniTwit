@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"log"
 	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func userHandlers(router *gin.Engine) {

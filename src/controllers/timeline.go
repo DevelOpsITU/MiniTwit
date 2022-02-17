@@ -3,14 +3,15 @@ package controllers
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/models"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func timelineHandlers(router *gin.Engine) {
@@ -29,11 +30,12 @@ var g models.Session
 
 func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
+	request := functions.GetEndpoint(r)
 	user := database.GetUserFromDb(username)
 
 	messages := database.GetUserMessages(user.User_id)
 	twits := convertMessagesToTwits(&messages)
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": r, "messages": twits})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -46,14 +48,15 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	data, err := functions.GetCookie(c)
 	g = data
 
-	// If there is no cookie
 	if err != nil || g.User.Username == "" {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	//set g = "None" if g.user should return false in jinja
+	user := database.GetUserFromDb(g.User.Username)
+	messages := database.GetUserMessages(g.User.User_id)
+	twits := convertMessagesToTwits(&messages)
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
