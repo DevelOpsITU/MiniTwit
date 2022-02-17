@@ -12,7 +12,7 @@ import (
 
 func timelineHandlers(router *gin.Engine) {
 	router.GET("/", func(c *gin.Context) {
-		handleTimeline(c.Writer, c.Request, c)
+		handleRootTimeline(c.Writer, c.Request, c)
 	})
 	router.GET("/public", func(c *gin.Context) {
 		handlePublicTimeline(c.Writer, c.Request, c)
@@ -42,7 +42,7 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	w.Write([]byte(out))
 }
 
-func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 	// Execute the template per HTTP request
 	request := functions.GetEndpoint(r)
 	data, err := functions.GetCookie(c)
@@ -52,11 +52,9 @@ func handleTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	user, _ := database.GetUserFromDb(g.User.Username)
-	messages := database.GetUserMessages(g.User.User_id)
-	twits := logic.ConvertMessagesToTwits(&messages)
+	twits, err := logic.GetPersonalTimelineTwits(g.User)
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": g.User})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

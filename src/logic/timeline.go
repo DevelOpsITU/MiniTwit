@@ -21,6 +21,18 @@ func GetUserTwits(username string) ([]models.Twit, models.User, error) {
 
 }
 
+func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
+	user, err := database.GetUserFromDb(user.Username)
+
+	if err != nil {
+		return []models.Twit{}, err
+	} else {
+		messages := database.GetPersonalTimelineMessages(user.User_id)
+		return ConvertMessagesToTwits(&messages), nil
+	}
+
+}
+
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
