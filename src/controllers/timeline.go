@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
-	"minitwit/src/database"
 	"minitwit/src/functions"
 	"minitwit/src/logic"
 	"minitwit/src/models"
@@ -64,9 +63,7 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	request := functions.GetEndpoint(r)
 
-	messages := database.GetAllMessages()
-
-	twits := logic.ConvertMessagesToTwits(&messages)
+	twits, _ := logic.GetPublicTimelineTwits()
 	//print(string(request))
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {

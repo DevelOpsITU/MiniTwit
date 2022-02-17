@@ -21,6 +21,12 @@ func GetUserTwits(username string) ([]models.Twit, models.User, error) {
 
 }
 
+func GetPublicTimelineTwits() ([]models.Twit, error) {
+	messages := database.GetAllMessages()
+	return ConvertMessagesToTwits(&messages), nil
+
+}
+
 func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 	user, err := database.GetUserFromDb(user.Username)
 
