@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"log"
 	"minitwit/src/database"
 	"minitwit/src/models"
 	"strings"
@@ -27,4 +28,21 @@ func CreateUser(registationUser models.RegistrationUser) (models.User, error) {
 			return user, nil
 		}
 	}
+}
+
+func FollowUser(user int, usernameToFollow string) error {
+
+	userToFollow, err := database.GetUserFromDb(usernameToFollow)
+
+	if err != nil {
+		return err
+	}
+
+	err = database.FollowUser(user, userToFollow.User_id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
 }

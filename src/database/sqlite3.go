@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -102,27 +103,28 @@ func GetAllMessages() []models.Message {
 		var msg models.Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
-			panic(err.Error())
+			return []models.Message{}
 		}
 		messages = append(messages, msg)
 	}
 	return messages
 }
 
-func AddUserToDb(username string, email string, password string) {
+// TODO: Return errors if any, and meybe the user
+func AddUserToDb(user models.RegistrationUser) {
 	db := ConnectDb()
 	salt := make([]byte, 4)
 	io.ReadFull(rand.Reader, salt)
 
 	pwIteration_int, _ := strconv.Atoi("50000")
-	dk := pbkdf2.Key([]byte(password), salt, pwIteration_int, 32, sha256.New)
+	dk := pbkdf2.Key([]byte(user.Password1), salt, pwIteration_int, 32, sha256.New)
 
 	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
 	query, err := db.Prepare("INSERT INTO user(username, email, pw_hash) values (?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = query.Exec(username, email, pw_hashed)
+	_, err = query.Exec(user.Username, user.Email, pw_hashed)
 
 	if err != nil {
 		log.Fatal(err)
@@ -138,14 +140,39 @@ func GetUserFromDb(username string) (models.User, error) {
 	row, err := db.Query(query)
 	if err != nil {
 		log.Fatal(err)
-		return models.User{}, err
+		return models.User{}, errors.New("User not found")
 	}
-	defer row.Close()
 	var user models.User
 	for row.Next() { // Iterate and fetch the records from result cursor
-		row.Scan(&user.User_id, &user.Username, &user.Email, &user.Pw_hash)
-	}
 
+		err := row.Scan(&user.User_id, &user.Username, &user.Email, &user.Pw_hash)
+		if err != nil {
+			return models.User{}, errors.New("User not found")
+		}
+	}
+	defer row.Close()
+
+	// This is a quazzy hackz when no user is returned
+	if user.User_id == 0 {
+		return models.User{}, errors.New("User not found")
+	}
 	return user, nil
 
+}
+
+func FollowUser(userId int, UserIdToFollow int) error {
+	db := ConnectDb()
+	query, err := db.Prepare("INSERT INTO follower (who_id, whom_id) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	_, err = query.Exec(userId, UserIdToFollow)
+
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer query.Close()
+	return nil
 }

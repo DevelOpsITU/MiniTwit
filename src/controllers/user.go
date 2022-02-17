@@ -5,6 +5,7 @@ import (
 	"log"
 	"minitwit/src/database"
 	"minitwit/src/functions"
+	"minitwit/src/logic"
 	"minitwit/src/models"
 	"net/http"
 
@@ -76,20 +77,7 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	whom_id, _ := database.GetUserFromDb(username)
-
-	db := database.ConnectDb()
-
-	query, err := db.Prepare("INSERT INTO follower (who_id, whom_id) VALUES (?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = query.Exec(g.User.User_id, whom_id.User_id)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer query.Close()
+	logic.FollowUser(g.User.User_id, username)
 
 	// set Message in cookie
 	cookie := models.Session{
