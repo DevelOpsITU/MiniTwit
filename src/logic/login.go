@@ -15,7 +15,7 @@ func CheckPassword(username string, pw string) (models.User, error) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
-		return models.User{}, errors.New("user not found")
+		return models.User{}, errors.New("Invalid username")
 	}
 
 	s := strings.Split(user.Pw_hash, ":")
@@ -33,6 +33,6 @@ func CheckPassword(username string, pw string) (models.User, error) {
 	if hex.EncodeToString(dk) == pwHash {
 		return user, nil
 	} else {
-		return models.User{}, errors.New("passwords did not match")
+		return models.User{}, errors.New("Invalid password")
 	}
 }
