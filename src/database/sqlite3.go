@@ -170,14 +170,14 @@ func GetUserFromDb(username string) (models.User, error) {
 	row, err := db.Query(query)
 	if err != nil {
 		log.Fatal(err)
-		return models.User{}, errors.New("User not found")
+		return models.User{}, errors.New("database connection error")
 	}
 	var user models.User
 	for row.Next() { // Iterate and fetch the records from result cursor
 
 		err := row.Scan(&user.User_id, &user.Username, &user.Email, &user.Pw_hash)
 		if err != nil {
-			return models.User{}, errors.New("User not found")
+			return models.User{}, errors.New("Mapping to user error")
 		}
 	}
 	defer row.Close()
@@ -188,6 +188,17 @@ func GetUserFromDb(username string) (models.User, error) {
 	}
 	return user, nil
 
+}
+
+func CheckIfUserExists(username string) bool {
+
+	user, _ := GetUserFromDb(username)
+
+	if user.User_id != 0 {
+		return true
+	} else {
+		return false
+	}
 }
 
 func FollowUser(userId int, UserIdToFollow int) error {

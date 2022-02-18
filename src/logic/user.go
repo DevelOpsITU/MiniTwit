@@ -8,24 +8,24 @@ import (
 	"strings"
 )
 
-func CreateUser(registationUser models.RegistrationUser) (models.User, error) {
+func CreateUser(registationUser models.RegistrationUser) error {
 
 	if registationUser.Username == "" {
-		return models.User{}, errors.New("You have to enter a username")
+		return errors.New("You have to enter a username")
 	} else if registationUser.Email == "" || !strings.Contains(registationUser.Email, "@") {
-		return models.User{}, errors.New("Your have to enter a valid email address")
+		return errors.New("Your have to enter a valid email address")
 	} else if registationUser.Password1 == "" {
-		return models.User{}, errors.New("You have to enter a password")
+		return errors.New("You have to enter a password")
 	} else if registationUser.Password1 != registationUser.Password2 {
-		return models.User{}, errors.New("The two passwords do not match")
+		return errors.New("The two passwords do not match")
 	} else {
 
-		user, err := database.GetUserFromDb(registationUser.Username)
-		if err != nil {
-			return models.User{}, errors.New("The username is already taken")
+		userExists := database.CheckIfUserExists(registationUser.Username)
+		if userExists { // Connection with database error or mapping of user to object
+			return errors.New("The username is already taken")
 		} else {
 			database.AddUserToDb(registationUser)
-			return user, nil
+			return nil
 		}
 	}
 }

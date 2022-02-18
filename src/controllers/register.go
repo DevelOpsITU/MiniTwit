@@ -55,7 +55,7 @@ func handleRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		c.PostForm("password2"),
 	}
 
-	user, err := logic.CreateUser(registationUser)
+	err = logic.CreateUser(registationUser)
 
 	if err != nil {
 		out, err := registerTemplate.Execute(gonja.Context{"g": "", "error": err.Error()})
@@ -66,7 +66,7 @@ func handleRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		return
 	} else {
 		var g = models.Session{
-			User:     user,
+			User:     models.User{}, //TODO: Maybe get the user from creation of the user
 			Message:  true,
 			Messages: []string{"You were successfully registered and can login now"},
 		}
