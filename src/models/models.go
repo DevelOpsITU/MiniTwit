@@ -13,6 +13,13 @@ type Message struct {
 	Email     string
 }
 
+type RegistrationUser struct {
+	Username  string
+	Email     string
+	Password1 string
+	Password2 string
+}
+
 type User struct {
 	User_id  int
 	Username string
