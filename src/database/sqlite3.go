@@ -193,12 +193,11 @@ func GetUserFromDb(username string) (models.User, error) {
 func CheckIfUserExists(username string) bool {
 
 	user, _ := GetUserFromDb(username)
-
 	if user.User_id != 0 {
 		return true
-	} else {
-		return false
 	}
+
+	return false
 }
 
 func FollowUser(userId int, UserIdToFollow int) error {
