@@ -2,10 +2,10 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.hostname = "minitwitlocal"
-  config.vm.box = "generic/ubuntu1804"                                                 # create box
-  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1" # setup ips
-  #config.ssh.private_key_path = "~/.ssh/id_rsa"                                     # ssh private key location OBS '~/' is specific for Linux
+  config.vm.hostname = "minitwit"
+  config.vm.box = "digital_ocean"                                                 # create box
+  config.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+  config.ssh.private_key_path = "~/.ssh/id_rsa"                                     # ssh private key location OBS '~/' is specific for Linux
   config.vm.synced_folder ".", "/vagrant", type: "rsync"                            # move all files
 
   
@@ -14,10 +14,15 @@ Vagrant.configure("2") do |config|
   #                         MINITWIT BOX                                  #
   #                                                                       #
   #########################################################################
-  config.vm.define "minitwitlocal" do |server|
-    config.vm.provider "virtualbox" do |provider|
-      provider.gui = false
-      provider.memory = "2048"
+  config.vm.define "minitwit" do |server|
+    server.vm.hostname = "minitwit"
+    config.vm.provider :digital_ocean do |provider|
+      provider.ssh_key_name = ENV["SSH_KEY_NAME"]
+      provider.token = ENV["DIGITAL_OCEAN_TOKEN"]
+      provider.image = 'ubuntu-18-04-x64'
+      provider.region = 'fra1'
+      provider.size = 's-1vcpu-1gb'
+      provider.privatenetworking = true
     end
 
     # provision go and setup envioremental variables
