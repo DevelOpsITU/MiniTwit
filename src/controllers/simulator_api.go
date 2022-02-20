@@ -27,12 +27,23 @@ func simulationHandlers(router *gin.Engine) {
 		handleAllMessages(c.Writer)
 	})
 
+	// Latest
+	router.GET("/sim/latest", func(c *gin.Context) {
+		handleLatest(c.Writer)
+	})
+
 }
 
 func handleAllMessages(w gin.ResponseWriter) {
 	twits, _ := logic.GetPublicTimelineTwits()
 	js, _ := json.Marshal(twits)
 
+	w.Write(js)
+}
+
+func handleLatest(w gin.ResponseWriter) {
+	json.Marshal(latest)
+	js, _ := json.Marshal(latest)
 	w.Write(js)
 }
 
