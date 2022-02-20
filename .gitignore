@@ -3,3 +3,4 @@
 go.sum
 .idea/*
 __pycache__
+.vagrant/*

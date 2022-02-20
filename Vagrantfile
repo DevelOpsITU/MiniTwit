@@ -2,30 +2,74 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/trusty64"                                                 # create box
+  config.vm.hostname = "minitwitlocal"
+  config.vm.box = "generic/ubuntu1804"                                                 # create box
   config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1" # setup ips
+  #config.ssh.private_key_path = "~/.ssh/id_rsa"                                     # ssh private key location OBS '~/' is specific for Linux
   config.vm.synced_folder ".", "/vagrant", type: "rsync"                            # move all files
 
-  config.vm.provider "virtualbox" do |server|
-    server.gui = false
-    server.memory = "2048"
+  
+  #########################################################################
+  #                                                                       #
+  #                         MINITWIT BOX                                  #
+  #                                                                       #
+  #########################################################################
+  config.vm.define "minitwitlocal" do |server|
+    config.vm.provider "virtualbox" do |provider|
+      provider.gui = false
+      provider.memory = "2048"
+    end
+
+    # provision go and setup envioremental variables
+    # download -> unzip -> set PATH -> create new bash (to update variables)
+    # tar -C <extraction path> -xzf (extract, gzip, file) <file>
+    config.vm.provision "shell", inline: <<-SHELL
+    wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
+      sudo tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
+      echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
+      source ~/.profile
+    SHELL
+
+    # provision gcc compiler for sqlite (gcc, g++ & make)
+    config.vm.provision "shell", inline: <<-SHELL
+      sudo apt -y install build-essential
+    SHELL
+
+    # provision sqlite3
+    # download and copy original database to tmp
+    config.vm.provision "shell", inline: <<-SHELL
+      sudo apt -y install sqlite3
+      cp /vagrant/og-db/minitwit.db /tmp/minitwit.db
+    SHELL
+
+    # download go dependicies from go.mod file
+    # start the server
+    config.vm.provision "shell", inline: <<-SHELL
+      cd /vagrant
+      go mod download
+      go run src/minitwit.go
+    SHELL
   end
 
-  # provision go and setup envioremental variables
-  # wget download zip
-  # tar -C <extraction path> -xzf (extract, gzip, file) <file>
-  config.vm.provision "shell", inline: <<-SHELL
-    wget "go1.17.7.linux-amd64.tar.gz"
-    sudo tar -C /usr/local/ -xzf go1.17.7.linux-amd64.tar.gz
-    echo "
-    export GOPATH=$HOME/go
-    export GOROOT=/usr/local/go
-    export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
-    "
-  SHELL
+  #########################################################################
+  #                                                                       #
+  #                           POSTGRES BOX                                #
+  #                                                                       #
+  #########################################################################
+  #config.vm.define "postgresdb" do |server|
+  #  config.vm.provider "virtualbox" do |provider|
+  #    provider.gui = false
+  #    provider.memory = "2048"
+  #  end
 
-  # start the server
+    # provision for postgresql 
+    # TODO: sudo apt -y install postgresql-12 and setup connection
+  #  config.vm.provision "shell", inline: <<-SHELL
+  #  SHELL
+  #end
+
+  # update
   config.vm.provision "shell", inline: <<-SHELL
-    go run src/minitwit.go
+    sudo apt-get update
   SHELL
 end
