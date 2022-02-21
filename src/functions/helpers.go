@@ -3,6 +3,7 @@ package functions
 import (
 	"encoding/json"
 	"minitwit/src/models"
+	config "minitwit/src/settings"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func GetCookie(c *gin.Context) (models.Session, error) {
 func SetCookie(c *gin.Context, session models.Session) {
 
 	data, _ := json.Marshal(session)
-	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+	c.SetCookie("session", string(data), 3600, "/", config.GetConfig().Server.Host, false, true)
 }
 
 func GetEndpoint(r *http.Request) models.Request {
