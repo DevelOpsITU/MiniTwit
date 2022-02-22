@@ -17,7 +17,7 @@ From <b>dev</b>, other branches will be created per issue. These will be created
 All issue branches can only be merged into dev through pull-requests.
 
 ## Which distributed development workflow will we use?
-We will use Github's Projects as an overview of all issues. From here, or directly from the seperate repositories, we will assign issues to different members. The member assigned is responsible for the issue, but of course may have help from the team. Most issue creation, closing will mostly happen weekly on Tuesdays after the lectures, however, issues may be given, taken, closed, opened, assigned etc. during other days by any member.
+We will use Github's Projects as an overview of all issues. From here, or directly from the seperate repositories, we will assign issues to different members. The member assigned is responsible for the issue, but may get help from the team. Most issue creation and closing will mostly happen weekly on Tuesdays after the lectures. However, issues may be given, taken, closed, opened and assigned during other days of the week by any member.
 
 ## How do we expect contributions to look like?
 We expect members of the team to often commit, and be describtive in the commits. The commits' subject is limited to 50 chars, with few exceptions. If the commit has made changes to multiple files, due to forgetfulness of commiting in exitement of coding or other reasons, the member is recommended to put bulletpoints.
