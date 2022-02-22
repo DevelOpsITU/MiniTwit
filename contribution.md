@@ -3,7 +3,7 @@
 ## Which repository setup will we use?
 We will be using multiple repositories in github. <br>
 One named <b>MiniTwit</b> that contains the main application. This respository will hold all the source code for the web application. <br>
-One named <b>miniTwitDevelopment</b> that contains the docker containers for the web application, database and other applications we find needed to be containerized. <br>
+One named <b>MiniTwitDevelopment</b> that contains the docker containers for the web application, database and other applications that needs to be containerized. <br>
 One named <b>ServerDeployment</b> that contains a make file and vagrant files to initialize the virtual box for the web hosting service and deploy the application.
 
 ## Which branching model will we use?
