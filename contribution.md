@@ -23,4 +23,4 @@ We will use Github's Projects as an overview of all issues. From here, or direct
 We expect members of the team to often commit, and be describtive in the commits. The commits' subject is limited to 50 chars, with few exceptions. If the commit has made changes to multiple files, due to forgetfulness of commiting in exitement of coding or other reasons, the member is recommended to put bulletpoints.
 
 ## Who is responsible for integrating/reviewing contributions?
-We will strive to ensure that, a given pull-request created by a given member is not reviewed by the same member.
+We will strive to ensure that a given pull-request created by a given member is not reviewed by the same member.
