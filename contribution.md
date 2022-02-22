@@ -14,7 +14,7 @@ From <b>dev</b>, other branches will be created per issue. These will be created
     <li>features/#(ISSUEID)-(ISSUE_TITLE / RELEVANT_TITLE)</li>
     <li>bugs/#(ISSUEID)-(ISSUE_TITLE / RELEVANT_TITLE)
 </ul>
-All issue branches can only get into dev through pull-requests.
+All issue branches can only be merged into dev through pull-requests.
 
 ## Which distributed development workflow will we use?
 We will use Github's Projects as an overview of all issues. From here, or directly from the seperate repositories, we will assign issues to different members. The member assigned is responsible for the issue, but of course may have help from the team. Most issue creation, closing will mostly happen weekly on Tuesdays after the lectures, however, issues may be given, taken, closed, opened, assigned etc. during other days by any member.
