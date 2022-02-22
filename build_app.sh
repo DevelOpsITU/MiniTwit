@@ -6,7 +6,7 @@ go_version=$(go version)
 echo "You have version:   '$go_version'"
 echo
 
-DEFAULT_FILENAME="group_d_go_app"
+DEFAULT_FILENAME="group_d_go_app.out"
 filename=$DEFAULT_FILENAME
 
 if [[ -z $1 ]];
@@ -18,7 +18,7 @@ else
 fi
 
 
-echo "Running build command: 'build -o out/\"$filename\" src/minitwit.go'"
+echo "Running build command: 'build -o \"out/$filename\" src/minitwit.go'"
 go build -o out/"$filename" src/minitwit.go
 res=$?
 echo
