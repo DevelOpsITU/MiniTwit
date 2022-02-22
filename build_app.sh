@@ -18,20 +18,20 @@ else
 fi
 
 
-echo "Running build command: 'build -o \"out/$filename\" src/minitwit.go'"
+echo "Running build command: 'go build -o \"out/$filename\" src/minitwit.go'"
 go build -o out/"$filename" src/minitwit.go
 res=$?
 echo
 
 # Colors from https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
-
+NC='\033[0m'
 if [ $res -eq 0 ]
 then
     GREEN='\033[0;32m'
-    echo -e "${GREEN}Built file \"$filename\" in /out folder successfully"
+    echo -e "${GREEN}Built file \"$filename\" in /out folder successfully${NC}"
     exit 0
 else
     RED='\033[0;31m'
-    echo -e "${RED}PANIC, something was wrong with the compilation!"
+    echo -e "${RED}PANIC, something was wrong with the compilation!${NC}"
     exit 1
 fi
