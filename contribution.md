@@ -7,7 +7,7 @@ One named <b>MiniTwitDevelopment</b> that contains the docker containers for the
 One named <b>ServerDeployment</b> that contains a make file and vagrant files to initialize the virtual box for the web hosting service and deploy the application.
 
 ## Which branching model will we use?
-We will have a <b>main/master</b> branch which from we create releases. The branch shall only hold a buildable and runnable application. All pushes to this branch will happen trough pull requests from <b>dev</b>.<br>
+We will have a <b>main/master</b> branch, from which we create releases. The branch shall only hold a buildable and runnable application. All pushes to this branch will happen trough pull requests from <b>dev</b>.<br>
 Secondly, the <b>dev</b> branch, that will be the main developing branch. This branch should also only hold buildable runnable code. <br>
 From <b>dev</b>, other branches will be created per. issue. These will be created under different subfolders, depending on the issue's topic. The general templates are seen listed below.
 <ul>
