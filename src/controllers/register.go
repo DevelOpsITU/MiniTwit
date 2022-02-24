@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
-	"minitwit/src/functions"
-	"minitwit/src/logic"
-	"minitwit/src/models"
+	"minitwit/functions"
+	"minitwit/logic"
+	"minitwit/models"
 	"net/http"
 )
 

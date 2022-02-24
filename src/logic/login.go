@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"golang.org/x/crypto/pbkdf2"
-	"minitwit/src/database"
-	"minitwit/src/models"
+	"minitwit/database"
+	"minitwit/models"
 	"strconv"
 	"strings"
 )

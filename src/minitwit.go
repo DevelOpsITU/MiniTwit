@@ -1,8 +1,8 @@
 package main
 
 import (
-	controllers "minitwit/src/controllers"
-	"minitwit/src/database"
+	"minitwit/controllers"
+	"minitwit/database"
 )
 
 func main() {
@@ -10,5 +10,4 @@ func main() {
 	database.TestConnection()
 	// Blocking call in router.run
 	controllers.HandleRESTRequests()
-
 }
