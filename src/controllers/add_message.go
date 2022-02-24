@@ -3,9 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"minitwit/src/functions"
-	"minitwit/src/logic"
-	"minitwit/src/models"
+	"minitwit/functions"
+	"minitwit/logic"
+	"minitwit/models"
 	"net/http"
 )
 

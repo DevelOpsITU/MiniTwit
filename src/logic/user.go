@@ -3,8 +3,8 @@ package logic
 import (
 	"errors"
 	"log"
-	"minitwit/src/database"
-	"minitwit/src/models"
+	"minitwit/database"
+	"minitwit/models"
 	"strings"
 )
 

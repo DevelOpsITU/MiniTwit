@@ -1,12 +1,13 @@
 #!/bin/bash
 echo "Running from ${0%/*}"
+echo "Check that you are running from the projects root"
 
 echo "Built and tested on 'go version go1.17.6 linux/amd64'"
 go_version=$(go version)
 echo "You have version:   '$go_version'"
 echo
 
-DEFAULT_FILENAME="group_d_go_app.out"
+DEFAULT_FILENAME="group_d_go_app"
 filename=$DEFAULT_FILENAME
 
 if [[ -z $1 ]];
@@ -17,9 +18,11 @@ else
     filename=$1
 fi
 
+echo "Changing directory into src folder"
+cd ./src
 
-echo "Running build command: 'go build -o \"out/$filename\" src/minitwit.go'"
-go build -o out/"$filename" src/minitwit.go
+echo "Running build command: 'go build -o $filename minitwit.go'"
+go build -o "$filename" minitwit.go
 res=$?
 echo
 
@@ -28,7 +31,7 @@ NC='\033[0m'
 if [ $res -eq 0 ]
 then
     GREEN='\033[0;32m'
-    echo -e "${GREEN}Built file \"$filename\" in /out folder successfully${NC}"
+    echo -e "${GREEN}Built file \"$filename\" successfully${NC}"
     exit 0
 else
     RED='\033[0;31m'

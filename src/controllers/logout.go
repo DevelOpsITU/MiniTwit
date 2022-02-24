@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"minitwit/src/models"
+	"minitwit/models"
 	"net/http"
 )
 

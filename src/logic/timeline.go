@@ -3,8 +3,8 @@ package logic
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"minitwit/src/database"
-	"minitwit/src/models"
+	"minitwit/database"
+	"minitwit/models"
 	"strconv"
 	"strings"
 )

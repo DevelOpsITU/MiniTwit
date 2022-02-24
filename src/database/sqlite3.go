@@ -10,7 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"minitwit/src/models"
+	"minitwit/models"
 	"os"
 	"strconv"
 	"strings"
@@ -26,7 +26,7 @@ const DATABASE = "/tmp/minitwit.db"
 //const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
 //const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
 
-const DATABASE = "H:/repos/MiniTwit/minitwit.db"
+//const DATABASE = "H:/repos/MiniTwit/minitwit.db"
 
 const PER_PAGE = 30
 const DEBUG = true

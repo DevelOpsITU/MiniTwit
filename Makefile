@@ -1,6 +1,7 @@
 .PHONY: build clean run_fresh run
 
-BINARY_NAME=group_d_go_app.out
+BINARY_NAME=group_d_go_app
+CONTAINER_NAME=Minitwit-container
 
 #all: run_fresh
 all: help
@@ -14,12 +15,6 @@ clean:
 
 clean-all: clean
 	rm -f out/*
-## Run
-run: build
-	go run src/minitwit.go
-
-run_fresh:
-	fresh -c my_fresh_runner.conf
 
 ## Tests
 test: ## Run Go tests (Not implemented)
@@ -50,10 +45,17 @@ docker-release: ## Release the container with tag latest and version
 	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):latest
 	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):$(VERSION)
 
+docker-run: docker-build ## Build and run the container locally with port 8080
+	docker rm -f $(CONTAINER_NAME)
+	docker run -d -p 8080:8080 --name=$(CONTAINER_NAME) $(BINARY_NAME)
+	docker ps -l
+	docker logs Minitwit-container
+
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 CYAN   := $(shell tput -Txterm setaf 6)
+RESET  := $(shell tput -Txterm sgr0)
 
 ## Help:
 help: ## Show this help.
@@ -64,5 +66,5 @@ help: ## Show this help.
 	@echo 'Targets:'
 	@awk 'BEGIN {FS = ":.*?## "} { \
 		if (/^[a-zA-Z_-]+:.*?##.*$$/) {printf "    ${YELLOW}%-20s${GREEN}%s\n", $$1, $$2} \
-		else if (/^## .*$$/) {printf "  ${CYAN}%s\n", substr($$1,4)} \
+		else if (/^## .*$$/) {printf "  ${CYAN}${RESET}%s\n", substr($$1,4)} \
 		}' $(MAKEFILE_LIST)

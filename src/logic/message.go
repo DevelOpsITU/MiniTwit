@@ -2,8 +2,8 @@ package logic
 
 import (
 	"errors"
-	"minitwit/src/database"
-	"minitwit/src/models"
+	"minitwit/database"
+	"minitwit/models"
 )
 
 func AddMessage(user models.User, message string) error {

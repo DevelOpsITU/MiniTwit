@@ -2,7 +2,7 @@ package functions
 
 import (
 	"encoding/json"
-	"minitwit/src/models"
+	"minitwit/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
