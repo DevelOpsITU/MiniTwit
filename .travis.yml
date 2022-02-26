@@ -1,65 +1,39 @@
 os: linux
 dist: bionic
-
-language: go # go project
+language: go
 go:
-  - 1.17  # go version, master to get latest, 1.x, 1.17.x
-
+- 1.17
 services:
-  - docker  # required, but travis uses older version of docker :(
-
+- docker
 before_install:
-  # Decrypt the git_deploy_key.enc key into /tmp/git_deploy_key
-  - openssl aes-256-cbc -K $encrypted_b87b61231dfd_key -iv $encrypted_b87b61231dfd_iv -in git_pem.enc -out /tmp/git_deploy_key -d
-  # Make sure only the current user can read the private key
-  - chmod 600 /tmp/git_deploy_key
-  # Create a script to return the passphrase environment variable to ssh-add
-  - echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
-  # Start the authentication agent
-  - eval "$(ssh-agent -s)"
-  # Add the key to the authentication agent
-  - DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key </dev/null
-
+- openssl aes-256-cbc -K $encrypted_d74f75124827_key -iv $encrypted_d74f75124827_iv
+  -in git_pem.enc -out ~\/.ssh/git_pem -d
+- chmod 600 /tmp/git_deploy_key
+- echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
+- eval "$(ssh-agent -s)"
+- DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key </dev/null
 install:
-  - docker --version  # document the version travis is using
-
+- docker --version
 stages:
-  - docker_build
-  #- test later add tests
-  - deploy
-
+- docker_build
+- deploy
 jobs:
   include:
-    - stage: docker_build
-      name: "build and push docker"
-      script:
-        - echo "LOGIN"
-        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-        - echo "BUILD"
-        - docker build -t $DOCKER_USERNAME/minitwitimage:latest . -f Dockerfile-minitwit
-      #  - docker build -t $DOCKER_USERNAME/mysqlimage:latest . -f Dockerfile-mysql
-      #  - docker build -t $DOCKER_USERNAME/flagtoolimage:latest . -f Dockerfile-flagtool
-        - echo "PUSH"
-        - docker push $DOCKER_USERNAME/minitwitimage:latest
-      #  - docker push $DOCKER_USERNAME/mysqlimage:latest
-      #  - docker push $DOCKER_USERNAME/flagtoolimage:latest
-
-    #- stage: test
-    #  name: "run pytest"
-    #  install: skip
-    #  script:
-    #    - docker build -t $DOCKER_USERNAME/minitwittestimage -f Dockerfile-minitwit-tests .
-    #    - yes | docker-compose up -d
-    #    - docker run -it --rm --network=itu-minitwit-network $DOCKER_USERNAME/minitwittestimage
-
-    - stage: deploy
-      name: "deploy new version"
-      install: skip
-      # -o flag to get around "add ip to known hosts prompt"
-      script: |
-        ssh -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
-        "source ~/.profile && \
-        cd /vagrant && \
-        docker-compose pull && \
-        docker-compose up -d && \
-      #  docker pull $DOCKER_USERNAME/flagtoolimage:latest" pulling flag_tool unused
+  - stage: docker_build
+    name: build and push docker
+    script:
+    - echo "LOGIN"
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    - echo "BUILD"
+    - docker build -t $DOCKER_USERNAME/minitwitimage:latest . -f Dockerfile-minitwit
+    - echo "PUSH"
+    - docker push $DOCKER_USERNAME/minitwitimage:latest
+  - stage: deploy
+    name: deploy new version
+    install: skip
+    script: |
+      ssh -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
+      "source ~/.profile && \
+      cd /vagrant && \
+      docker-compose pull && \
+      docker-compose up -d && \
