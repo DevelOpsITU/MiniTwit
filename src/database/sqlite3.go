@@ -348,3 +348,33 @@ func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
 	}
 	return messages, nil
 }
+
+func GetUserSimulationMessages(userId int, noFollowers string) ([]models.Message, error) {
+	var rows *sql.Rows
+	var err error
+	if noFollowers == "" {
+		query := "SELECT message.text, message.pub_date, user.username FROM message, user WHERE message.flagged = 0 AND user.user_id = message.author_id AND user.user_id = ? ORDER BY message.pub_date DESC"
+		rows, err = HandleSqlQuery(query, userId)
+		if err != nil {
+			return []models.Message{}, err
+		}
+	} else {
+		query := "SELECT message.text, message.pub_date, user.username FROM message, user WHERE message.flagged = 0 AND user.user_id = message.author_id AND user.user_id = ? ORDER BY message.pub_date DESC LIMIT ?"
+		rows, err = HandleSqlQuery(query, userId, noFollowers)
+		if err != nil {
+			return []models.Message{}, err
+		}
+	}
+
+	defer rows.Close()
+	var messages []models.Message
+	for rows.Next() {
+		var msg models.Message
+		err := rows.Scan(&msg.Text, &msg.Pubdate, &msg.Username)
+		if err != nil {
+			return []models.Message{}, errors.New("mapping to user error")
+		}
+		messages = append(messages, msg)
+	}
+	return messages, nil
+}
