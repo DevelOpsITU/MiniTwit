@@ -7,7 +7,7 @@ services:
 - docker
 before_install:
 - openssl aes-256-cbc -K $encrypted_d74f75124827_key -iv $encrypted_d74f75124827_iv
-  -in git_pem.enc -out ~\/.ssh/git_pem -d
+  -in git_pem.enc -out /tmp/git_deploy_key -d
 - chmod 600 /tmp/git_deploy_key
 - echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
 - eval "$(ssh-agent -s)"
