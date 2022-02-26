@@ -7,9 +7,9 @@ ENV PORT=8080
 EXPOSE $PORT
 
 
-COPY ./ /minitwit/src
-WORKDIR /minitwit/src
-RUN cp /minitwit/src/minitwit.db /tmp/minitwit.db
+COPY ./ /minitwit
+WORKDIR /minitwit
+RUN cp /minitwit/minitwit.db /tmp/minitwit.db
 
 RUN go build -o ./minitwit
 ENTRYPOINT [ "./minitwit" ]
