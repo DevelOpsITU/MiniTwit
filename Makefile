@@ -1,13 +1,19 @@
 .PHONY: build clean run_fresh run
 
-BINARY_NAME=group_d_go_app
-CONTAINER_NAME=Minitwit-container
+BINARY_NAME=gominitwit
+CONTAINER_NAME=Minitwit
+
+VERSION?=0.0.0
+SERVICE_PORT?=8080
+DOCKER_REGISTRY?=groupddevops/ #if set it should finished by /
+COMMIT_SHA=$(git rev-parse --short HEAD)
+
 
 #all: run_fresh
 all: help
 
 build:
-	./build_app.sh ${BINARY_NAME}
+	./scripts/build_app.sh ${BINARY_NAME}
 
 clean:
 	go clean
@@ -16,12 +22,19 @@ clean:
 clean-all: clean
 	rm -f out/*
 
+## Run
+run:
+	go run main.go
+
+run_fresh:
+	fresh -c my_fresh_runner.conf
+
 ## Tests
 test: ## Run Go tests (Not implemented)
-	go test src/minitwit.go
+	go test main.go
 
 test_coverage: ## Run Go tests with coverage (Not implemented)
-	go test src/minitwit.go -coverprofile=coverage.out
+	go test ./main.go -coverprofile=coverage.out
 
 ## Install dependencies
 deps:

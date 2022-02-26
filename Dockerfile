@@ -7,7 +7,7 @@ ENV PORT=8080
 EXPOSE $PORT
 
 
-COPY src /minitwit/src
+COPY ./ /minitwit/src
 WORKDIR /minitwit/src
 RUN cp /minitwit/src/minitwit.db /tmp/minitwit.db
 

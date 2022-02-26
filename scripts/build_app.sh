@@ -21,8 +21,8 @@ fi
 echo "Changing directory into src folder"
 cd ./src
 
-echo "Running build command: 'go build -o $filename minitwit.go'"
-go build -o "$filename" minitwit.go
+echo "Running build command: 'go build -o $filename main.go'"
+go build -o "$filename" main.go
 res=$?
 echo
 

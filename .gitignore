@@ -3,3 +3,4 @@
 src/go.sum
 .idea/*
 __pycache__
+go.sum
