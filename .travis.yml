@@ -14,26 +14,5 @@ before_install:
 - DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key </dev/null
 install:
 - docker --version
-stages:
-- docker_build
-- deploy
-jobs:
-  include:
-  - stage: docker_build
-    name: build and push docker
-    script:
-    - echo "LOGIN"
-    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-    - echo "BUILD"
-    - docker build -t $DOCKER_USERNAME/minitwitimage:latest . -f Dockerfile-minitwit
-    - echo "PUSH"
-    - docker push $DOCKER_USERNAME/minitwitimage:latest
-  - stage: deploy
-    name: deploy new version
-    install: skip
-    script: |
-      ssh -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
-      "source ~/.profile && \
-      cd /vagrant && \
-      docker-compose pull && \
-      docker-compose up -d && \
+script: |
+  echo "build complete"
