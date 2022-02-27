@@ -3,8 +3,8 @@ package functions
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"minitwit/config"
 	"minitwit/models"
-	config "minitwit/settings"
 	"net/http"
 )
 

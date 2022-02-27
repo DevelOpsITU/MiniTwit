@@ -1,9 +1,9 @@
 package main
 
 import (
+	"minitwit/config"
 	"minitwit/controllers"
 	"minitwit/database"
-	config "minitwit/settings"
 )
 
 func main() {

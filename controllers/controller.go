@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"fmt"
-	config "minitwit/settings"
+	"minitwit/config"
 
 	"github.com/gin-gonic/gin"
 )
