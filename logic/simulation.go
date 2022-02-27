@@ -2,8 +2,8 @@ package logic
 
 import (
 	"log"
-	"minitwit/src/database"
-	"minitwit/src/models"
+	"minitwit/database"
+	"minitwit/models"
 )
 
 func UnFollowSimulationUser(userId int, user models.User) error {
