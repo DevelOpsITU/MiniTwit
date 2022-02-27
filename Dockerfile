@@ -11,5 +11,8 @@ COPY ./ /minitwit
 WORKDIR /minitwit
 RUN cp /minitwit/minitwit.db /tmp/minitwit.db
 
+RUN go mod tidy
+RUN go mod download
+
 RUN go build -o ./minitwit
 ENTRYPOINT [ "./minitwit" ]
