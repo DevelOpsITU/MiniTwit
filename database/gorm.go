@@ -62,8 +62,6 @@ func InitGorm() (db *gorm.DB, err error) {
 
 func GormGetAllMessages() []models.Message {
 
-	//where message.flagged = 0 and message.author_id = user.user_id order by message.pub_date desc limit 30")
-
 	result, err := gormDb.
 		Model(models.Message{}).
 		Table("message").
