@@ -1,0 +1,84 @@
+os: linux
+dist: bionic
+
+
+# safelist to only build and deploy the main branch
+branches:
+  only:
+  - main
+
+# setup language. enables for test in Go later down the line
+language: go
+go:
+- 1.17
+
+# setup services e.g. docker
+services:
+- docker
+
+# custom install phase before the main install phase
+before_install:
+- openssl aes-256-cbc -K $encrypted_f217180e22ee_key -iv $encrypted_f217180e22ee_iv -in id_rsa.enc -out /tmp/git_deploy_key -d
+# Root can read and write, but not execute. Groups can't do shit, Others can't do shit
+- chmod 600 /tmp/git_deploy_key
+- echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
+# Start the authentication agent
+- eval "$(ssh-agent -s)"
+# Add the ssh key to the authentication agent
+- DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key < /dev/null
+
+# install phase
+install:
+- docker --version
+
+stages:
+  - docker-build
+  - test
+  - deploy
+
+jobs:
+  include:
+    - stage: docker-build
+      name: "Build and push docker"
+      script: 
+        # give execute access to docker scripts
+        - chmod +x -R ./scripts
+        - echo "LOGIN"
+        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        - echo "BUILD"
+        - ./scripts/docker-build.sh
+        - echo "PUSH"
+        - ./scripts/docker-release.sh
+
+    #- stage: test
+    #  name: "Run tests"
+    #  script: |
+    #    echo "TODO - tests"
+
+    - stage: deploy
+      name: "Deploy new version"
+      script: |
+        ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
+        "source /root/.profile && \
+        cd /root/ApplicationServer && \
+        ./update.sh"
+      #  docker-compose pull && \
+      # start the application, but detach it, so it just runs in the back
+      #  docker-compose up -d"
+
+script: |
+  echo "build complete"
+
+
+#############
+# reminders #
+#############
+# PHASES #########################################
+# before_install - before the install phase
+# before_script - before the script phase
+# after_script - after the script phase.
+# after_success - when the build succeeds (e.g. building documentation), the result is in TRAVIS_TEST_RESULT environment variable
+# after_failure - when the build fails (e.g. uploading log files), the result is in TRAVIS_TEST_RESULT environment variable
+
+# TEST #########################################
+# https://docs.travis-ci.com/user/languages/go/
