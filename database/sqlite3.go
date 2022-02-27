@@ -20,10 +20,10 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-//const DATABASE = "/tmp/minitwit.db"
+const DATABASE = "/tmp/minitwit.db"
 
 // const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
-const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
+// const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
 
 //const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
 
