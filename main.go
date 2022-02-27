@@ -8,9 +8,10 @@ import (
 
 func main() {
 
-	database.TestConnection()
 	// Get configuration
 	config.SetupConfig()
+	
+	database.TestConnection()
 	// Blocking call in router.run
 	controllers.HandleRESTRequests()
 }

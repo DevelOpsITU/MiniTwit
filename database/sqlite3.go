@@ -52,11 +52,12 @@ func InitDb() {
 
 func TestConnection() {
 	//For Sqlite we simply look for the database file
-	if _, err := os.Stat(config.GetConfig().Database.ConnectionString); errors.Is(err, os.ErrNotExist) {
+	connectionString := config.GetConfig().Database.ConnectionString
+	if _, err := os.Stat(connectionString); errors.Is(err, os.ErrNotExist) {
 		//Does not exist
 		fmt.Fprintln(os.Stderr,
 			"\n--------------------------------------------------------------\n"+
-				"\t File "+config.GetConfig().Database.ConnectionString+" does not exists, exiting..\n"+
+				"\t File "+connectionString+" does not exists, exiting..\n"+
 				"--------------------------------------------------------------")
 		os.Exit(1)
 	}
