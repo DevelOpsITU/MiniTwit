@@ -6,8 +6,7 @@ go:
 services:
 - docker
 before_install:
-- openssl aes-256-cbc -K $encrypted_acbe53aa6784_key -iv $encrypted_acbe53aa6784_iv
-  -in travis.enc -out /tmp/git_deploy_key -d
+- openssl aes-256-cbc -K $encrypted_f217180e22ee_key -iv $encrypted_f217180e22ee_iv -in id_rsa.enc -out id_rsa -d
 - chmod 600 /tmp/git_deploy_key
 - echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
 - eval "$(ssh-agent -s)"
