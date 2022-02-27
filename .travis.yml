@@ -3,9 +3,9 @@ dist: bionic
 
 
 # safelist to only build and deploy the main branch
-#branches:
-#  only:
-#  - main
+branches:
+  only:
+  - main
 
 # setup language. enables for test in Go later down the line
 language: go
