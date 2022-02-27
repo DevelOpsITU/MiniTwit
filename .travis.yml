@@ -58,7 +58,7 @@ jobs:
     - stage: deploy
       name: "Deploy new version"
       script: |
-        ssh -o "StrictHostKeyChecking no" ${MT_USER}/${MT_SERVER} \
+        ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}/${MT_SERVER} \
         "source /root/.profile && \
         cd /root/ApplicationServer && \
         ./update.sh"
