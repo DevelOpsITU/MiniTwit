@@ -3,13 +3,14 @@ package models
 /****************************************
 *		   DATABASE ENTITIES			*
 ****************************************/
+
 type Message struct {
-	MessageId int
-	AuthorId  int
+	MessageId uint   `gorm:"column:message_id;primaryKey;autoIncrement"`
+	AuthorId  uint   `gorm:"column:author_id;type:not null"`
+	Text      string `gorm:"column:text;type:string not null"`
+	Pubdate   int64  `gorm:"column:pub_date"`
+	Flagged   int    `gorm:"column:flagged"`
 	Username  string
-	Text      string
-	Pubdate   int64
-	Flagged   bool
 	Email     string
 }
 

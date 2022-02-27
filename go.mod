@@ -17,6 +17,8 @@ require (
 	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/goph/emperror v0.17.1 // indirect
 	github.com/howeyc/fsnotify v0.9.0 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -31,4 +33,6 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
+	gorm.io/driver/sqlite v1.3.1 // indirect
+	gorm.io/gorm v1.23.1 // indirect
 )
