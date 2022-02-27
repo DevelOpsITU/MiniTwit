@@ -41,6 +41,8 @@ jobs:
     - stage: docker-build
       name: "Build and push docker"
       script: 
+        # give execute access to docker scripts
+        - chmod +x -R ./scripts
         - echo "LOGIN"
         - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         - echo "BUILD"
