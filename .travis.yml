@@ -50,15 +50,15 @@ jobs:
         - echo "PUSH"
         - ./scripts/docker-release.sh
 
-    - stage: test
-      name: "Run tests"
-      script: |
-        echo "TODO - tests"
+    #- stage: test
+    #  name: "Run tests"
+    #  script: |
+    #    echo "TODO - tests"
 
     - stage: deploy
       name: "Deploy new version"
       script: |
-        ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}/${MT_SERVER} \
+        ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
         "source /root/.profile && \
         cd /root/ApplicationServer && \
         ./update.sh"
