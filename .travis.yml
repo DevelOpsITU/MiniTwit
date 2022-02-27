@@ -6,11 +6,11 @@ go:
 services:
 - docker
 before_install:
-- openssl aes-256-cbc -K $encrypted_f217180e22ee_key -iv $encrypted_f217180e22ee_iv -in id_rsa.enc -out id_rsa -d
+- openssl aes-256-cbc -K $encrypted_f217180e22ee_key -iv $encrypted_f217180e22ee_iv -in id_rsa.enc -out /tmp/git_deploy_key -d
 - chmod 600 /tmp/git_deploy_key
 - echo 'echo ' > /tmp/askpass && chmod +x /tmp/askpass
 - eval "$(ssh-agent -s)"
-- DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key </dev/null
+- DISPLAY=":0.0" SSH_ASKPASS="/tmp/askpass" setsid ssh-add /tmp/git_deploy_key < /dev/null
 install:
 - docker --version
 script: |
