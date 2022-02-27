@@ -57,8 +57,8 @@ jobs:
       script: |
         ssh -o "StrictHostKeyChecking no" ${MT_USER}/${MT_SERVER} \
         "source /root/.profile && \
-        cd /vagrant && \
-      #  cd /root/ApplicationServer && \
+      #  cd /vagrant && \
+        cd /root/ApplicationServer && \
         ./update.sh
       #  docker-compose pull && \
       # start the application, but detach it, so it just runs in the back
