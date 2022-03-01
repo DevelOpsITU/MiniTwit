@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"minitwit/database"
 	"minitwit/functions"
 	"minitwit/logic"
@@ -106,7 +107,7 @@ func handleSimGetAllMessages(c *gin.Context, r *http.Request) {
 func handleSimLatest(w gin.ResponseWriter) {
 
 	var LatestObj struct {
-		Latest int `json:"latest`
+		Latest int `json:"latest"`
 	}
 	LatestObj.Latest = latest
 
@@ -124,12 +125,24 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
+	defer r.Body.Close()
+	decoder := json.NewDecoder(r.Body)
+	Paylaod := struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"pwd"`
+	}{}
+	err = decoder.Decode(&Paylaod)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	registrationUser := models.RegistrationUser{
-		Username:  c.PostForm("username"),
-		Email:     c.PostForm("email"),
-		Password1: c.PostForm("password"),
-		Password2: c.PostForm("password2"),
+		Username:  Paylaod.Username,
+		Email:     Paylaod.Email,
+		Password1: Paylaod.Password,
+		Password2: Paylaod.Password,
 	}
 
 	err = logic.CreateUser(registrationUser)
@@ -144,9 +157,30 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 
 // Done
 func handleSimAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
-	content := r.Form.Get("content")
+
+	defer r.Body.Close()
+	decoder := json.NewDecoder(r.Body)
+	Payload := struct {
+		Content string `json:"content"`
+	}{}
+	err := decoder.Decode(&Payload)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	//content := r.Form.Get("content")
+	/*tmp, _ := c.GetRawData()
+	type messagDTO = struct {
+		content string
+	}
+	var payload messagDTO
+	json.Unmarshal(tmp, &payload)
+	*/
+
+	print(Payload.Content)
 	user, _ := database.GetUserFromDb(username)
-	_ = logic.AddMessage(user, content)
+	_ = logic.AddMessage(user, Payload.Content)
 
 	w.WriteHeader(http.StatusNoContent)
 }
