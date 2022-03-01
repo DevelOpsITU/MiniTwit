@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
+	"minitwit/functions"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func logoutHandlers(router *gin.Engine) {
@@ -21,7 +22,6 @@ func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		Message:  true,
 		Messages: []string{"You were logged out"},
 	}
-	data, _ := json.Marshal(g)
-	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }
