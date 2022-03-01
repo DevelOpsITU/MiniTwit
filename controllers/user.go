@@ -42,13 +42,12 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	logic.UnFollowUser(g.User.User_id, username)
 
 	// set Message in cookie
-	cookie := models.Session{
+	g := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are no longer following " + username},
 	}
-	newdata, _ := json.Marshal(cookie)
-	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }
 
@@ -73,12 +72,11 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 	logic.FollowUser(g.User.User_id, username)
 
 	// set Message in cookie
-	cookie := models.Session{
+	g := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are now following " + username},
 	}
-	newdata, _ := json.Marshal(cookie)
-	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }
