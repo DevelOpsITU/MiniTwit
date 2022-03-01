@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"minitwit/config"
 	"minitwit/models"
 	"os"
 	"strconv"
@@ -20,15 +21,6 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-const DATABASE = "/tmp/minitwit.db"
-
-// const DATABASE = "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
-// const DATABASE = "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
-
-//const DATABASE = "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
-
-//const DATABASE = "H:/repos/MiniTwit/minitwit.db"
-
 const PER_PAGE = 30
 const DEBUG = true
 const SECRET_KEY = "development key"
@@ -37,7 +29,8 @@ const SECRET_KEY = "development key"
 *			DATABASE RELATED			*
 ****************************************/
 func ConnectDb() *sql.DB {
-	db, err := sql.Open("sqlite3", DATABASE)
+	connectionString := config.GetConfig().Database.ConnectionString
+	db, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		panic(err)
 	}
@@ -59,11 +52,12 @@ func InitDb() {
 
 func TestConnection() {
 	//For Sqlite we simply look for the database file
-	if _, err := os.Stat(DATABASE); errors.Is(err, os.ErrNotExist) {
+	connectionString := config.GetConfig().Database.ConnectionString
+	if _, err := os.Stat(connectionString); errors.Is(err, os.ErrNotExist) {
 		//Does not exist
 		fmt.Fprintln(os.Stderr,
 			"\n--------------------------------------------------------------\n"+
-				"\t File "+DATABASE+" does not exists, exiting..\n"+
+				"\t File "+connectionString+" does not exists, exiting..\n"+
 				"--------------------------------------------------------------")
 		os.Exit(1)
 	}

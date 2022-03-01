@@ -1,6 +1,7 @@
 package main
 
 import (
+	"minitwit/config"
 	"fmt"
 	"minitwit/controllers"
 	"minitwit/database"
@@ -8,6 +9,10 @@ import (
 
 func main() {
 
+	// Get configuration
+	config.SetupConfig()
+
+	database.TestConnection()
 	_, err := database.InitGorm()
 	if err != nil {
 		if err != nil {
