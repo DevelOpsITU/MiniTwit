@@ -1,5 +1,6 @@
 .vscode/*
-*.exe
-go.sum
+**.exe
+src/go.sum
 .idea/*
 __pycache__
+go.sum
