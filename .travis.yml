@@ -1,7 +1,6 @@
 os: linux
 dist: bionic
 
-
 # safelist to only build and deploy the main branch
 #branches:
 #  only:
@@ -32,39 +31,38 @@ install:
 - docker --version
 
 stages:
-  - docker-build
-  - test
-  - deploy
+- docker-build
+- test
+- deploy
 
 jobs:
   include:
-    - stage: docker-build
-      name: "Build and push docker"
-      script: 
-        # give execute access to docker scripts
-        - chmod +x -R ./scripts
-        - echo "LOGIN"
-        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-        - echo "BUILD"
-        - ./scripts/docker-build.sh
-        - echo "PUSH"
-        - ./scripts/docker-release.sh
+  - stage: docker-build
+    name: "Build and push docker"
+    script: 
+    - chmod +x -R ./scripts
+    - echo "LOGIN"
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    - echo "BUILD"
+    - ./scripts/docker-build.sh
+    - echo "PUSH"
+    - ./scripts/docker-release.sh
 
-    #- stage: test
-    #  name: "Run tests"
-    #  script: |
-    #    echo "TODO - tests"
+#- stage: test
+#  name: "Run tests"
+#  script: |
+#    echo "TODO - tests"
 
-    - stage: deploy
-      name: "Deploy new version"
-      script: |
-        ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
-        "source /root/.profile && \
-        cd /root/ApplicationServer && \
-        ./update.sh"
-      #  docker-compose pull && \
-      # start the application, but detach it, so it just runs in the back
-      #  docker-compose up -d"
+  - stage: deploy
+    name: "Deploy new version"
+    script: |
+      ssh -i /tmp/git_deploy_key -o "StrictHostKeyChecking no" ${MT_USER}@${MT_SERVER} \
+      "source /root/.profile && \
+      cd /root/ApplicationServer && \
+      ./update.sh"
+#  docker-compose pull && \
+# start the application, but detach it, so it just runs in the back
+#  docker-compose up -d"
 
 script: |
   echo "build complete"
