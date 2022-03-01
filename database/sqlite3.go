@@ -118,35 +118,6 @@ func GetAllMessages() []models.Message {
 	return messages
 }
 
-func GetPersonalTimelineMessages(id int) []models.Message {
-	db := ConnectDb()
-	query := string(`
-		select message.message_id,message.author_id,user.username,message.text,message.pub_date, user.email
-		from message, user
-        where message.flagged = 0 and message.author_id = user.user_id and (
-            user.user_id = ? or
-            user.user_id in (select whom_id from follower
-                                    where who_id = ?))
-        order by message.pub_date desc limit 30`)
-	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
-	if err != nil {
-		panic(err)
-	}
-
-	var messages []models.Message
-
-	for result.Next() {
-		var msg models.Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			return []models.Message{}
-		}
-		messages = append(messages, msg)
-	}
-	defer result.Close()
-	return messages
-}
-
 // TODO: Return errors if any, and meybe the user
 func AddUserToDb(user models.RegistrationUser) {
 	db := ConnectDb()
