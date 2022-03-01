@@ -4,9 +4,11 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.11
 	github.com/noirbizarre/gonja v0.0.0-20200629003239-4d051fd0be61
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -30,5 +32,4 @@ require (
 	github.com/sirupsen/logrus v1.3.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
