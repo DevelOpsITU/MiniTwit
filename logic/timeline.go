@@ -3,6 +3,7 @@ package logic
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"minitwit/database"
 	"minitwit/models"
 	"strconv"
@@ -43,7 +44,7 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, (time.Unix(message.Pubdate, 0).String()), message.Text})
+		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, (formatPubdate(message.Pubdate)), message.Text})
 	}
 	print(twits)
 	return twits
@@ -57,4 +58,14 @@ func getGavaterUrl(email string, size int) string {
 
 	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", strconv.Itoa(size)}
 	return strings.Join(str, "")
+}
+
+func formatPubdate(Pubdate int64) string {
+	date := time.Unix(Pubdate, 0)
+
+	formatted := fmt.Sprintf("%d-%02d-%02d @ %02d:%02d",
+		date.Year(), date.Month(), date.Day(),
+		date.Hour(), date.Minute())
+
+	return formatted
 }
