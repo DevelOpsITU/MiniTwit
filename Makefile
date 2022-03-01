@@ -42,10 +42,10 @@ test_coverage: ## Run Go tests with coverage (Not implemented)
 
 deps: ## Install dependencies
 	go mod tidy
-	go get github.com/pilu/fresh
-	go get gorm.io/gorm
-	go get gorm.io/driver/sqlite
-	go get gorm.io/driver/postgres
+	go install github.com/pilu/fresh
+	go install gorm.io/gorm
+	go install gorm.io/driver/sqlite
+	go install gorm.io/driver/postgres
 
 
 # From https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705 ,
