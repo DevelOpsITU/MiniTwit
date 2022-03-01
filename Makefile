@@ -34,7 +34,7 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 
 ## Tests
 test: ## Run Go tests (Not implemented)
-	go test main.go
+	 go test -v ./...
 
 test_coverage: ## Run Go tests with coverage (Not implemented)
 	go test ./main.go -coverprofile=coverage.out
