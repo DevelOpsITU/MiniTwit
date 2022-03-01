@@ -36,7 +36,16 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 
 	// If there is no cookie / no user logged in
 	if err != nil || g.User.Username == "" {
-		c.Redirect(http.StatusFound, "/public")
+		w.WriteHeader(http.StatusUnauthorized)
+		response := make(map[string]string)
+		response["message"] = "401 Unautherized - no user logged in!"
+		json, err := json.Marshal(response)
+		if err != nil {
+			panic("Error handling JSON marshal")
+		}
+		w.Write(json)
+		return
+		// c.Redirect(http.StatusFound, "/public")
 	}
 
 	logic.UnFollowUser(g.User.User_id, username)
