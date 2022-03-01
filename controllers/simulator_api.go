@@ -87,9 +87,9 @@ func handleSimGetAllMessages(c *gin.Context, r *http.Request) {
 	}*/
 
 	type MessageObj struct {
-		Content string `json:"content`
-		PubDate int64  `json:"pub_date`
-		User    string `json:"user`
+		Content string `json:"content"`
+		PubDate int64  `json:"pub_date"`
+		User    string `json:"user"`
 	}
 	messages := logic.GetAllSimulationMessages(c.Query("no"))
 
@@ -197,9 +197,9 @@ func handleSimGetUserMessages(w http.ResponseWriter, r *http.Request, c *gin.Con
 	messages := logic.GetUserSimulationMessages(user, c.Query("no"))
 
 	type MessageObj struct {
-		Content string `json:"content`
-		PubDate int64  `json:"pub_date`
-		User    string `json:"user`
+		Content string `json:"content"`
+		PubDate int64  `json:"pub_date"`
+		User    string `json:"user"`
 	}
 
 	var msgsAsObject []MessageObj
