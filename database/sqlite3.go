@@ -7,6 +7,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/pbkdf2"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,10 +17,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
-
-	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/crypto/pbkdf2"
 )
 
 const PER_PAGE = 30
@@ -241,28 +239,6 @@ func UnFollowUser(userId int, UserIdToUnFollow int) error {
 		return err
 	}
 	defer query.Close()
-	return nil
-}
-
-func AddMessage(userId int, message string) error {
-
-	db := ConnectDb()
-
-	query, err := db.Prepare(`INSERT INTO message (author_id, text, pub_date, flagged) 
-			VALUES (?, ?, ?, 0)`)
-	if err != nil {
-		println(err.Error())
-		return err
-
-	}
-	_, err = query.Exec(userId, message, time.Now().Unix())
-
-	if err != nil {
-		println(err.Error())
-		return err
-	}
-	defer query.Close()
-
 	return nil
 }
 
