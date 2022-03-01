@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"minitwit/config"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +28,6 @@ func HandleRESTRequests() {
 		handler.(func(engine *gin.Engine))(router)
 	}
 
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%s", config.GetConfig().Server.Port))
 
 }

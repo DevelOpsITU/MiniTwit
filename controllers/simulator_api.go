@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"minitwit/database"
-	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -86,9 +86,9 @@ func handleSimGetAllMessages(c *gin.Context, r *http.Request) {
 	}*/
 
 	type MessageObj struct {
-		Content string `json:"content`
-		PubDate int64  `json:"pub_date`
-		User    string `json:"user`
+		Content string `json:"content"`
+		PubDate int64  `json:"pub_date"`
+		User    string `json:"user"`
 	}
 	messages := logic.GetAllSimulationMessages(c.Query("no"))
 
@@ -106,7 +106,7 @@ func handleSimGetAllMessages(c *gin.Context, r *http.Request) {
 func handleSimLatest(w gin.ResponseWriter) {
 
 	var LatestObj struct {
-		Latest int `json:"latest`
+		Latest int `json:"latest"`
 	}
 	LatestObj.Latest = latest
 
@@ -117,24 +117,30 @@ func handleSimLatest(w gin.ResponseWriter) {
 
 // DONE
 func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
-	cookieUser, err := functions.GetCookie(c)
-
-	if err == nil && cookieUser.User.User_id != 0 {
-		// If there are a cookie in the session i.e. no error when getting it
-		w.WriteHeader(http.StatusNoContent)
+	defer r.Body.Close()
+	decoder := json.NewDecoder(r.Body)
+	Paylaod := struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"pwd"`
+	}{}
+	err := decoder.Decode(&Paylaod)
+	if err != nil {
+		log.Println(err.Error())
 		return
 	}
 
 	registrationUser := models.RegistrationUser{
-		Username:  c.PostForm("username"),
-		Email:     c.PostForm("email"),
-		Password1: c.PostForm("password"),
-		Password2: c.PostForm("password2"),
+		Username:  Paylaod.Username,
+		Email:     Paylaod.Email,
+		Password1: Paylaod.Password,
+		Password2: Paylaod.Password,
 	}
 
 	err = logic.CreateUser(registrationUser)
 
 	if err != nil {
+		print(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	} else {
 		w.WriteHeader(http.StatusNoContent)
@@ -144,9 +150,30 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 
 // Done
 func handleSimAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
-	content := r.Form.Get("content")
+
+	defer r.Body.Close()
+	decoder := json.NewDecoder(r.Body)
+	Payload := struct {
+		Content string `json:"content"`
+	}{}
+	err := decoder.Decode(&Payload)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	//content := r.Form.Get("content")
+	/*tmp, _ := c.GetRawData()
+	type messagDTO = struct {
+		content string
+	}
+	var payload messagDTO
+	json.Unmarshal(tmp, &payload)
+	*/
+
+	print(Payload.Content)
 	user, _ := database.GetUserFromDb(username)
-	_ = logic.AddMessage(user, content)
+	_ = logic.AddMessage(user, Payload.Content)
 
 	w.WriteHeader(http.StatusNoContent)
 }
@@ -163,9 +190,9 @@ func handleSimGetUserMessages(w http.ResponseWriter, r *http.Request, c *gin.Con
 	messages := logic.GetUserSimulationMessages(user, c.Query("no"))
 
 	type MessageObj struct {
-		Content string `json:"content`
-		PubDate int64  `json:"pub_date`
-		User    string `json:"user`
+		Content string `json:"content"`
+		PubDate int64  `json:"pub_date"`
+		User    string `json:"user"`
 	}
 
 	var msgsAsObject []MessageObj
@@ -184,36 +211,67 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 	user, err := database.GetUserFromDb(username)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if r.Method == "POST" {
-		if r.Form.Get("follow") != "" {
-			followUsername := r.Form.Get("follow")
+		defer r.Body.Close()
+		decoder := json.NewDecoder(r.Body)
+		Paylaod := struct {
+			Follow   string `json:"follow"`
+			Unfollow string `json:"unfollow"`
+		}{}
+		err = decoder.Decode(&Paylaod)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if Paylaod.Follow != "" {
+			followUsername := Paylaod.Follow
 			followUser, err := database.GetUserFromDb(followUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 			}
 
-			logic.FollowSimulationUser(user.User_id, followUser)
-		} else if r.Form.Get("unfollow") != "" {
-			unfollowUsername := r.Form.Get("unfollow")
+			err = logic.FollowSimulationUser(user.User_id, followUser)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+		} else if Paylaod.Unfollow != "" {
+			unfollowUsername := Paylaod.Unfollow
 
 			unfollowUser, err := database.GetUserFromDb(unfollowUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
+
 			}
 
 			logic.UnFollowSimulationUser(user.User_id, unfollowUser)
 		}
 
 		w.WriteHeader(http.StatusNoContent)
-		return
 	} else if r.Method == "GET" {
 		followedByUser := logic.GetUsernameOfWhoFollowsUser(user.User_id, c.Query("no"))
-		usersAsJson, _ := json.Marshal(followedByUser)
+
+		type followsObj struct {
+			Follows []string `json:"follows"`
+		}
+		var follows followsObj
+
+		for user_ := range followedByUser {
+			follows.Follows = append(follows.Follows, followedByUser[user_])
+		}
+
+		if followedByUser == nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		usersAsJson, _ := json.Marshal(follows)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(usersAsJson)
 	}
+	return
 
 }
