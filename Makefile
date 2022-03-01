@@ -26,8 +26,11 @@ clean-all: clean
 run: ## Run go application
 	go run main.go
 
+
+
 run_fresh: ## Run go application with fresh (Auto-reloading)
 	fresh -c ./fresh/my_fresh_runner.conf
+
 
 ## Tests
 test: ## Run Go tests (Not implemented)
