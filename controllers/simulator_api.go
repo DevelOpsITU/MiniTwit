@@ -225,7 +225,8 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 		defer r.Body.Close()
 		decoder := json.NewDecoder(r.Body)
 		Paylaod := struct {
-			Follow string `json:"follow"`
+			Follow   string `json:"follow"`
+			Unfollow string `json:"unfollow"`
 		}{}
 		err = decoder.Decode(&Paylaod)
 		if err != nil {
@@ -244,8 +245,8 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 			}
-		} else if r.Form.Get("unfollow") != "" {
-			unfollowUsername := r.Form.Get("unfollow")
+		} else if Paylaod.Unfollow != "" {
+			unfollowUsername := Paylaod.Unfollow
 
 			unfollowUser, err := database.GetUserFromDb(unfollowUsername)
 			if err != nil {
@@ -259,20 +260,21 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 		w.WriteHeader(http.StatusNoContent)
 	} else if r.Method == "GET" {
 		followedByUser := logic.GetUsernameOfWhoFollowsUser(user.User_id, c.Query("no"))
-		type User struct {
-			Username string `json:"username"`
+
+		type followsObj struct {
+			Follows []string `json:"follows"`
 		}
-		var Users []User
+		var follows followsObj
+
 		for user_ := range followedByUser {
-			userObj := User{Username: string(user_)}
-			Users = append(Users, userObj)
+			follows.Follows = append(follows.Follows, followedByUser[user_])
 		}
 
 		if followedByUser == nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		usersAsJson, _ := json.Marshal(followedByUser)
+		usersAsJson, _ := json.Marshal(follows)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(usersAsJson)
