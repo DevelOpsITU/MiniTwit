@@ -90,7 +90,6 @@ class MiniTwitTestCase(unittest.TestCase):
 
 
     def test_get_latest_user_msgs(self):
-        self.test_register()
         self.test_create_msg()
 
         username = self.USERNAME_A
@@ -113,7 +112,6 @@ class MiniTwitTestCase(unittest.TestCase):
 
 
     def test_get_latest_msgs(self):
-        self.test_register()
         self.test_create_msg()
 
         username = self.USERNAME_A
