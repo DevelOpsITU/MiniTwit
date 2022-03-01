@@ -23,10 +23,10 @@ clean-all: clean
 	rm -f out/*
 
 ## Run
-run:
+run: ## Run go application
 	go run main.go
 
-run_fresh:
+run_fresh: ## Run go application with fresh (Auto-reloading)
 	fresh -c ./fresh/my_fresh_runner.conf
 
 ## Tests

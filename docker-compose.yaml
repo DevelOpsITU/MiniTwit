@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+
+  minitwit-go:
+    container_name: minitwit-go
+    image: minitwit-go:latest
+    environment:
+      - SERVER_HOST=localhost
+      - DB_CONNECTION_STRING=/tmp/minitwit.db
+    ports:
+      - 8080:8080
