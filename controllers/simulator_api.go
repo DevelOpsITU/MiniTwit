@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"minitwit/database"
-	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -118,13 +117,6 @@ func handleSimLatest(w gin.ResponseWriter) {
 
 // DONE
 func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
-	cookieUser, err := functions.GetCookie(c)
-
-	if err == nil && cookieUser.User.User_id != 0 {
-		// If there are a cookie in the session i.e. no error when getting it
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
 	Paylaod := struct {
@@ -132,9 +124,9 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 		Email    string `json:"email"`
 		Password string `json:"pwd"`
 	}{}
-	err = decoder.Decode(&Paylaod)
+	err := decoder.Decode(&Paylaod)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return
 	}
 
@@ -148,6 +140,7 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 	err = logic.CreateUser(registrationUser)
 
 	if err != nil {
+		print(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	} else {
 		w.WriteHeader(http.StatusNoContent)
