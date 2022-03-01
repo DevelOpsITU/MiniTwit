@@ -3,7 +3,6 @@ package database
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"minitwit/models"
 )
 
 var gormDb *gorm.DB
@@ -58,34 +57,4 @@ func InitGorm() (db *gorm.DB, err error) {
 	}
 
 	return db, nil
-}
-
-func GormGetAllMessages() []models.Message {
-
-	result, err := gormDb.
-		Model(models.Message{}).
-		Table("message").
-		Order("pub_date desc").
-		Limit(30).
-		Where("flagged = ?", 0).
-		Joins("JOIN user on message.author_id = user.user_id").
-		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
-		Rows()
-
-	if err != nil {
-		panic(err)
-	}
-
-	var messages2 []models.Message
-
-	for result.Next() {
-		var msg models.Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			return []models.Message{}
-		}
-		messages2 = append(messages2, msg)
-	}
-
-	return messages2
 }

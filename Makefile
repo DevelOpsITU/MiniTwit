@@ -39,13 +39,14 @@ test: ## Run Go tests (Not implemented)
 test_coverage: ## Run Go tests with coverage (Not implemented)
 	go test ./main.go -coverprofile=coverage.out
 
-## Install dependencies
-deps:
-	go install github.com/pilu/fresh
-	go install github.com/mattn/go-sqlite3
 
-dep:
-	go mod download
+deps: ## Install dependencies
+	go mod tidy
+	go install github.com/pilu/fresh
+	go install gorm.io/gorm
+	go install gorm.io/driver/sqlite
+	go install gorm.io/driver/postgres
+
 
 # From https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705 ,
 # https://golangdocs.com/makefiles-golang and
