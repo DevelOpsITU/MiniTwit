@@ -27,7 +27,7 @@ run:
 	go run main.go
 
 run_fresh:
-	fresh -c my_fresh_runner.conf
+	fresh -c ./fresh/my_fresh_runner.conf
 
 ## Tests
 test: ## Run Go tests (Not implemented)
