@@ -5,7 +5,7 @@ server:
 
 # Postgresql DB
 database:
-  #connectionstring: "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\minitwit.db"
+  #connectionstring: "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\MiniTwit\\minitwit.db"
   connectionstring: "/tmp/minitwit.db"
   #connectionstring: "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
   #connectionstring: "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
