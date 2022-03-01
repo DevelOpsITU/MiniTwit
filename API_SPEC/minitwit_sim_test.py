@@ -164,6 +164,9 @@ class MiniTwitTestCase(unittest.TestCase):
 
 
     def test_follow_user(self):
+        self.test_register()
+        self.test_register_b()
+        self.test_register_c()
         username = USERNAME_A
         url = f'{BASE_URL}/fllws/{username}'
         data = {'follow': USERNAME_B}

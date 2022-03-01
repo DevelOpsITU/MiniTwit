@@ -218,36 +218,65 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 	user, err := database.GetUserFromDb(username)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if r.Method == "POST" {
-		if r.Form.Get("follow") != "" {
-			followUsername := r.Form.Get("follow")
+		defer r.Body.Close()
+		decoder := json.NewDecoder(r.Body)
+		Paylaod := struct {
+			Follow string `json:"follow"`
+		}{}
+		err = decoder.Decode(&Paylaod)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if Paylaod.Follow != "" {
+			followUsername := Paylaod.Follow
 			followUser, err := database.GetUserFromDb(followUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 			}
 
-			logic.FollowSimulationUser(user.User_id, followUser)
+			err = logic.FollowSimulationUser(user.User_id, followUser)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
 		} else if r.Form.Get("unfollow") != "" {
 			unfollowUsername := r.Form.Get("unfollow")
 
 			unfollowUser, err := database.GetUserFromDb(unfollowUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
+
 			}
 
 			logic.UnFollowSimulationUser(user.User_id, unfollowUser)
 		}
 
 		w.WriteHeader(http.StatusNoContent)
-		return
 	} else if r.Method == "GET" {
 		followedByUser := logic.GetUsernameOfWhoFollowsUser(user.User_id, c.Query("no"))
+		type User struct {
+			Username string `json:"username"`
+		}
+		var Users []User
+		for user_ := range followedByUser {
+			userObj := User{Username: string(user_)}
+			Users = append(Users, userObj)
+		}
+
+		if followedByUser == nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		usersAsJson, _ := json.Marshal(followedByUser)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(usersAsJson)
 	}
+	return
 
 }
