@@ -7,6 +7,7 @@ import (
 	"minitwit/models"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GetUserTwits(username string) ([]models.Twit, models.User, error) {
@@ -42,7 +43,7 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
+		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, (time.Unix(message.Pubdate, 0).String()), message.Text})
 	}
 	print(twits)
 	return twits
