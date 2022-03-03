@@ -103,7 +103,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages_NoNotSpecified_
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	var userId = 1 // TODO: Edit this to a test-user that has messages
+	var userId = uint(1) // TODO: Edit this to a test-user that has messages
 	// TODO: Ensure there is at least one message in database
 
 	// Act
@@ -117,7 +117,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages__NoSetTo1_Retur
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	var userId = 1 // TODO: Edit this to a test-user that has messages
+	var userId = uint(1) // TODO: Edit this to a test-user that has messages
 	// TODO: Ensure there is at least one message in database
 
 	// Act
@@ -132,7 +132,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithNoMessages_ReturnsEmpty(
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	var userId = 206 // TODO: Edit this to a test-user that has messages
+	var userId = uint(206) // TODO: Edit this to a test-user that has messages
 	// TODO: Ensure there is at least one message in database
 
 	// Act
