@@ -16,9 +16,6 @@ func TestAddMessage(t *testing.T) {
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
-
-	database.GormRemoveMessagesFromDb(user4Id)
-
 }
 
 func TestAddMessageFakeUser(t *testing.T) {
@@ -31,8 +28,6 @@ func TestAddMessageFakeUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
-	database.GormRemoveMessagesFromDb(9999999)
-
 }
 
 func TestPersonalTimelineMessages(t *testing.T) {
@@ -87,10 +82,5 @@ func TestUserMessages(t *testing.T) {
 	if result[0].Text != "Test message" {
 		t.Errorf("Message should be 'Test message', but was '" + result[0].Text + "'")
 	}
-	database.GormRemoveMessagesFromDb(user1Id)
-
-	t.Cleanup(func() {
-		database.GormRemoveUserFromDb(user1Id)
-	})
 
 }

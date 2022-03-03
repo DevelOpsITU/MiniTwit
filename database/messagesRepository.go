@@ -56,18 +56,6 @@ func AddMessage(userId uint, post string) error {
 	return nil
 }
 
-func GormRemoveMessagesFromDb(userId uint) {
-
-	result := gormDb.
-		Where("author_id = ?", userId).
-		Delete(&Message{})
-
-	if result.Error != nil {
-		panic(result.Error)
-	}
-
-}
-
 func GetPersonalTimelineMessages(id uint) []models.Message {
 
 	follows := GetFollowingUsers(id)
@@ -110,8 +98,6 @@ func GetPersonalTimelineMessages(id uint) []models.Message {
 
 func arrayToString(a []uint, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
-	//return strings.Trim(strings.Join(strings.Split(fmt.Sprint(a), " "), delim), "[]")
-	//return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(a)), delim), "[]")
 }
 
 func GormGetUserMessages(userId uint) ([]models.Message, error) {
