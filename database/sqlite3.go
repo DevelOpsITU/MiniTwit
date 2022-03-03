@@ -1,21 +1,14 @@
 package database
 
 import (
-	"crypto/rand"
-	"crypto/sha256"
 	"database/sql"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/crypto/pbkdf2"
-	"io"
 	"log"
 	"minitwit/config"
 	"minitwit/models"
 	"os"
-	"strconv"
-	"strings"
 )
 
 const PER_PAGE = 30
@@ -48,112 +41,6 @@ func TestConnection() {
 				"--------------------------------------------------------------")
 		os.Exit(1)
 	}
-}
-
-// example Database usage
-func GetUserMessages(id uint) []models.Message {
-	db := ConnectDb()
-	query := string(`SELECT 
-		message.message_id, 
-		message.author_id, 
-		user.username, 
-		message.text, 
-		message.pub_date, 
-		user.email 
-		FROM message, user 
-		WHERE message.flagged = 0 AND 
-		user.user_id = (?) AND
-		user.user_id = message.author_id
-		ORDER BY message.pub_date DESC 
-		LIMIT 30`)
-	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
-	if err != nil {
-		panic(err)
-	}
-
-	var messages []models.Message
-
-	for result.Next() {
-		var msg models.Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			return []models.Message{}
-		}
-		messages = append(messages, msg)
-	}
-	defer result.Close()
-	return messages
-}
-
-func GetAllMessages() []models.Message {
-	db := ConnectDb()
-	query := string("select message.message_id , message.author_id , user.username , message.text , message.pub_date ,  user.email from message, user where message.flagged = 0 and message.author_id = user.user_id order by message.pub_date desc limit 30")
-	result, err := db.Query(query)
-	if err != nil {
-		panic(err)
-	}
-
-	var messages []models.Message
-
-	for result.Next() {
-		var msg models.Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			return []models.Message{}
-		}
-		messages = append(messages, msg)
-	}
-	defer result.Close()
-	return messages
-}
-
-// TODO: Return errors if any, and meybe the user
-func AddUserToDb(user models.RegistrationUser) {
-	db := ConnectDb()
-	salt := make([]byte, 4)
-	io.ReadFull(rand.Reader, salt)
-
-	pwIteration_int, _ := strconv.Atoi("50000")
-	dk := pbkdf2.Key([]byte(user.Password1), salt, pwIteration_int, 32, sha256.New)
-
-	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
-	query, err := db.Prepare("INSERT INTO user(username, email, pw_hash) values (?,?,?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = query.Exec(user.Username, user.Email, pw_hashed)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer query.Close()
-}
-
-func GetUserFromDb(username string) (models.User, error) {
-	db := ConnectDb()
-	strs := []string{"SELECT x.* FROM 'user' x WHERE username like '", username, "'"}
-	query := strings.Join(strs, "")
-	row, err := db.Query(query)
-	if err != nil {
-		log.Fatal(err)
-		return models.User{}, errors.New("database connection error")
-	}
-	var user models.User
-	for row.Next() { // Iterate and fetch the records from result cursor
-
-		err := row.Scan(&user.User_id, &user.Username, &user.Email, &user.Pw_hash)
-		if err != nil {
-			return models.User{}, errors.New("Mapping to user error")
-		}
-	}
-	defer row.Close()
-
-	// This is a quazzy hackz when no user is returned
-	if user.User_id == 0 {
-		return models.User{}, errors.New("User not found")
-	}
-	return user, nil
-
 }
 
 func UnFollowUser(userId uint, UserIdToUnFollow uint) error {

@@ -172,7 +172,7 @@ func handleSimAddMessage(w http.ResponseWriter, r *http.Request, username string
 	*/
 
 	print(Payload.Content)
-	user, _ := database.GetUserFromDb(username)
+	user, _ := database.GormGetUserFromDb(username)
 	_ = logic.AddMessage(user, Payload.Content)
 
 	w.WriteHeader(http.StatusNoContent)
@@ -180,7 +180,7 @@ func handleSimAddMessage(w http.ResponseWriter, r *http.Request, username string
 
 // Done
 func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username string) {
-	user, err := database.GetUserFromDb(username)
+	user, err := database.GormGetUserFromDb(username)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -208,7 +208,7 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 // Done
 func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
-	user, err := database.GetUserFromDb(username)
+	user, err := database.GormGetUserFromDb(username)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -229,7 +229,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 
 		if Paylaod.Follow != "" {
 			followUsername := Paylaod.Follow
-			followUser, err := database.GetUserFromDb(followUsername)
+			followUser, err := database.GormGetUserFromDb(followUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 			}
@@ -241,7 +241,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 		} else if Paylaod.Unfollow != "" {
 			unfollowUsername := Paylaod.Unfollow
 
-			unfollowUser, err := database.GetUserFromDb(unfollowUsername)
+			unfollowUser, err := database.GormGetUserFromDb(unfollowUsername)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 
