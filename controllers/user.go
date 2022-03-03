@@ -36,19 +36,27 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 
 	// If there is no cookie / no user logged in
 	if err != nil || g.User.Username == "" {
-		c.Redirect(http.StatusFound, "/public")
+		w.WriteHeader(http.StatusUnauthorized)
+		response := make(map[string]string)
+		response["message"] = "401 Unautherized - no user logged in!"
+		json, err := json.Marshal(response)
+		if err != nil {
+			panic("Error handling JSON marshal")
+		}
+		w.Write(json)
+		return
+		// c.Redirect(http.StatusFound, "/public")
 	}
 
 	logic.UnFollowUser(g.User.User_id, username)
 
 	// set Message in cookie
-	cookie := models.Session{
+	g := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are no longer following " + username},
 	}
-	newdata, _ := json.Marshal(cookie)
-	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }
 
@@ -73,12 +81,11 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 	logic.FollowUser(g.User.User_id, username)
 
 	// set Message in cookie
-	cookie := models.Session{
+	g := models.Session{
 		User:     g.User,
 		Message:  true,
 		Messages: []string{"You are now following " + username},
 	}
-	newdata, _ := json.Marshal(cookie)
-	c.SetCookie("session", string(newdata), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }

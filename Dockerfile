@@ -9,7 +9,7 @@ EXPOSE $PORT
 
 COPY ./ /minitwit
 WORKDIR /minitwit
-RUN cp /minitwit/minitwit.db /tmp/minitwit.db
+
 
 RUN go mod tidy
 RUN go mod download

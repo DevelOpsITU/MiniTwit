@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func addMessageHandlers(router *gin.Engine) {
@@ -39,7 +39,6 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		}
 	}
 
-	var data, _ = json.Marshal(g)
-	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }

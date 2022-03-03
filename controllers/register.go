@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func registerHandlers(router *gin.Engine) {
@@ -70,8 +70,7 @@ func handleRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 			Message:  true,
 			Messages: []string{"You were successfully registered and can login now"},
 		}
-		data, _ := json.Marshal(g)
-		c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+		functions.SetCookie(c, g)
 		c.Redirect(http.StatusFound, "/login")
 		return
 	}
