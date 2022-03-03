@@ -98,7 +98,7 @@ func GormGetAllSimulationMessages(noFollowers string) ([]models.Message, error) 
 	return messages, nil
 }
 
-func GormGetUserSimulationMessages(userId int, noFollowers string) ([]models.Message, error) {
+func GormGetUserSimulationMessages(userId uint, noFollowers string) ([]models.Message, error) {
 	var result *sql.Rows
 	var err error
 	if noFollowers == "" {
