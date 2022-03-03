@@ -54,7 +54,7 @@ func TestPersonalTimelineMessages(t *testing.T) {
 	messages := database.GetPersonalTimelineMessages(user1Id)
 
 	if len(messages) != 1 {
-		t.Errorf("User 1 should only have its own message " + fmt.Sprint(len(messages)))
+		t.Errorf("User 1 should have its own message 1 but recived: " + fmt.Sprint(len(messages)))
 		return
 	}
 
