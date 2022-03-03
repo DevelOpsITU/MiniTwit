@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	_, err := database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
+	_, err := database.InitGorm(sqlite.Open("file::memory:"))
 	if err != nil {
 		return
 	}

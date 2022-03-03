@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
+	database.InitGorm(sqlite.Open("file::memory:"))
 }
 
 //region GormGetUserNameOfWhoUserFollows

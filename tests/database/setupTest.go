@@ -40,7 +40,8 @@ var user4 = models.RegistrationUser{
 
 func setupTest() {
 	println("Let the testing begin!")
-	database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
+
+	database.InitGorm(sqlite.Open("file::memory:"))
 
 	user1Id = database.GormAddUserToDb(user1)
 	user2Id = database.GormAddUserToDb(user2)
