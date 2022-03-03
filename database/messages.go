@@ -120,3 +120,31 @@ func GetPersonalTimelineMessages_old(id int) []models.Message {
 	defer result.Close()
 	return messages
 }
+
+func GormGetUserMessages(userId int) ([]models.Message, error) {
+	result, err := gormDb.
+		Model(models.Message{}).
+		Table("message").
+		Order("pub_date desc").
+		Where("message.flagged = 0 AND user.user_id = message.author_id AND user.user_id = ?", userId).
+		Joins("JOIN user on message.author_id = user.user_id").
+		Select("message.message_id, message.author_id, user.username, message.text, message.pub_date, user.email").
+		Rows()
+
+	if err != nil {
+		return []models.Message{}, errors.New("Failed to get the userMessages: " + err.Error())
+	}
+
+	var messages []models.Message
+
+	for result.Next() {
+		var msg models.Message
+		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
+		if err != nil {
+			return []models.Message{}, errors.New("Failed to scan the element: " + err.Error())
+		}
+		messages = append(messages, msg)
+	}
+	defer result.Close()
+	return messages, nil
+}

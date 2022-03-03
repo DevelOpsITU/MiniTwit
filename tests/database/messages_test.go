@@ -2,6 +2,7 @@ package database
 
 import (
 	"minitwit/database"
+	"minitwit/models"
 	"testing"
 )
 
@@ -9,13 +10,25 @@ func init() {
 	database.InitGorm()
 }
 
+var test_user = models.User{
+	User_id:  201,
+	Username: "a",
+	Email:    "@",
+	Pw_hash:  "nil",
+}
+
 func TestAddMessage(t *testing.T) {
 	//TODO: Use test user to post messages
 
-	err := database.AddMessage(1, "Test message")
+	err := database.AddMessage(test_user.User_id, "Test message")
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
+
+	t.Cleanup(func() {
+		//TODO: Cleanup the message posted
+
+	})
 
 }
 
@@ -53,6 +66,22 @@ func TestPersonalTimelineMessages(t *testing.T) {
 
 	if len(messages) != 30 {
 		t.Errorf("User 1 should have at least 30 messages to show")
+	}
+
+}
+
+func TestUserMessages(t *testing.T) {
+	TestAddMessage(t)
+	result, err := database.GormGetUserMessages(test_user.User_id)
+
+	if err != nil {
+		t.Errorf(err.Error())
+	} /*else if len(result) != 1 {
+		t.Errorf("UserId: "+test_user.User_id+" should only have one message, but had " + fmt.Sprint(len(result)))
+	}*/
+
+	if result[0].Text != "Test message" {
+		t.Errorf("Message should be 'Test message', but was '" + result[0].Text + "'")
 	}
 
 }
