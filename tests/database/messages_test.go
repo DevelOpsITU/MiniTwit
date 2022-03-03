@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	print("lol")
+
 }
 
 func TestAddMessage(t *testing.T) {
@@ -51,7 +51,7 @@ func TestPersonalTimelineMessages(t *testing.T) {
 	database.FollowUser(user3Id, user1Id)
 	database.FollowUser(user3Id, user2Id)
 
-	messages := database.GetPersonalTimelineMessages(1)
+	messages := database.GetPersonalTimelineMessages(user1Id)
 
 	if len(messages) != 1 {
 		t.Errorf("User 1 should only have its own message " + fmt.Sprint(len(messages)))
