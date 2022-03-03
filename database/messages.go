@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"minitwit/models"
+	"strings"
 	"time"
 )
 
@@ -62,6 +63,30 @@ func AddMessage(userId int, message string) error {
 
 func GetPersonalTimelineMessages(id int) []models.Message {
 
+	//db.Find(&users, []int{1,2,3})
+
+	subquery, err := gormDb.
+		Table("follower").
+		Select("whom_id").
+		Where("who_id = ?", id).
+		Rows()
+
+	if err != nil {
+		//TODO: Remove panic statements. it crashes the application.
+		panic(err)
+	}
+
+	var follows []int
+	for subquery.Next() {
+		var user int
+		err := subquery.Scan(&user)
+		if err != nil {
+			//TODO
+		}
+		follows = append(follows, user)
+	}
+
+	//select whom_id from follower where who_id = ?)
 	result, err := gormDb.
 		Model(models.Message{}).
 		Table("message").
@@ -69,12 +94,13 @@ func GetPersonalTimelineMessages(id int) []models.Message {
 		Limit(30).
 		Where("flagged = ? ", 0, "and message.author_id = user.user_id",
 			"and (", "user.user_id = ? or ", id,
-			"user.user_id in (select whom_id from follower where who_id = ?))", id).
+			"user.user_id in (?)", arrayToString(follows, ",")).
 		Joins("JOIN user on message.author_id = user.user_id").
 		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
 		Rows()
 
 	if err != nil {
+		//TODO: Remove panic statements. it crashes the application.
 		panic(err)
 	}
 
@@ -90,6 +116,12 @@ func GetPersonalTimelineMessages(id int) []models.Message {
 	}
 
 	return messages2
+}
+
+func arrayToString(a []int, delim string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+	//return strings.Trim(strings.Join(strings.Split(fmt.Sprint(a), " "), delim), "[]")
+	//return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(a)), delim), "[]")
 }
 
 func GetPersonalTimelineMessages_old(id int) []models.Message {
