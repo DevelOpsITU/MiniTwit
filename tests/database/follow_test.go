@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	print("lol")
+
 }
 
 func TestFollowUser(t *testing.T) {

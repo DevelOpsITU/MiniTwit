@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	print("lol")
+
 }
 
 func TestAddMessage(t *testing.T) {
