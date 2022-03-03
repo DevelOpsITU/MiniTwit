@@ -101,16 +101,13 @@ func getFollowingUsers(userId int) []int {
 func GetPersonalTimelineMessages(id int) []models.Message {
 
 	follows := getFollowingUsers(id)
-
 	result, err := gormDb.
-		Model(models.Message{}).
-		Table("message").
+		Model(&Message{}).
+		Joins("JOIN user on message.author_id = user.user_id").
 		Order("pub_date desc").
 		Limit(30).
-		Where("flagged = ? ", 0, "and message.author_id = user.user_id",
-			"and (", "user.user_id = ? or ", id,
-			"user.user_id in (?)", arrayToString(follows, ",")).
-		Joins("JOIN user on message.author_id = user.user_id").
+		Where("flagged = ? AND message.author_id = user.user_id and ( user.user_id = ? or user.user_id in (?))",
+			0, id, arrayToString(follows, ",")).
 		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
 		Rows()
 
