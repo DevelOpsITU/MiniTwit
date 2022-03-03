@@ -51,20 +51,20 @@ func TestPersonalTimelineMessages(t *testing.T) {
 	database.FollowUser(user3Id, user1Id)
 	database.FollowUser(user3Id, user2Id)
 
-	messages := database.GetPersonalTimelineMessages(1)
+	messages := database.GetPersonalTimelineMessages(user1Id)
 
 	if len(messages) != 1 {
 		t.Errorf("User 1 should have its own message 1 but recived: " + fmt.Sprint(len(messages)))
 		return
 	}
 
-	messages = database.GetPersonalTimelineMessages(2)
+	messages = database.GetPersonalTimelineMessages(user2Id)
 	if len(messages) != 2 {
 		t.Errorf("User 2 should have the messages from User1 and its own message")
 		return
 	}
 
-	messages = database.GetPersonalTimelineMessages(3)
+	messages = database.GetPersonalTimelineMessages(user3Id)
 	if len(messages) != 3 {
 		t.Errorf("User 3 should have the messages from User1, User 2 and its own message")
 		return
