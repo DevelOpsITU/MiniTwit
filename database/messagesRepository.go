@@ -41,7 +41,7 @@ func GormGetAllMessages() []models.Message {
 func AddMessage(userId uint, message string) error {
 
 	var messageObj = models.Message{
-		AuthorId: uint(userId),
+		AuthorId: userId,
 		Text:     message,
 		Pubdate:  time.Now().Unix(),
 		Flagged:  0,

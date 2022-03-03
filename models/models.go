@@ -22,7 +22,7 @@ type RegistrationUser struct {
 }
 
 type User struct {
-	User_id  int
+	User_id  uint
 	Username string
 	Email    string
 	Pw_hash  string

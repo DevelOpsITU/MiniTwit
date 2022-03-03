@@ -54,7 +54,7 @@ func GormGetUserFromDb(username string) (models.User, error) {
 	}
 
 	return models.User{
-		User_id:  int(user.UserId),
+		User_id:  user.UserId,
 		Username: user.Username,
 		Email:    user.Email,
 		Pw_hash:  user.PwHash,
