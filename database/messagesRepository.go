@@ -59,10 +59,10 @@ func AddMessage(userId uint, message string) error {
 	return nil
 }
 
-func GormRemoveMessagesFromDb(user_id uint) {
+func GormRemoveMessagesFromDb(userId uint) {
 
 	result := gormDb.
-		Where("author_id = ?", user_id).
+		Where("author_id = ?", userId).
 		Delete(&Message{})
 
 	if result.Error != nil {

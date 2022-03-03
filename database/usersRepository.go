@@ -38,7 +38,7 @@ func GormAddUserToDb(user models.RegistrationUser) uint {
 		panic(fmt.Sprint(result.RowsAffected) + " rows were affected")
 	}
 
-	return uint(user_obj.UserId)
+	return user_obj.UserId
 
 }
 
@@ -49,7 +49,7 @@ func GormGetUserFromDb(username string) (models.User, error) {
 		First(&user)
 
 	if result.Error != nil {
-		return models.User{}, errors.New("User not found")
+		return models.User{}, errors.New("user not found")
 		//panic(result.Error)
 	}
 

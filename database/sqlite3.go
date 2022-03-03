@@ -10,7 +10,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/pbkdf2"
 	"io"
-	"io/ioutil"
 	"log"
 	"minitwit/config"
 	"minitwit/models"
@@ -37,16 +36,6 @@ func ConnectDb() *sql.DB {
 }
 
 // setup
-func InitDb() {
-	db := ConnectDb()
-	query, err := ioutil.ReadFile("schema.sql")
-	if err != nil {
-		panic(err)
-	}
-	if _, err := db.Exec(string(query)); err != nil {
-		panic(err)
-	}
-}
 
 func TestConnection() {
 	//For Sqlite we simply look for the database file
@@ -142,7 +131,6 @@ func AddUserToDb(user models.RegistrationUser) {
 
 func GetUserFromDb(username string) (models.User, error) {
 	db := ConnectDb()
-	//TODO: Prepared statements
 	strs := []string{"SELECT x.* FROM 'user' x WHERE username like '", username, "'"}
 	query := strings.Join(strs, "")
 	row, err := db.Query(query)

@@ -13,12 +13,12 @@ func addMessageHandlers(router *gin.Engine) {
 
 	// Add message
 	router.POST("/add_message", func(c *gin.Context) {
-		handleAddMessage(c.Writer, c.Request, c)
+		handleAddMessage(c)
 	})
 
 }
 
-func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleAddMessage(c *gin.Context) {
 
 	g, err := functions.GetCookie(c)
 

@@ -44,7 +44,7 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, (formatPubdate(message.Pubdate)), message.Text})
+		twits = append(twits, models.Twit{GavatarUrl: getGavaterUrl(message.Email, 48), Username: message.Username, Pub_date: (formatPubdate(message.Pubdate)), Text: message.Text})
 	}
 	print(twits)
 	return twits

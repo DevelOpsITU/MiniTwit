@@ -14,7 +14,7 @@ func timelineHandlers(router *gin.Engine) {
 		handleRootTimeline(c.Writer, c.Request, c)
 	})
 	router.GET("/public", func(c *gin.Context) {
-		handlePublicTimeline(c.Writer, c.Request, c)
+		handlePublicTimeline(c.Writer, c.Request)
 	})
 
 }
@@ -23,7 +23,7 @@ var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 
 var g models.Session
 
-func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleUserTimeline(w http.ResponseWriter, r *http.Request, username string) {
 
 	request := functions.GetEndpoint(r)
 
@@ -60,7 +60,7 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 	w.Write([]byte(out))
 }
 
-func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handlePublicTimeline(w gin.ResponseWriter, r *http.Request) {
 	request := functions.GetEndpoint(r)
 
 	twits, _ := logic.GetPublicTimelineTwits()
