@@ -11,11 +11,11 @@ import (
 func logoutHandlers(router *gin.Engine) {
 
 	router.GET("/logout", func(c *gin.Context) {
-		handleLogout(c.Writer, c.Request, c)
+		handleLogout(c)
 	})
 }
 
-func handleLogout(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleLogout(c *gin.Context) {
 	// reset cookie
 	g := models.Session{
 		User:     models.User{},

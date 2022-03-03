@@ -8,7 +8,7 @@ import (
 )
 
 // TODO: This name of method is probably not the best
-func GormGetUsernameOfWhoFollowsUser(userId int, noFollowers string) ([]string, error) {
+func GormGetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string, error) {
 	var result *sql.Rows
 	var err error
 	if noFollowers == "" {

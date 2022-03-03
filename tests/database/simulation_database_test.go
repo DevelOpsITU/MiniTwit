@@ -2,14 +2,13 @@ package database
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"minitwit/database"
 	"minitwit/models"
 	"testing"
 )
 
 func init() {
-	database.InitGorm(sqlite.Open("file::memory:"))
+
 }
 
 //region GormGetUserNameOfWhoUserFollows
@@ -18,7 +17,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithNoFollowers_NoNotSpeci
 
 	// Arrange
 	var usernames []string
-	var userId = 206 // TODO: Edit this to a test-user that does not follow anyone
+	var userId = user4Id
 
 	// Act
 	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "")
@@ -31,7 +30,9 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoNotSpecifi
 	setupTest()
 	// Arrange
 	var usernames []string
-	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
+	var userId = user1Id
+
+	database.FollowUser(user1Id, user2Id)
 
 	// Act
 	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "")
@@ -44,7 +45,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo0_Ret
 	setupTest()
 	// Arrange
 	var usernames []string
-	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
+	var userId = user1Id
 
 	// Act
 	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "0")
@@ -57,7 +58,8 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 	setupTest()
 	// Arrange
 	var usernames []string
-	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
+	var userId = user1Id
+	database.FollowUser(user1Id, user2Id)
 
 	// Act
 	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "1")
@@ -65,6 +67,15 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 	// Assert
 	assert.NotEmpty(t, usernames)
 	assert.Equal(t, 1, len(usernames))
+
+	database.FollowUser(user1Id, user3Id)
+
+	// Act
+	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "2")
+
+	// Assert
+	assert.NotEmpty(t, usernames)
+	assert.Equal(t, 2, len(usernames))
 }
 
 //endregion
@@ -74,7 +85,7 @@ func Test_GormGetAllSimulationMessages_NoNotSpecified_ReturnsNotEmpty(t *testing
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	// TODO: Ensure there is at least one message in database
+	database.AddMessage(user1Id, "My test message")
 
 	// Act
 	messages, _ = database.GormGetAllSimulationMessages("")
@@ -86,7 +97,7 @@ func Test_GormGetAllSimulationMessages_NoSetTo1_ReturnsOneElement(t *testing.T) 
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	// TODO: Ensure there is at least one message in database
+	database.AddMessage(user1Id, "My test message")
 
 	// Act
 	messages, _ = database.GormGetAllSimulationMessages("1")
@@ -132,8 +143,8 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithNoMessages_ReturnsEmpty(
 	setupTest()
 	// Arrange
 	var messages []models.Message
-	var userId = user2Id // TODO: Edit this to a test-user that has messages
-	// TODO: Ensure there is at least one message in database
+	var userId = user2Id
+	database.AddMessage(user1Id, "Message from user1Id")
 
 	// Act
 	messages, _ = database.GormGetUserSimulationMessages(userId, "")

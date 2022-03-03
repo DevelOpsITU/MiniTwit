@@ -12,7 +12,6 @@ func init() {
 
 func TestAddMessage(t *testing.T) {
 	setupTest()
-	//TODO: Use test user to post messages
 	err := database.AddMessage(user4Id, "Test message")
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
@@ -25,7 +24,7 @@ func TestAddMessage(t *testing.T) {
 func TestAddMessageFakeUser(t *testing.T) {
 	setupTest()
 
-	//TODO: Use a id, that is not of a valid user
+	// Use a id, that is not of a valid user
 	// Right now it does not matter, since we don't use foreign key
 
 	err := database.AddMessage(9999999, "Test message")

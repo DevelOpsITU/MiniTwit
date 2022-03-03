@@ -2,17 +2,13 @@ package database
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"minitwit/database"
 	"minitwit/models"
 	"testing"
 )
 
 func init() {
-	_, err := database.InitGorm(sqlite.Open("file::memory:"))
-	if err != nil {
-		return
-	}
+
 }
 
 var test_registration_user = models.RegistrationUser{
@@ -47,6 +43,17 @@ func TestGetUserFromDb(t *testing.T) {
 		return
 	}
 	assert.Equal(t, test_user_id, user.User_id)
+}
+
+func TestCheckIfUserExists(t *testing.T) {
+	setupTest()
+	database.GormAddUserToDb(test_registration_user)
+	assert.True(t, database.CheckIfUserExists(test_registration_user.Username))
+	assert.True(t, database.CheckIfUserExists(user1.Username))
+	database.GormRemoveUserFromDb(user1Id)
+	assert.False(t, database.CheckIfUserExists(user1.Username))
+	assert.False(t, database.CheckIfUserExists("Non-existing-user"))
+
 }
 
 func Cleanup_user(user_id uint) {

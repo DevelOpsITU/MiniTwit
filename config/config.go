@@ -41,8 +41,8 @@ func GetConfig() Configuration {
 }
 
 func readFile(config *Configuration) {
-	filepath, _ := filepath.Abs("./config.yml")
-	f, err := os.Open(filepath)
+	filePath, _ := filepath.Abs("./config.yml")
+	f, err := os.Open(filePath)
 	if err != nil {
 		processError(err)
 	}
@@ -56,8 +56,8 @@ func readFile(config *Configuration) {
 }
 
 func readTestConfigFile(config *Configuration) {
-	filepath, _ := filepath.Abs("../../config.yml")
-	f, err := os.Open(filepath)
+	filePath, _ := filepath.Abs("../../config.yml")
+	f, err := os.Open(filePath)
 	if err != nil {
 		processError(err)
 	}

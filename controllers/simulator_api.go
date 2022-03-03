@@ -16,43 +16,43 @@ var latest = -1
 
 func simulationHandlers(router *gin.Engine) {
 
-	// Register // TODO: DONE
+	// Register
 	router.POST("/sim/register", func(c *gin.Context) {
 		updateLatest(c)
-		handleSimRegisterPost(c.Writer, c.Request, c)
+		handleSimRegisterPost(c.Writer, c.Request)
 	})
 
-	// All Messages // TODO: DONE
+	// All Messages
 	router.GET("/sim/msgs", func(c *gin.Context) {
 		updateLatest(c)
-		handleSimGetAllMessages(c, c.Request)
+		handleSimGetAllMessages(c)
 	})
 
-	// Latest // TODO: DONE
+	// Latest
 	router.GET("/sim/latest", func(c *gin.Context) {
 		handleSimLatest(c.Writer)
 	})
 
-	// Message by user // TODO: DONE
+	// Message by user
 	router.POST("/sim/msgs/:username", func(c *gin.Context) {
 		updateLatest(c)
 		username := c.Param("username")
-		handleSimAddMessage(c.Writer, c.Request, c, username)
+		handleSimAddMessage(c.Writer, c.Request, username)
 	})
-	// TODO: DONE
+
 	router.GET("/sim/msgs/:username", func(c *gin.Context) {
 		updateLatest(c)
 		username := c.Param("username")
-		handleSimGetUserMessages(c.Writer, c.Request, c, username)
+		handleSimGetUserMessages(c.Writer, c, username)
 	})
 
-	// Follows // TODO: DONE
+	// Follows
 	router.GET("/sim/fllws/:username", func(c *gin.Context) {
 		updateLatest(c)
 		username := c.Param("username")
 		handleSimFollowUser(c.Writer, c.Request, c, username)
 	})
-	// TODO: DONE
+
 	router.POST("/sim/fllws/:username", func(c *gin.Context) {
 		updateLatest(c)
 		username := c.Param("username")
@@ -78,7 +78,7 @@ func updateLatest(c *gin.Context) {
 }
 
 // Done
-func handleSimGetAllMessages(c *gin.Context, r *http.Request) {
+func handleSimGetAllMessages(c *gin.Context) {
 	/*err := not_req_from_simulator(r) // TODO: This should prob be added (he has it in his, but doesnt work when checking normally)
 	if err != nil {
 		fmt.Println(err)
@@ -116,7 +116,7 @@ func handleSimLatest(w gin.ResponseWriter) {
 }
 
 // DONE
-func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
 	Paylaod := struct {
@@ -149,7 +149,7 @@ func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context
 }
 
 // Done
-func handleSimAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleSimAddMessage(w http.ResponseWriter, r *http.Request, username string) {
 
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
@@ -179,7 +179,7 @@ func handleSimAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context,
 }
 
 // Done
-func handleSimGetUserMessages(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username string) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {

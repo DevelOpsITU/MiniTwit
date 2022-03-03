@@ -14,23 +14,23 @@ func userHandlers(router *gin.Engine) {
 
 	router.GET("/:user/follow", func(c *gin.Context) {
 		username := c.Param("user")
-		handleFollowUser(c.Writer, c.Request, c, username)
+		handleFollowUser(c.Writer, c, username)
 	})
 
 	router.GET("/:user/unfollow", func(c *gin.Context) {
 		username := c.Param("user")
-		handleUnFollowUser(c.Writer, c.Request, c, username)
+		handleUnFollowUser(c.Writer, c, username)
 	})
 
 	// User timeline
 	router.GET("/:user", func(c *gin.Context) {
 		username := c.Param("user")
-		handleUserTimeline(c.Writer, c.Request, c, username)
+		handleUserTimeline(c.Writer, c.Request, username)
 	})
 
 }
 
-func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleUnFollowUser(w http.ResponseWriter, c *gin.Context, username string) {
 	data, err := functions.GetCookie(c)
 	g = data
 
@@ -39,11 +39,11 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 		w.WriteHeader(http.StatusUnauthorized)
 		response := make(map[string]string)
 		response["message"] = "401 Unautherized - no user logged in!"
-		json, err := json.Marshal(response)
+		jsonText, err := json.Marshal(response)
 		if err != nil {
 			panic("Error handling JSON marshal")
 		}
-		w.Write(json)
+		w.Write(jsonText)
 		return
 		// c.Redirect(http.StatusFound, "/public")
 	}
@@ -60,7 +60,7 @@ func handleUnFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, 
 	c.Redirect(http.StatusFound, "/")
 }
 
-func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleFollowUser(w http.ResponseWriter, c *gin.Context, username string) {
 	data, err := functions.GetCookie(c)
 	g = data
 
@@ -69,11 +69,11 @@ func handleFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, us
 		w.WriteHeader(http.StatusUnauthorized)
 		response := make(map[string]string)
 		response["message"] = "401 Unautherized - no user logged in!"
-		json, err := json.Marshal(response)
+		jsonText, err := json.Marshal(response)
 		if err != nil {
 			panic("Error handling JSON marshal")
 		}
-		w.Write(json)
+		w.Write(jsonText)
 		return
 		// c.Redirect(http.StatusFound, "/public")
 	}
