@@ -47,6 +47,6 @@ func TestGetUserFromDb(t *testing.T) {
 	assert.Equal(t, test_user_id, user.User_id)
 }
 
-func Cleanup_user(user_id int) {
+func Cleanup_user(user_id uint) {
 	database.GormRemoveUserFromDb(user_id)
 }
