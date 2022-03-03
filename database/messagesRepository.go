@@ -61,14 +61,15 @@ func AddMessage(userId int, message string) error {
 	return nil
 }
 
-func GetPersonalTimelineMessages(id int) []models.Message {
+// Returns a list of all the users a user is following
+func getFollowingUsers(userId int) []int {
 
-	//db.Find(&users, []int{1,2,3})
+	var follows []int
 
 	subquery, err := gormDb.
 		Table("follower").
 		Select("whom_id").
-		Where("who_id = ?", id).
+		Where("who_id = ?", userId).
 		Rows()
 
 	if err != nil {
@@ -76,7 +77,6 @@ func GetPersonalTimelineMessages(id int) []models.Message {
 		panic(err)
 	}
 
-	var follows []int
 	for subquery.Next() {
 		var user int
 		err := subquery.Scan(&user)
@@ -85,8 +85,13 @@ func GetPersonalTimelineMessages(id int) []models.Message {
 		}
 		follows = append(follows, user)
 	}
+	return follows
+}
 
-	//select whom_id from follower where who_id = ?)
+func GetPersonalTimelineMessages(id int) []models.Message {
+
+	follows := getFollowingUsers(id)
+	
 	result, err := gormDb.
 		Model(models.Message{}).
 		Table("message").
