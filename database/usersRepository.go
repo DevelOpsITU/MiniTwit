@@ -65,10 +65,10 @@ func getUserFromDb(userId uint) User {
 	return user
 }
 
-func GormRemoveUserFromDb(user_id uint) {
+func GormRemoveUserFromDb(userId uint) {
 
 	result := gormDb.
-		Delete(&User{}, user_id)
+		Delete(&User{}, userId)
 
 	if result.Error != nil {
 		panic(result.Error)
