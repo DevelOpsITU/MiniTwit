@@ -3,7 +3,11 @@ package database
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
 	"minitwit/config"
+	"os"
+	"time"
 )
 
 var gormDb *gorm.DB
@@ -45,7 +49,19 @@ func (Message) TableName() string {
 
 func InitGorm() (db *gorm.DB, err error) {
 
-	db, err = gorm.Open(sqlite.Open(config.GetConfig().Database.ConnectionString), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Info, // Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,       // Disable color
+		},
+	)
+
+	db, err = gorm.Open(sqlite.Open(config.GetConfig().Database.ConnectionString), &gorm.Config{
+		Logger: newLogger,
+	})
 	gormDb = db
 
 	if err != nil {
