@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"golang.org/x/crypto/pbkdf2"
 	"io"
@@ -38,6 +39,26 @@ func GormAddUserToDb(user models.RegistrationUser) int {
 	}
 
 	return int(user_obj.UserId)
+
+}
+
+func GormGetUserFromDb(username string) (models.User, error) {
+	var user User
+	result := gormDb.
+		Where("username like ?", username).
+		First(&user)
+
+	if result.Error != nil {
+		return models.User{}, errors.New("User not found")
+		//panic(result.Error)
+	}
+
+	return models.User{
+		User_id:  int(user.UserId),
+		Username: user.Username,
+		Email:    user.Email,
+		Pw_hash:  user.PwHash,
+	}, nil
 
 }
 
