@@ -67,7 +67,7 @@ func getFollowingUsers(userId int) []int {
 	var follows []int
 
 	subquery, err := gormDb.
-		Table("follower").
+		Model(&Follower{}).
 		Select("whom_id").
 		Where("who_id = ?", userId).
 		Rows()
@@ -91,7 +91,7 @@ func getFollowingUsers(userId int) []int {
 func GetPersonalTimelineMessages(id int) []models.Message {
 
 	follows := getFollowingUsers(id)
-	
+
 	result, err := gormDb.
 		Model(models.Message{}).
 		Table("message").
