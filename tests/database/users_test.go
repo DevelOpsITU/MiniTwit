@@ -45,6 +45,17 @@ func TestGetUserFromDb(t *testing.T) {
 	assert.Equal(t, test_user_id, user.User_id)
 }
 
+func TestCheckIfUserExists(t *testing.T) {
+	setupTest()
+	database.GormAddUserToDb(test_registration_user)
+	assert.True(t, database.CheckIfUserExists(test_registration_user.Username))
+	assert.True(t, database.CheckIfUserExists(user1.Username))
+	database.GormRemoveUserFromDb(user1Id)
+	assert.False(t, database.CheckIfUserExists(user1.Username))
+	assert.False(t, database.CheckIfUserExists("Non-existing-user"))
+
+}
+
 func Cleanup_user(user_id uint) {
 	database.GormRemoveUserFromDb(user_id)
 }

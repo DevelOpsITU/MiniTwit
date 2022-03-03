@@ -88,3 +88,13 @@ func NumberOfUsers() int64 {
 	gormDb.Model(&User{}).Count(&count)
 	return count
 }
+
+func CheckIfUserExists(username string) bool {
+
+	user, _ := GormGetUserFromDb(username)
+	if user.User_id != 0 {
+		return true
+	}
+
+	return false
+}

@@ -156,16 +156,6 @@ func GetUserFromDb(username string) (models.User, error) {
 
 }
 
-func CheckIfUserExists(username string) bool {
-
-	user, _ := GetUserFromDb(username)
-	if user.User_id != 0 {
-		return true
-	}
-
-	return false
-}
-
 func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 
 	db := ConnectDb()
