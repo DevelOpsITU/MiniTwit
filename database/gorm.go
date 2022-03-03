@@ -3,6 +3,7 @@ package database
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"minitwit/config"
 )
 
 var gormDb *gorm.DB
@@ -44,7 +45,7 @@ func (Message) TableName() string {
 
 func InitGorm() (db *gorm.DB, err error) {
 
-	db, err = gorm.Open(sqlite.Open("/tmp/minitwit.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(config.GetConfig().Database.ConnectionString), &gorm.Config{})
 	gormDb = db
 
 	if err != nil {
