@@ -10,9 +10,10 @@ import (
 
 func GormGetAllMessages() []models.Message {
 
+	var messages []models.Message
+
 	result, err := gormDb.
-		Model(models.Message{}).
-		Table("message").
+		Model(Message{}).
 		Order("pub_date desc").
 		Limit(30).
 		Where("flagged = ?", 0).
@@ -24,32 +25,28 @@ func GormGetAllMessages() []models.Message {
 		panic(err)
 	}
 
-	var messages2 []models.Message
-
 	for result.Next() {
 		var msg models.Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
-			return []models.Message{}
+			return messages
 		}
-		messages2 = append(messages2, msg)
+		messages = append(messages, msg)
 	}
 
-	return messages2
+	return messages
 }
 
-func AddMessage(userId uint, message string) error {
+func AddMessage(userId uint, post string) error {
 
-	var messageObj = Message{
+	var message = Message{
 		AuthorId:        userId,
-		Text:            message,
+		Text:            post,
 		PublicationDate: uint(time.Now().Unix()),
 		Flagged:         0,
 	}
 
-	create := gormDb.
-		Select("message_id", "author_id", "text", "pub_date", "flagged").
-		Table("message").Create(&messageObj)
+	create := gormDb.Create(&message)
 
 	if create.Error != nil {
 		println(create.Error.Error())
