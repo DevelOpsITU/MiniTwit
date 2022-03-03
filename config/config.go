@@ -13,11 +13,11 @@ var config Configuration // global configuration
 
 type Configuration struct {
 	Server struct {
-		Host string `yaml:"host", envconfig:"SERVER_HOST"`
-		Port string `yaml:"port", envconfig:"SERVER_PORT"`
+		Host string `yaml:"host" envconfig:"SERVER_HOST"`
+		Port string `yaml:"port" envconfig:"SERVER_PORT"`
 	} `yaml:"server"`
 	Database struct {
-		ConnectionString string `yaml:"connectionstring", envconfig:"DB_CONNECTION_STRING`
+		ConnectionString string `yaml:"connectionstring" envconfig:"DB_CONNECTION_STRING"`
 	} `yaml:"database"`
 }
 
