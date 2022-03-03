@@ -38,7 +38,7 @@ func GormGetAllMessages() []models.Message {
 	return messages2
 }
 
-func AddMessage(userId int, message string) error {
+func AddMessage(userId uint, message string) error {
 
 	var messageObj = models.Message{
 		AuthorId: uint(userId),
@@ -59,7 +59,7 @@ func AddMessage(userId int, message string) error {
 	return nil
 }
 
-func GormRemoveMessagesFromDb(user_id int) {
+func GormRemoveMessagesFromDb(user_id uint) {
 
 	result := gormDb.
 		Where("author_id = ?", user_id).
@@ -165,7 +165,7 @@ func GetPersonalTimelineMessages_old(id int) []models.Message {
 	return messages
 }
 
-func GormGetUserMessages(userId int) ([]models.Message, error) {
+func GormGetUserMessages(userId uint) ([]models.Message, error) {
 	result, err := gormDb.
 		Model(models.Message{}).
 		Limit(30).

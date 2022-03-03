@@ -35,6 +35,6 @@ func TestAddUserToDb(t *testing.T) {
 
 }
 
-func Cleanup_user(user_id int) {
+func Cleanup_user(user_id uint) {
 	database.GormRemoveUserFromDb(user_id)
 }

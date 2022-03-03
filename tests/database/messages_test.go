@@ -2,60 +2,16 @@ package database
 
 import (
 	"fmt"
-	"gorm.io/driver/sqlite"
 	"minitwit/database"
-	"minitwit/models"
 	"testing"
 )
-
-var user1 = models.RegistrationUser{
-	Username:  "testUser1",
-	Email:     "testuser1@mail.com",
-	Password1: "pass",
-	Password2: "pass",
-}
-
-var user2 = models.RegistrationUser{
-	Username:  "testUser2",
-	Email:     "testuser2@mail.com",
-	Password1: "pass",
-	Password2: "pass",
-}
-
-var user3 = models.RegistrationUser{
-	Username:  "testUser3",
-	Email:     "testuser3@mail.com",
-	Password1: "pass",
-	Password2: "pass",
-}
-var user4 = models.RegistrationUser{
-	Username:  "testUser4",
-	Email:     "testuser4@mail.com",
-	Password1: "pass",
-	Password2: "pass",
-}
-
-var user1Id int
-var user2Id int
-var user3Id int
-var user4Id int
 
 func init() {
 	print("lol")
 }
 
-func setupTest() {
-
-	database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
-
-	user1Id = database.GormAddUserToDb(user1)
-	user2Id = database.GormAddUserToDb(user2)
-	user3Id = database.GormAddUserToDb(user3)
-	user4Id = database.GormAddUserToDb(user4)
-
-}
-
 func TestAddMessage(t *testing.T) {
+	setupTest()
 	//TODO: Use test user to post messages
 	err := database.AddMessage(user4Id, "Test message")
 	if err != nil {
