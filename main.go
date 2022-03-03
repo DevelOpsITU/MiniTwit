@@ -13,7 +13,8 @@ func main() {
 	// Get configuration
 	config.SetupConfig()
 
-	database.TestConnection()
+	//database.TestConnection()
+	//TODO: Test if the database connection can be established
 	_, err := database.InitGorm(sqlite.Open(config.GetConfig().Database.ConnectionString))
 	if err != nil {
 		if err != nil {

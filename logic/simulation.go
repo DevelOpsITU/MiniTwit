@@ -28,7 +28,7 @@ func FollowSimulationUser(userId uint, user models.User) error {
 }
 
 func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) []string {
-	users, err := database.GetUsernameOfWhoFollowsUser(userId, noFollowers)
+	users, err := database.GormGetUsernameOfWhoFollowsUser(userId, noFollowers)
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +38,7 @@ func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) []string {
 }
 
 func GetAllSimulationMessages(noFollowers string) []models.Message {
-	users, err := database.GetAllSimulationMessages(noFollowers)
+	users, err := database.GormGetAllSimulationMessages(noFollowers)
 
 	if err != nil {
 		log.Fatal(err)
@@ -48,7 +48,7 @@ func GetAllSimulationMessages(noFollowers string) []models.Message {
 }
 
 func GetUserSimulationMessages(user models.User, noMessages string) []models.Message {
-	messages, err := database.GetUserSimulationMessages(user.User_id, noMessages)
+	messages, err := database.GormGetUserSimulationMessages(user.User_id, noMessages)
 
 	if err != nil {
 		log.Fatal(err)
