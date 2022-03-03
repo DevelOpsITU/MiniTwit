@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
-	"minitwit/database"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -162,32 +161,39 @@ func handleSimAddMessage(w http.ResponseWriter, r *http.Request, username string
 		return
 	}
 
-	//content := r.Form.Get("content")
-	/*tmp, _ := c.GetRawData()
-	type messagDTO = struct {
-		content string
+	err = logic.AddMessageFromUsername(username, Payload.Content)
+
+	if err != nil {
+		log.Println("Could not add message: " + Payload.Content)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else {
+		w.WriteHeader(http.StatusNoContent)
 	}
-	var payload messagDTO
-	json.Unmarshal(tmp, &payload)
-	*/
-
-	print(Payload.Content)
-	user, _ := database.GetUserFromDb(username)
-	_ = logic.AddMessage(user, Payload.Content)
-
-	w.WriteHeader(http.StatusNoContent)
 }
 
-// Done
+// Gets the user
 func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username string) {
-	user, err := database.GetUserFromDb(username)
+
+	var limit = 0
+	var err error
+	limitStr := c.Query("no")
+	if limitStr != "" {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			log.Println("Had an input that was not a number i could parse. " + limitStr)
+			limit = 9999999999
+		}
+	} else {
+		limit = 9999999999 // Hacky but maybe it works for us.
+	}
+
+	twits, _, err := logic.GetUserTwits(username, limit)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	messages := logic.GetUserSimulationMessages(user, c.Query("no"))
 
 	type MessageObj struct {
 		Content string `json:"content"`
@@ -196,8 +202,9 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 	}
 
 	var msgsAsObject []MessageObj
-	for _, msg := range messages {
-		msgObj := MessageObj{Content: msg.Text, PubDate: msg.Pubdate, User: msg.Username}
+	for _, msg := range twits {
+		time, _ := strconv.Atoi(msg.Pub_date)
+		msgObj := MessageObj{Content: msg.Text, PubDate: int64(time), User: msg.Username}
 		msgsAsObject = append(msgsAsObject, msgObj)
 	}
 	js, _ := json.Marshal(msgsAsObject)
@@ -208,51 +215,54 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 // Done
 func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
 
-	user, err := database.GetUserFromDb(username)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	var limit = 0
+	var err error
+	limitStr := c.Query("no")
+	if limitStr != "" {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			log.Println("Had an input that was not a number i could parse. " + limitStr)
+			limit = 9999999999
+		}
+	} else {
+		limit = 9999999999 // Hacky but maybe it works for us.
 	}
 
 	if r.Method == "POST" {
 		defer r.Body.Close()
 		decoder := json.NewDecoder(r.Body)
-		Paylaod := struct {
+		Payload := struct {
 			Follow   string `json:"follow"`
 			Unfollow string `json:"unfollow"`
 		}{}
-		err = decoder.Decode(&Paylaod)
+		err := decoder.Decode(&Payload)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		if Paylaod.Follow != "" {
-			followUsername := Paylaod.Follow
-			followUser, err := database.GetUserFromDb(followUsername)
+		if Payload.Follow != "" {
+			followUsername := Payload.Follow
+
+			err = logic.FollowUserFromUsername(username, followUsername)
 			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
 			}
+		} else if Payload.Unfollow != "" {
+			unfollowUsername := Payload.Unfollow
 
-			err = logic.FollowSimulationUser(user.User_id, followUser)
+			err = logic.UnFollowUserFromUsername(username, unfollowUsername)
 			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
 			}
-		} else if Paylaod.Unfollow != "" {
-			unfollowUsername := Paylaod.Unfollow
-
-			unfollowUser, err := database.GetUserFromDb(unfollowUsername)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-
-			}
-
-			logic.UnFollowSimulationUser(user.User_id, unfollowUser)
 		}
 
 		w.WriteHeader(http.StatusNoContent)
 	} else if r.Method == "GET" {
-		followedByUser := logic.GetUsernameOfWhoFollowsUser(user.User_id, c.Query("no"))
+
+		followedByUser := logic.GetUserFollowerUsernames(username, limit)
 
 		type followsObj struct {
 			Follows []string `json:"follows"`
@@ -271,6 +281,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(usersAsJson)
+		w.WriteHeader(http.StatusOK)
 	}
 	return
 

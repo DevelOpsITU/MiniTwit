@@ -11,18 +11,22 @@ import (
 	"time"
 )
 
-func GetUserTwits(username string) ([]models.Twit, models.User, error) {
+// Gets this users own messages
+func GetUserTwits(username string, limit int) ([]models.Twit, models.User, error) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
 		return []models.Twit{}, models.User{}, err
 	} else {
-		messages, err := database.GetUserMessages(user.User_id)
+		messages, err := database.GetUserMessages(user.UserId, limit)
 		if err != nil {
 			return []models.Twit{}, models.User{}, err
 		}
 
-		return ConvertMessagesToTwits(&messages), user, nil
+		return ConvertMessagesToTwits(&messages), models.User{
+			User_id:  user.UserId,
+			Username: user.Username,
+		}, nil
 	}
 
 }
@@ -34,12 +38,12 @@ func GetPublicTimelineTwits() ([]models.Twit, error) {
 }
 
 func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
-	user, err := database.GetUserFromDb(user.Username)
+	userFromDb, err := database.GetUserFromDb(user.Username)
 
 	if err != nil {
 		return []models.Twit{}, err
 	} else {
-		messages := database.GetPersonalTimelineMessages(user.User_id)
+		messages := database.GetPersonalTimelineMessages(userFromDb.UserId)
 		return ConvertMessagesToTwits(&messages), nil
 	}
 

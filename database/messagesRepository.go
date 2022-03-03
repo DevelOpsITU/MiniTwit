@@ -100,13 +100,13 @@ func arrayToString(a []uint, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 }
 
-func GetUserMessages(userId uint) ([]models.Message, error) {
+func GetUserMessages(userId uint, limit int) ([]models.Message, error) {
 
 	var messages []models.Message
 
 	result, err := gormDb.
 		Model(Message{}).
-		Limit(30).
+		Limit(limit).
 		Order("pub_date desc").
 		Where("message.flagged = 0 AND user.user_id = message.author_id AND user.user_id = ?", userId).
 		Joins("JOIN user on message.author_id = user.user_id").

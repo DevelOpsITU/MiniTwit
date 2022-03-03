@@ -6,7 +6,28 @@ import (
 	"minitwit/models"
 )
 
-func AddMessage(user models.User, message string) error {
+func AddMessageFromUsername(username string, message string) error {
+
+	if username == "" || message == "" {
+		return errors.New("error cant be empty")
+	}
+
+	user, err := database.GetUserFromDb(username)
+
+	if err != nil {
+		return err
+	}
+
+	err = database.AddMessage(user.UserId, message)
+
+	if err != nil {
+		return errors.New("message could not be added")
+	}
+	return nil
+
+}
+
+func AddMessageFromUserModel(user models.User, message string) error {
 
 	if message == "" {
 		return errors.New("error cant be empty")

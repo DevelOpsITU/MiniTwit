@@ -27,7 +27,7 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, username string)
 
 	request := functions.GetEndpoint(r)
 
-	twits, user, err := logic.GetUserTwits(username)
+	twits, user, err := logic.GetUserTwits(username, 30)
 	if err != nil {
 		http.Error(w, "404 - "+err.Error(), http.StatusNotFound)
 		return

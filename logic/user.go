@@ -39,7 +39,45 @@ func FollowUser(userId uint, usernameToFollow string) error {
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
-	err = database.FollowUser(userId, userToFollow.User_id)
+	err = database.FollowUser(userId, userToFollow.UserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func FollowUserFromUsername(followerUsername string, usernameToFollow string) error {
+
+	follower, err := database.GetUserFromDb(followerUsername)
+	userToFollow, err := database.GetUserFromDb(usernameToFollow)
+
+	if err != nil {
+		return err
+	}
+
+	//TODO: Check that the user is not already following the user Issue #47
+	err = database.FollowUser(follower.UserId, userToFollow.UserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) error {
+
+	follower, err := database.GetUserFromDb(followerUsername)
+	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
+
+	if err != nil {
+		return err
+	}
+
+	//TODO: Check that the user is not already following the user Issue #47
+	err = database.FollowUser(follower.UserId, userToUnFollow.UserId)
 
 	if err != nil {
 		log.Fatal(err)
@@ -55,7 +93,7 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 		return err
 	}
 	// TODO: check if already following before trying this
-	err = database.UnFollowUser(userId, userToUnFollow.User_id)
+	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 
 	if err != nil {
 		log.Fatal(err)
@@ -63,4 +101,8 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 
 	return nil
 
+}
+
+func GetUserFollowerUsernames(username string, limit int) error {
+	//TODO: Chrsitan fortsæt her
 }

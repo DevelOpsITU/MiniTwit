@@ -27,7 +27,7 @@ func handleAddMessage(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	err = logic.AddMessage(g.User, c.PostForm("text"))
+	err = logic.AddMessageFromUserModel(g.User, c.PostForm("text"))
 
 	if err != nil {
 		println(err.Error())

@@ -20,8 +20,6 @@ type RegistrationUser struct {
 type User struct {
 	User_id  uint
 	Username string
-	Email    string
-	Pw_hash  string
 }
 
 type Session struct {
