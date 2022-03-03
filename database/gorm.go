@@ -1,11 +1,9 @@
 package database
 
 import (
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
-	"minitwit/config"
 	"os"
 	"time"
 )
@@ -47,7 +45,7 @@ func (Message) TableName() string {
 	return "message"
 }
 
-func InitGorm() (db *gorm.DB, err error) {
+func InitGorm(dialector gorm.Dialector) (db *gorm.DB, err error) {
 
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
@@ -59,7 +57,7 @@ func InitGorm() (db *gorm.DB, err error) {
 		},
 	)
 
-	db, err = gorm.Open(sqlite.Open(config.GetConfig().Database.ConnectionString), &gorm.Config{
+	db, err = gorm.Open(dialector, &gorm.Config{
 		Logger: newLogger,
 	})
 	gormDb = db

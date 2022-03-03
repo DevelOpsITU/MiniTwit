@@ -2,13 +2,14 @@ package database
 
 import (
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/sqlite"
 	"minitwit/database"
 	"minitwit/models"
 	"testing"
 )
 
 func init() {
-	database.InitGorm()
+	database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
 }
 
 //region GormGetUserNameOfWhoUserFollows

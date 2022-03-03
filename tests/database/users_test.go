@@ -1,13 +1,14 @@
 package database
 
 import (
+	"gorm.io/driver/sqlite"
 	"minitwit/database"
 	"minitwit/models"
 	"testing"
 )
 
 func init() {
-	_, err := database.InitGorm()
+	_, err := database.InitGorm(sqlite.Open("file::memory:?cache=shared"))
 	if err != nil {
 		return
 	}
