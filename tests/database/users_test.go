@@ -2,17 +2,13 @@ package database
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"minitwit/database"
 	"minitwit/models"
 	"testing"
 )
 
 func init() {
-	_, err := database.InitGorm(sqlite.Open("file::memory:"))
-	if err != nil {
-		return
-	}
+
 }
 
 var test_registration_user = models.RegistrationUser{
