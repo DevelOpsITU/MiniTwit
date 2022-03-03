@@ -71,36 +71,9 @@ func GormRemoveMessagesFromDb(userId uint) {
 
 }
 
-// Returns a list of all the users a user is following
-func getFollowingUsers(userId uint) []int {
-
-	var follows []int
-
-	subquery, err := gormDb.
-		Model(&Follower{}).
-		Select("whom_id").
-		Where("who_id = ?", userId).
-		Rows()
-
-	if err != nil {
-		//TODO: Remove panic statements. it crashes the application.
-		panic(err)
-	}
-
-	for subquery.Next() {
-		var user int
-		err := subquery.Scan(&user)
-		if err != nil {
-			//TODO
-		}
-		follows = append(follows, user)
-	}
-	return follows
-}
-
 func GetPersonalTimelineMessages(id uint) []models.Message {
 
-	follows := getFollowingUsers(id)
+	follows := GetFollowingUsers(id)
 
 	var where string
 
@@ -138,7 +111,7 @@ func GetPersonalTimelineMessages(id uint) []models.Message {
 	return messages2
 }
 
-func arrayToString(a []int, delim string) string {
+func arrayToString(a []uint, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 	//return strings.Trim(strings.Join(strings.Split(fmt.Sprint(a), " "), delim), "[]")
 	//return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(a)), delim), "[]")

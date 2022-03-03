@@ -1,14 +1,21 @@
 package database
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/pbkdf2"
+	"io"
 	"log"
 	"minitwit/config"
 	"minitwit/models"
 	"os"
+	"strconv"
+	"strings"
 )
 
 const PER_PAGE = 30
@@ -41,24 +48,6 @@ func TestConnection() {
 				"--------------------------------------------------------------")
 		os.Exit(1)
 	}
-}
-
-func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
-
-	db := ConnectDb()
-	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	_, err = query.Exec(userId, UserIdToUnFollow)
-
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	defer query.Close()
-	return nil
 }
 
 // SIMULATION HANDLING
