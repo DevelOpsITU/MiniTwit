@@ -14,8 +14,8 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 	}
 
 	obj := Follower{
-		WhoId:  uint(userId),
-		WhomId: uint(UserIdToFollow),
+		WhoId:  userId,
+		WhomId: UserIdToFollow,
 	}
 
 	create := gormDb.Model(&Follower{}).Create(obj)

@@ -37,20 +37,6 @@ func TestAddMessageFakeUser(t *testing.T) {
 
 func TestPersonalTimelineMessages(t *testing.T) {
 
-	/*
-		This is the correct SQL, which currently returns something else, that we get from GORM:
-
-		select message.message_id,message.author_id,user.username,message.text,message.pub_date, user.email
-			from message, user
-			where message.flagged = 0 and message.author_id = user.user_id and (
-				user.user_id = ? or
-			user.user_id in (select whom_id from follower
-				where who_id = ?))
-				order by message.pub_date desc limit 30
-
-
-	*/
-
 	setupTest()
 
 	database.AddMessage(user1Id, "Message from user1")
@@ -67,17 +53,20 @@ func TestPersonalTimelineMessages(t *testing.T) {
 	messages := database.GetPersonalTimelineMessages(1)
 
 	if len(messages) != 1 {
-		t.Errorf("User 1 should only have its own message")
+		t.Errorf("User 1 should only have its own message " + fmt.Sprint(len(messages)))
+		return
 	}
 
 	messages = database.GetPersonalTimelineMessages(2)
 	if len(messages) != 2 {
 		t.Errorf("User 2 should have the messages from User1 and its own message")
+		return
 	}
 
 	messages = database.GetPersonalTimelineMessages(3)
 	if len(messages) != 3 {
-		t.Errorf("User 2 should have the messages from User1, User 2 and its own message")
+		t.Errorf("User 3 should have the messages from User1, User 2 and its own message")
+		return
 	}
 
 }
