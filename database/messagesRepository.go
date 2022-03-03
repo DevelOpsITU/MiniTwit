@@ -41,7 +41,7 @@ func GormGetAllMessages() []models.Message {
 func AddMessage(userId uint, message string) error {
 
 	var messageObj = models.Message{
-		AuthorId: uint(userId),
+		AuthorId: userId,
 		Text:     message,
 		Pubdate:  time.Now().Unix(),
 		Flagged:  0,
@@ -72,7 +72,7 @@ func GormRemoveMessagesFromDb(user_id uint) {
 }
 
 // Returns a list of all the users a user is following
-func getFollowingUsers(userId int) []int {
+func getFollowingUsers(userId uint) []int {
 
 	var follows []int
 
@@ -98,7 +98,7 @@ func getFollowingUsers(userId int) []int {
 	return follows
 }
 
-func GetPersonalTimelineMessages(id int) []models.Message {
+func GetPersonalTimelineMessages(id uint) []models.Message {
 
 	follows := getFollowingUsers(id)
 
@@ -142,35 +142,6 @@ func arrayToString(a []int, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 	//return strings.Trim(strings.Join(strings.Split(fmt.Sprint(a), " "), delim), "[]")
 	//return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(a)), delim), "[]")
-}
-
-func GetPersonalTimelineMessages_old(id int) []models.Message {
-	db := ConnectDb()
-	query := string(`
-		select message.message_id,message.author_id,user.username,message.text,message.pub_date, user.email
-		from message, user
-        where message.flagged = 0 and message.author_id = user.user_id and (
-            user.user_id = ? or
-            user.user_id in (select whom_id from follower
-                                    where who_id = ?))
-        order by message.pub_date desc limit 30`)
-	result, err := db.Query(query, fmt.Sprint(id), fmt.Sprint(id))
-	if err != nil {
-		panic(err)
-	}
-
-	var messages []models.Message
-
-	for result.Next() {
-		var msg models.Message
-		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
-		if err != nil {
-			return []models.Message{}
-		}
-		messages = append(messages, msg)
-	}
-	defer result.Close()
-	return messages
 }
 
 func GormGetUserMessages(userId uint) ([]models.Message, error) {

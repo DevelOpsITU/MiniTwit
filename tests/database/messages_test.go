@@ -23,6 +23,7 @@ func TestAddMessage(t *testing.T) {
 }
 
 func TestAddMessageFakeUser(t *testing.T) {
+	setupTest()
 
 	//TODO: Use a id, that is not of a valid user
 	// Right now it does not matter, since we don't use foreign key
@@ -72,6 +73,8 @@ func TestPersonalTimelineMessages(t *testing.T) {
 }
 
 func TestUserMessages(t *testing.T) {
+
+	setupTest()
 
 	database.AddMessage(user1Id, "Test message")
 	result, err := database.GormGetUserMessages(user1Id)
