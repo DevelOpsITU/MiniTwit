@@ -41,6 +41,14 @@ func GormAddUserToDb(user models.RegistrationUser) uint {
 
 }
 
+func getUserFromDb(userId uint) User {
+	var user User
+
+	gormDb.Find(&user, userId)
+
+	return user
+}
+
 func GormRemoveUserFromDb(user_id uint) {
 
 	result := gormDb.

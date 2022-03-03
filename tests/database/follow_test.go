@@ -17,3 +17,12 @@ func TestFollowUser(t *testing.T) {
 	}
 
 }
+
+func TestFollowUserThatDontExists(t *testing.T) {
+	setupTest()
+	err := database.FollowUser(user1Id, 9999)
+	if err == nil {
+		t.Errorf("A user is not allowed to follow a user that does not exist")
+	}
+
+}
