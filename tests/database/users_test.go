@@ -42,7 +42,7 @@ func TestGetUserFromDb(t *testing.T) {
 		t.Error("There should be returned a user")
 		return
 	}
-	assert.Equal(t, test_user_id, user.User_id)
+	assert.Equal(t, test_user_id, user.UserId)
 }
 
 func TestCheckIfUserExists(t *testing.T) {

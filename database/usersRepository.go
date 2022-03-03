@@ -42,23 +42,18 @@ func GormAddUserToDb(user models.RegistrationUser) uint {
 
 }
 
-func GormGetUserFromDb(username string) (models.User, error) {
+func GormGetUserFromDb(username string) (User, error) {
 	var user User
 	result := gormDb.
 		Where("username like ?", username).
 		First(&user)
 
 	if result.Error != nil {
-		return models.User{}, errors.New("user not found")
+		return User{}, errors.New("user not found")
 		//panic(result.Error)
 	}
 
-	return models.User{
-		User_id:  user.UserId,
-		Username: user.Username,
-		Email:    user.Email,
-		Pw_hash:  user.PwHash,
-	}, nil
+	return user, nil
 
 }
 
@@ -92,7 +87,7 @@ func NumberOfUsers() int64 {
 func CheckIfUserExists(username string) bool {
 
 	user, _ := GormGetUserFromDb(username)
-	if user.User_id != 0 {
+	if user.UserId != 0 {
 		return true
 	}
 
