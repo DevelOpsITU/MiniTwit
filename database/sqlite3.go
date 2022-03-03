@@ -62,7 +62,7 @@ func TestConnection() {
 }
 
 // example Database usage
-func GetUserMessages(id int) []models.Message {
+func GetUserMessages(id uint) []models.Message {
 	db := ConnectDb()
 	query := string(`SELECT 
 		message.message_id, 
@@ -178,7 +178,7 @@ func CheckIfUserExists(username string) bool {
 	return false
 }
 
-func UnFollowUser(userId int, UserIdToUnFollow int) error {
+func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 
 	db := ConnectDb()
 	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
@@ -212,7 +212,7 @@ func HandleSqlQuery(sqlQuery string, args ...interface{}) (*sql.Rows, error) {
 	return rows, nil
 }
 
-func GetUsernameOfWhoFollowsUser(userId int, noFollowers string) ([]string, error) {
+func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string, error) {
 	var rows *sql.Rows
 	var err error
 	if noFollowers == "" {
@@ -273,7 +273,7 @@ func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
 	return messages, nil
 }
 
-func GetUserSimulationMessages(userId int, noFollowers string) ([]models.Message, error) {
+func GetUserSimulationMessages(userId uint, noFollowers string) ([]models.Message, error) {
 	var rows *sql.Rows
 	var err error
 	if noFollowers == "" {

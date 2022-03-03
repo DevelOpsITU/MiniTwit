@@ -23,6 +23,7 @@ var test_registration_user = models.RegistrationUser{
 }
 
 func TestAddUserToDb(t *testing.T) {
+	setupTest()
 
 	amountOfUsers_old := database.NumberOfUsers()
 	user_id := database.GormAddUserToDb(test_registration_user)
@@ -37,6 +38,7 @@ func TestAddUserToDb(t *testing.T) {
 }
 
 func TestGetUserFromDb(t *testing.T) {
+	setupTest()
 	test_user_id := database.GormAddUserToDb(test_registration_user)
 
 	user, err := database.GormGetUserFromDb(test_registration_user.Username)

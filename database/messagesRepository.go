@@ -72,7 +72,7 @@ func GormRemoveMessagesFromDb(user_id uint) {
 }
 
 // Returns a list of all the users a user is following
-func getFollowingUsers(userId int) []int {
+func getFollowingUsers(userId uint) []int {
 
 	var follows []int
 
@@ -98,7 +98,7 @@ func getFollowingUsers(userId int) []int {
 	return follows
 }
 
-func GetPersonalTimelineMessages(id int) []models.Message {
+func GetPersonalTimelineMessages(id uint) []models.Message {
 
 	follows := getFollowingUsers(id)
 	result, err := gormDb.

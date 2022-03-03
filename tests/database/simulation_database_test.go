@@ -14,6 +14,8 @@ func init() {
 
 //region GormGetUserNameOfWhoUserFollows
 func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithNoFollowers_NoNotSpecified_ReturnsEmpty(t *testing.T) {
+	setupTest()
+
 	// Arrange
 	var usernames []string
 	var userId = 206 // TODO: Edit this to a test-user that does not follow anyone
@@ -26,6 +28,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithNoFollowers_NoNotSpeci
 }
 
 func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoNotSpecified_ReturnsNotEmpty(t *testing.T) {
+	setupTest()
 	// Arrange
 	var usernames []string
 	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
@@ -38,6 +41,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoNotSpecifi
 }
 
 func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo0_ReturnsEmpty(t *testing.T) {
+	setupTest()
 	// Arrange
 	var usernames []string
 	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
@@ -50,6 +54,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo0_Ret
 }
 
 func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_ReturnsOneElement(t *testing.T) {
+	setupTest()
 	// Arrange
 	var usernames []string
 	var userId = 1 // TODO: Edit this to a test-user that does follow anyone
@@ -66,6 +71,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 
 //region GormGetAllSimulationMessages
 func Test_GormGetAllSimulationMessages_NoNotSpecified_ReturnsNotEmpty(t *testing.T) {
+	setupTest()
 	// Arrange
 	var messages []models.Message
 	// TODO: Ensure there is at least one message in database
@@ -77,6 +83,7 @@ func Test_GormGetAllSimulationMessages_NoNotSpecified_ReturnsNotEmpty(t *testing
 	assert.NotEmpty(t, messages)
 }
 func Test_GormGetAllSimulationMessages_NoSetTo1_ReturnsOneElement(t *testing.T) {
+	setupTest()
 	// Arrange
 	var messages []models.Message
 	// TODO: Ensure there is at least one message in database
@@ -93,6 +100,7 @@ func Test_GormGetAllSimulationMessages_NoSetTo1_ReturnsOneElement(t *testing.T) 
 
 //region GormGetUserSimulationMessages
 func Test_GormGetUserSimulationMessages_ExistingUserWithMessages_NoNotSpecified_ReturnsNotEmpty(t *testing.T) {
+	setupTest()
 	// Arrange
 	var messages []models.Message
 	var userId = 1 // TODO: Edit this to a test-user that has messages
@@ -106,6 +114,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages_NoNotSpecified_
 }
 
 func Test_GormGetUserSimulationMessages_ExistingUserWithMessages__NoSetTo1_ReturnsOneElement(t *testing.T) {
+	setupTest()
 	// Arrange
 	var messages []models.Message
 	var userId = 1 // TODO: Edit this to a test-user that has messages
@@ -120,6 +129,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages__NoSetTo1_Retur
 }
 
 func Test_GormGetUserSimulationMessages_ExistingUserWithNoMessages_ReturnsEmpty(t *testing.T) {
+	setupTest()
 	// Arrange
 	var messages []models.Message
 	var userId = 206 // TODO: Edit this to a test-user that has messages

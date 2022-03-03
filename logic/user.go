@@ -30,7 +30,7 @@ func CreateUser(registationUser models.RegistrationUser) error {
 	}
 }
 
-func FollowUser(userId int, usernameToFollow string) error {
+func FollowUser(userId uint, usernameToFollow string) error {
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
@@ -48,7 +48,7 @@ func FollowUser(userId int, usernameToFollow string) error {
 	return nil
 }
 
-func UnFollowUser(userId int, usernameToUnFollow string) error {
+func UnFollowUser(userId uint, usernameToUnFollow string) error {
 	userToUnFollow, err := database.GetUserFromDb(usernameToUnFollow)
 
 	if err != nil {
