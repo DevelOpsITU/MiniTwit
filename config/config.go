@@ -31,12 +31,32 @@ func SetupConfig() {
 	readEnviorement(&config) // overwrite dev enviorement at production
 }
 
+func SetupTestConfig() {
+	readTestConfigFile(&config)
+	readEnviorement(&config) // overwrite dev enviorement at production
+}
+
 func GetConfig() Configuration {
 	return config
 }
 
 func readFile(config *Configuration) {
 	filepath, _ := filepath.Abs("./config.yml")
+	f, err := os.Open(filepath)
+	if err != nil {
+		processError(err)
+	}
+	defer f.Close()
+
+	decoder := yaml.NewDecoder(f)
+	err = decoder.Decode(config)
+	if err != nil {
+		processError(err)
+	}
+}
+
+func readTestConfigFile(config *Configuration) {
+	filepath, _ := filepath.Abs("../../config.yml")
 	f, err := os.Open(filepath)
 	if err != nil {
 		processError(err)

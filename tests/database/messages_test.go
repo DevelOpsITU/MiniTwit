@@ -1,11 +1,13 @@
 package database
 
 import (
+	"minitwit/config"
 	"minitwit/database"
 	"testing"
 )
 
 func init() {
+	config.SetupTestConfig()
 	database.InitGorm()
 }
 
