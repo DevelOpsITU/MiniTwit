@@ -71,7 +71,7 @@ func TestUserMessages(t *testing.T) {
 	setupTest()
 
 	database.AddMessage(user1Id, "Test message")
-	result, err := database.GormGetUserMessages(user1Id)
+	result, err := database.GetUserMessages(user1Id)
 
 	if err != nil {
 		t.Errorf(err.Error())

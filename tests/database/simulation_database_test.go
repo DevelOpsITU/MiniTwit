@@ -20,7 +20,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithNoFollowers_NoNotSpeci
 	var userId = user4Id
 
 	// Act
-	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "")
+	usernames, _ = database.GetUsernameOfWhoFollowsUser(userId, "")
 
 	// Assert
 	assert.Empty(t, usernames)
@@ -35,7 +35,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoNotSpecifi
 	database.FollowUser(user1Id, user2Id)
 
 	// Act
-	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "")
+	usernames, _ = database.GetUsernameOfWhoFollowsUser(userId, "")
 
 	// Assert
 	assert.NotEmpty(t, usernames)
@@ -48,7 +48,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo0_Ret
 	var userId = user1Id
 
 	// Act
-	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "0")
+	usernames, _ = database.GetUsernameOfWhoFollowsUser(userId, "0")
 
 	// Assert
 	assert.Empty(t, usernames)
@@ -62,7 +62,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 	database.FollowUser(user1Id, user2Id)
 
 	// Act
-	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "1")
+	usernames, _ = database.GetUsernameOfWhoFollowsUser(userId, "1")
 
 	// Assert
 	assert.NotEmpty(t, usernames)
@@ -71,7 +71,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 	database.FollowUser(user1Id, user3Id)
 
 	// Act
-	usernames, _ = database.GormGetUsernameOfWhoFollowsUser(userId, "2")
+	usernames, _ = database.GetUsernameOfWhoFollowsUser(userId, "2")
 
 	// Assert
 	assert.NotEmpty(t, usernames)
@@ -80,7 +80,7 @@ func Test_GormGetUserNameOfWhoUserFollows_ExistingUserWithFollowers_NoSetTo1_Ret
 
 //endregion
 
-//region GormGetAllSimulationMessages
+//region GetAllSimulationMessages
 func Test_GormGetAllSimulationMessages_NoNotSpecified_ReturnsNotEmpty(t *testing.T) {
 	setupTest()
 	// Arrange
@@ -88,7 +88,7 @@ func Test_GormGetAllSimulationMessages_NoNotSpecified_ReturnsNotEmpty(t *testing
 	database.AddMessage(user1Id, "My test message")
 
 	// Act
-	messages, _ = database.GormGetAllSimulationMessages("")
+	messages, _ = database.GetAllSimulationMessages("")
 
 	// Assert
 	assert.NotEmpty(t, messages)
@@ -100,7 +100,7 @@ func Test_GormGetAllSimulationMessages_NoSetTo1_ReturnsOneElement(t *testing.T) 
 	database.AddMessage(user1Id, "My test message")
 
 	// Act
-	messages, _ = database.GormGetAllSimulationMessages("1")
+	messages, _ = database.GetAllSimulationMessages("1")
 
 	// Assert
 	assert.NotEmpty(t, messages)
@@ -109,7 +109,7 @@ func Test_GormGetAllSimulationMessages_NoSetTo1_ReturnsOneElement(t *testing.T) 
 
 //endregion
 
-//region GormGetUserSimulationMessages
+//region GetUserSimulationMessages
 func Test_GormGetUserSimulationMessages_ExistingUserWithMessages_NoNotSpecified_ReturnsNotEmpty(t *testing.T) {
 	setupTest()
 	// Arrange
@@ -118,7 +118,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages_NoNotSpecified_
 	database.AddMessage(userId, "My very own test message")
 
 	// Act
-	messages, _ = database.GormGetUserSimulationMessages(userId, "")
+	messages, _ = database.GetUserSimulationMessages(userId, "")
 
 	// Assert
 	assert.NotEmpty(t, messages)
@@ -132,7 +132,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithMessages__NoSetTo1_Retur
 	database.AddMessage(userId, "My very own test message")
 
 	// Act
-	messages, _ = database.GormGetUserSimulationMessages(userId, "1")
+	messages, _ = database.GetUserSimulationMessages(userId, "1")
 
 	// Assert
 	assert.NotEmpty(t, messages)
@@ -147,7 +147,7 @@ func Test_GormGetUserSimulationMessages_ExistingUserWithNoMessages_ReturnsEmpty(
 	database.AddMessage(user1Id, "Message from user1Id")
 
 	// Act
-	messages, _ = database.GormGetUserSimulationMessages(userId, "")
+	messages, _ = database.GetUserSimulationMessages(userId, "")
 
 	// Assert
 	assert.Empty(t, messages)

@@ -43,9 +43,9 @@ func setupTest() {
 
 	database.InitGorm(sqlite.Open("file::memory:"))
 
-	user1Id = database.GormAddUserToDb(user1)
-	user2Id = database.GormAddUserToDb(user2)
-	user3Id = database.GormAddUserToDb(user3)
-	user4Id = database.GormAddUserToDb(user4)
+	user1Id = database.AddUserToDb(user1)
+	user2Id = database.AddUserToDb(user2)
+	user3Id = database.AddUserToDb(user3)
+	user4Id = database.AddUserToDb(user4)
 
 }

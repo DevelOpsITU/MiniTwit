@@ -24,7 +24,7 @@ func CreateUser(registationUser models.RegistrationUser) error {
 		if userExists { // Connection with database error or mapping of user to object
 			return errors.New("The username is already taken")
 		} else {
-			database.GormAddUserToDb(registationUser)
+			database.AddUserToDb(registationUser)
 			return nil
 		}
 	}
@@ -32,7 +32,7 @@ func CreateUser(registationUser models.RegistrationUser) error {
 
 func FollowUser(userId uint, usernameToFollow string) error {
 
-	userToFollow, err := database.GormGetUserFromDb(usernameToFollow)
+	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
 		return err
@@ -49,7 +49,7 @@ func FollowUser(userId uint, usernameToFollow string) error {
 }
 
 func UnFollowUser(userId uint, usernameToUnFollow string) error {
-	userToUnFollow, err := database.GormGetUserFromDb(usernameToUnFollow)
+	userToUnFollow, err := database.GetUserFromDb(usernameToUnFollow)
 
 	if err != nil {
 		return err

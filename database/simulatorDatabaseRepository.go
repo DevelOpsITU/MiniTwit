@@ -8,7 +8,7 @@ import (
 )
 
 // TODO: This name of method is probably not the best
-func GormGetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string, error) {
+func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string, error) {
 	var result *sql.Rows
 	var err error
 	if noFollowers == "" {
@@ -52,7 +52,7 @@ func GormGetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string,
 	return usernames, nil
 }
 
-func GormGetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
+func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
 	var result *sql.Rows
 	var err error
 	if noFollowers == "" {
@@ -98,7 +98,7 @@ func GormGetAllSimulationMessages(noFollowers string) ([]models.Message, error) 
 	return messages, nil
 }
 
-func GormGetUserSimulationMessages(userId uint, noFollowers string) ([]models.Message, error) {
+func GetUserSimulationMessages(userId uint, noFollowers string) ([]models.Message, error) {
 	var result *sql.Rows
 	var err error
 	if noFollowers == "" {

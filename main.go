@@ -22,8 +22,6 @@ func main() {
 			panic("failed to connect database")
 		}
 	}
-	database.GormGetAllMessages()
-
 	// Blocking call in router.run
 	controllers.HandleRESTRequests()
 }

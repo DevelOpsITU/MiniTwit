@@ -22,7 +22,7 @@ func TestAddUserToDb(t *testing.T) {
 	setupTest()
 
 	amountOfUsers_old := database.NumberOfUsers()
-	user_id := database.GormAddUserToDb(test_registration_user)
+	user_id := database.AddUserToDb(test_registration_user)
 	amountOfUsers := database.NumberOfUsers()
 
 	if amountOfUsers == amountOfUsers_old {
@@ -35,9 +35,9 @@ func TestAddUserToDb(t *testing.T) {
 
 func TestGetUserFromDb(t *testing.T) {
 	setupTest()
-	test_user_id := database.GormAddUserToDb(test_registration_user)
+	test_user_id := database.AddUserToDb(test_registration_user)
 
-	user, err := database.GormGetUserFromDb(test_registration_user.Username)
+	user, err := database.GetUserFromDb(test_registration_user.Username)
 	if err != nil {
 		t.Error("There should be returned a user")
 		return
@@ -47,15 +47,15 @@ func TestGetUserFromDb(t *testing.T) {
 
 func TestCheckIfUserExists(t *testing.T) {
 	setupTest()
-	database.GormAddUserToDb(test_registration_user)
+	database.AddUserToDb(test_registration_user)
 	assert.True(t, database.CheckIfUserExists(test_registration_user.Username))
 	assert.True(t, database.CheckIfUserExists(user1.Username))
-	database.GormRemoveUserFromDb(user1Id)
+	database.RemoveUserFromDb(user1Id)
 	assert.False(t, database.CheckIfUserExists(user1.Username))
 	assert.False(t, database.CheckIfUserExists("Non-existing-user"))
 
 }
 
 func Cleanup_user(user_id uint) {
-	database.GormRemoveUserFromDb(user_id)
+	database.RemoveUserFromDb(user_id)
 }

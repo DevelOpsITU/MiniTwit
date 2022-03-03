@@ -12,7 +12,7 @@ import (
 )
 
 func CheckPassword(username string, pw string) (models.User, error) {
-	user, err := database.GormGetUserFromDb(username)
+	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
 		return models.User{}, errors.New("invalid username")

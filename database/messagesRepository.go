@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func GormGetAllMessages() []models.Message {
+func GetAllMessages() []models.Message {
 
 	var messages []models.Message
 
@@ -100,7 +100,7 @@ func arrayToString(a []uint, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 }
 
-func GormGetUserMessages(userId uint) ([]models.Message, error) {
+func GetUserMessages(userId uint) ([]models.Message, error) {
 
 	var messages []models.Message
 

@@ -12,12 +12,12 @@ import (
 )
 
 func GetUserTwits(username string) ([]models.Twit, models.User, error) {
-	user, err := database.GormGetUserFromDb(username)
+	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
 		return []models.Twit{}, models.User{}, err
 	} else {
-		messages, err := database.GormGetUserMessages(user.User_id)
+		messages, err := database.GetUserMessages(user.User_id)
 		if err != nil {
 			return []models.Twit{}, models.User{}, err
 		}
@@ -28,13 +28,13 @@ func GetUserTwits(username string) ([]models.Twit, models.User, error) {
 }
 
 func GetPublicTimelineTwits() ([]models.Twit, error) {
-	messages := database.GormGetAllMessages()
+	messages := database.GetAllMessages()
 	return ConvertMessagesToTwits(&messages), nil
 
 }
 
 func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
-	user, err := database.GormGetUserFromDb(user.Username)
+	user, err := database.GetUserFromDb(user.Username)
 
 	if err != nil {
 		return []models.Twit{}, err

@@ -13,7 +13,7 @@ import (
 )
 
 // TODO: Return errors if any, and meybe the user
-func GormAddUserToDb(user models.RegistrationUser) uint {
+func AddUserToDb(user models.RegistrationUser) uint {
 
 	salt := make([]byte, 4)
 	io.ReadFull(rand.Reader, salt)
@@ -42,7 +42,7 @@ func GormAddUserToDb(user models.RegistrationUser) uint {
 
 }
 
-func GormGetUserFromDb(username string) (User, error) {
+func GetUserFromDb(username string) (User, error) {
 	var user User
 	result := gormDb.
 		Where("username like ?", username).
@@ -65,7 +65,7 @@ func getUserFromDb(userId uint) User {
 	return user
 }
 
-func GormRemoveUserFromDb(userId uint) {
+func RemoveUserFromDb(userId uint) {
 
 	result := gormDb.
 		Delete(&User{}, userId)
@@ -86,7 +86,7 @@ func NumberOfUsers() int64 {
 
 func CheckIfUserExists(username string) bool {
 
-	user, _ := GormGetUserFromDb(username)
+	user, _ := GetUserFromDb(username)
 	if user.UserId != 0 {
 		return true
 	}
