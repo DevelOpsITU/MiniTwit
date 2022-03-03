@@ -64,10 +64,8 @@ func TestPersonalTimelineMessages(t *testing.T) {
 
 	messages := database.GetPersonalTimelineMessages(1)
 
-	t.Error("")
-
-	if len(messages) != 30 {
-		t.Errorf("User 1 should have at least 30 messages to show")
+	if len(messages) != 2 {
+		t.Errorf("User 1 should have 2 messages to show")
 	}
 
 }
