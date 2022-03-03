@@ -178,24 +178,6 @@ func CheckIfUserExists(username string) bool {
 	return false
 }
 
-func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
-
-	db := ConnectDb()
-	query, err := db.Prepare("DELETE FROM follower WHERE who_id = ? AND whom_id = ?")
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	_, err = query.Exec(userId, UserIdToUnFollow)
-
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	defer query.Close()
-	return nil
-}
-
 // SIMULATION HANDLING
 func HandleSqlQuery(sqlQuery string, args ...interface{}) (*sql.Rows, error) {
 	db := ConnectDb()
