@@ -262,15 +262,20 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 		w.WriteHeader(http.StatusNoContent)
 	} else if r.Method == "GET" {
 
-		followedByUser := logic.GetUserFollowerUsernames(username, limit)
+		followedByUser, err := logic.GetUserFollowerUsernames(username, limit)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 		type followsObj struct {
 			Follows []string `json:"follows"`
 		}
 		var follows followsObj
 
-		for user_ := range followedByUser {
-			follows.Follows = append(follows.Follows, followedByUser[user_])
+		for _, username := range followedByUser {
+			follows.Follows = append(follows.Follows, username)
 		}
 
 		if followedByUser == nil {

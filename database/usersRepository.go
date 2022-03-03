@@ -57,7 +57,7 @@ func GetUserFromDb(username string) (User, error) {
 
 }
 
-func getUserFromDb(userId uint) User {
+func GetUserFromDbWithId(userId uint) User {
 	var user User
 
 	gormDb.Find(&user, userId)

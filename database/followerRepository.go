@@ -15,8 +15,8 @@ func contains(s []uint, e uint) bool {
 
 func FollowUser(userId uint, UserIdToFollow uint) error {
 
-	follower := getUserFromDb(userId)
-	followed := getUserFromDb(UserIdToFollow)
+	follower := GetUserFromDbWithId(userId)
+	followed := GetUserFromDbWithId(UserIdToFollow)
 
 	if follower.UserId == 0 || followed.UserId == 0 {
 		return errors.New("user did not exist")

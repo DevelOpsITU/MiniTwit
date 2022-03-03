@@ -42,7 +42,7 @@ func FollowUser(userId uint, usernameToFollow string) error {
 	err = database.FollowUser(userId, userToFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -61,7 +61,7 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	err = database.FollowUser(follower.UserId, userToFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -77,10 +77,10 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
-	err = database.FollowUser(follower.UserId, userToUnFollow.UserId)
+	err = database.UnFollowUser(follower.UserId, userToUnFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -96,13 +96,23 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
 
 }
 
-func GetUserFollowerUsernames(username string, limit int) error {
-	//TODO: Chrsitan fortsæt her
+func GetUserFollowerUsernames(username string, limit int) ([]string, error) {
+	user, err := database.GetUserFromDb(username)
+	if err != nil {
+		return nil, err
+	}
+	users_int := database.GetFollowingUsers(user.UserId)
+	var usernames = []string{}
+	for _, user_id := range users_int {
+		usernames = append(usernames, database.GetUserFromDbWithId(user_id).Username)
+	}
+
+	return usernames, nil
 }
