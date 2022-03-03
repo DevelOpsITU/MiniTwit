@@ -1,35 +1,30 @@
 package database
 
 import (
+	"fmt"
 	"minitwit/config"
 	"minitwit/database"
-	"minitwit/models"
 	"testing"
 )
+
+var test_user_id = 0
 
 func init() {
 	config.SetupTestConfig()
 	database.InitGorm()
-}
-
-var test_user = models.User{
-	User_id:  201,
-	Username: "a",
-	Email:    "@",
-	Pw_hash:  "nil",
+	test_user_id = database.GormAddUserToDb(test_registration_user)
 }
 
 func TestAddMessage(t *testing.T) {
 	//TODO: Use test user to post messages
 
-	err := database.AddMessage(test_user.User_id, "Test message")
+	err := database.AddMessage(test_user_id, "Test message")
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
 
 	t.Cleanup(func() {
-		//TODO: Cleanup the message posted
-
+		database.GormRemoveUserFromDb(test_user_id)
 	})
 
 }
@@ -73,17 +68,22 @@ func TestPersonalTimelineMessages(t *testing.T) {
 }
 
 func TestUserMessages(t *testing.T) {
-	TestAddMessage(t)
-	result, err := database.GormGetUserMessages(test_user.User_id)
+
+	database.AddMessage(test_user_id, "Test message")
+	result, err := database.GormGetUserMessages(test_user_id)
 
 	if err != nil {
 		t.Errorf(err.Error())
-	} /*else if len(result) != 1 {
-		t.Errorf("UserId: "+test_user.User_id+" should only have one message, but had " + fmt.Sprint(len(result)))
-	}*/
+	} else if len(result) != 1 {
+		t.Errorf("UserId: " + fmt.Sprint(test_user_id) + " should only have one message, but had " + fmt.Sprint(len(result)))
+	}
 
 	if result[0].Text != "Test message" {
 		t.Errorf("Message should be 'Test message', but was '" + result[0].Text + "'")
 	}
+
+	t.Cleanup(func() {
+		database.GormRemoveUserFromDb(test_user_id)
+	})
 
 }

@@ -23,11 +23,17 @@ var test_registration_user = models.RegistrationUser{
 func TestAddUserToDb(t *testing.T) {
 
 	amountOfUsers_old := database.NumberOfUsers()
-	database.GormAddUserToDb(test_registration_user)
+	user_id := database.GormAddUserToDb(test_registration_user)
 	amountOfUsers := database.NumberOfUsers()
 
 	if amountOfUsers == amountOfUsers_old {
 		t.Error("Users before: ", amountOfUsers_old, " Users now: ", amountOfUsers, " Should be different")
 	}
 
+	Cleanup_user(user_id)
+
+}
+
+func Cleanup_user(user_id int) {
+	database.GormRemoveUserFromDb(user_id)
 }

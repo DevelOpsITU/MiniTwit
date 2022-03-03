@@ -12,7 +12,7 @@ import (
 )
 
 // TODO: Return errors if any, and meybe the user
-func GormAddUserToDb(user models.RegistrationUser) {
+func GormAddUserToDb(user models.RegistrationUser) int {
 
 	salt := make([]byte, 4)
 	io.ReadFull(rand.Reader, salt)
@@ -30,6 +30,21 @@ func GormAddUserToDb(user models.RegistrationUser) {
 
 	result := gormDb.
 		Create(&user_obj)
+
+	if result.Error != nil {
+		panic(result.Error)
+	} else if result.RowsAffected != 1 {
+		panic(fmt.Sprint(result.RowsAffected) + " rows were affected")
+	}
+
+	return int(user_obj.UserId)
+
+}
+
+func GormRemoveUserFromDb(user_id int) {
+
+	result := gormDb.
+		Delete(&User{}, user_id)
 
 	if result.Error != nil {
 		panic(result.Error)
