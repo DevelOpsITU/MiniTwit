@@ -23,9 +23,7 @@ func TestAddMessage(t *testing.T) {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
 
-	t.Cleanup(func() {
-		database.GormRemoveUserFromDb(test_user_id)
-	})
+	database.GormRemoveMessagesFromDb(test_user_id)
 
 }
 
@@ -34,10 +32,11 @@ func TestAddMessageFakeUser(t *testing.T) {
 	//TODO: Use a id, that is not of a valid user
 	// Right now it does not matter, since we don't use foreign key
 
-	err := database.AddMessage(10000, "Test message")
+	err := database.AddMessage(9999999, "Test message")
 	if err != nil {
 		t.Errorf("Using a non existing user should have returned an Error!")
 	}
+	database.GormRemoveMessagesFromDb(9999999)
 
 }
 
@@ -79,6 +78,7 @@ func TestUserMessages(t *testing.T) {
 	if result[0].Text != "Test message" {
 		t.Errorf("Message should be 'Test message', but was '" + result[0].Text + "'")
 	}
+	database.GormRemoveMessagesFromDb(test_user_id)
 
 	t.Cleanup(func() {
 		database.GormRemoveUserFromDb(test_user_id)

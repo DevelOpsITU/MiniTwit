@@ -51,14 +51,24 @@ func AddMessage(userId int, message string) error {
 		Select("message_id", "author_id", "text", "pub_date", "flagged").
 		Table("message").Create(&messageObj)
 
-	fmt.Println(create)
-
 	if create.Error != nil {
 		println(create.Error.Error())
 		return errors.New(create.Error.Error())
 	}
 
 	return nil
+}
+
+func GormRemoveMessagesFromDb(user_id int) {
+
+	result := gormDb.
+		Where("author_id = ?", user_id).
+		Delete(&Message{})
+
+	if result.Error != nil {
+		panic(result.Error)
+	}
+
 }
 
 // Returns a list of all the users a user is following
