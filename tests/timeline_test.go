@@ -1,8 +1,7 @@
 package tests
 
 import (
-	"database/sql"
-	"fmt"
+	"minitwit/database"
 	"minitwit/logic"
 	"minitwit/models"
 	"os"
@@ -10,10 +9,12 @@ import (
 
 	"github.com/go-testfixtures/testfixtures/v3"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 var (
-	db       *sql.DB
+	db       *gorm.DB
 	fixtures *testfixtures.Loader
 )
 
@@ -22,7 +23,7 @@ var (
 **************************************************/
 func Test_Get_From_Non_Existing_User_Returns_Empty(t *testing.T) {
 	prepare()
-	twits, user, err := logic.GetUserTwits("NonExistingUser")
+	twits, user, err := logic.GetUserTwits("NonExistingUser", 48)
 	assert.Empty(t, twits)
 	assert.Empty(t, user)
 	assert.NotNil(t, err)
@@ -30,14 +31,14 @@ func Test_Get_From_Non_Existing_User_Returns_Empty(t *testing.T) {
 
 func Test_Get_From_Existin_User_Returns_Twits(t *testing.T) {
 	prepare()
-	twits, user, _ := logic.GetUserTwits("Roger Histand")
+	twits, user, _ := logic.GetUserTwits("Roger Histand", 48)
 	twit := twits[0]
-	assert.Equal(t, twit.Username, "Roger Histand")
-	assert.Equal(t, twit.Pub_date, 1233065594)
-	assert.Equal(t, twit.Text, "From hour to hour yesterday I saw my white face of it?")
-	assert.Equal(t, user.Username, "Roger Histand")
-	assert.Equal(t, user.User_id, 1)
-	assert.Equal(t, user.Email, "Roger+Histand@hotmail.com")
+	assert.Equal(t, "Roger Histand", twit.Username)
+	assert.Equal(t, logic.FormatPubdate(1233065594), twit.Pub_date)
+	assert.Equal(t, "From hour to hour yesterday I saw my white face of it?", twit.Text)
+	assert.Equal(t, "Roger Histand", user.Username)
+	assert.Equal(t, uint(1), user.User_id)
+	// assert.Equal(t, user.Email, "Roger+Histand@hotmail.com")
 }
 
 /*************************************************
@@ -47,9 +48,9 @@ func Test_Get_Public_Timline_Returns_Twits(t *testing.T) {
 	prepare()
 	twits, _ := logic.GetPublicTimelineTwits()
 	twit := twits[0]
-	assert.Equal(t, twit.Username, "Roger Histand")
-	assert.Equal(t, twit.Pub_date, 1233065594)
-	assert.Equal(t, twit.Text, "From hour to hour yesterday I saw my white face of it?")
+	assert.Equal(t, "Roger Histand", twit.Username)
+	assert.Equal(t, logic.FormatPubdate(1233065594), twit.Pub_date)
+	assert.Equal(t, "From hour to hour yesterday I saw my white face of it?", twit.Text)
 }
 
 /*************************************************
@@ -59,9 +60,9 @@ func Test_Get_Personal_Timline_Returns_Twits(t *testing.T) {
 	prepare()
 	twits, _ := logic.GetPublicTimelineTwits()
 	twit := twits[0]
-	assert.Equal(t, twit.Username, "Roger Histand")
-	assert.Equal(t, twit.Pub_date, 1233065594)
-	assert.Equal(t, twit.Text, "From hour to hour yesterday I saw my white face of it?")
+	assert.Equal(t, "Roger Histand", twit.Username)
+	assert.Equal(t, logic.FormatPubdate(1233065594), twit.Pub_date)
+	assert.Equal(t, "From hour to hour yesterday I saw my white face of it?", twit.Text)
 }
 
 /*************************************************
@@ -77,27 +78,34 @@ func Test_Convert_Empty_Returns_Empty(t *testing.T) {
 /*************************************************
 * GetGavatarUrl
 **************************************************/
-func Test_Get_Non_Existing_Gavatar_Should_Fail(t *testing.T) {
+func Test_Get_Existing_Gavatar_Should_Return(t *testing.T) {
 	email := "user@mail.com"
 	size := "48"
 	sizeInt := 48
 	hashStr := "6ad193f57f79ac444c3621370da955e9"
-	gavatarStr := logic.GetGavateUrl(email, sizeInt)
+	gavatarStr := logic.GetGavaterUrl(email, sizeInt)
 
 	expectedString := "http://www.gravatar.com/avatar/" + hashStr + "?d=identicon&s=" + size
 
-	assert.NotEqual(t, gavatarStr, expectedString, "Gavtar failed")
+	assert.Equal(t, expectedString, gavatarStr)
 }
 
 func TestMain(m *testing.M) {
 	var err error
-	db, err = sql.Open("sqlite3", "minitwit_test.db")
+	db, err = database.InitGorm(sqlite.Open("file::memory:"))
+
 	if err != nil {
-		panic("Failed to open db")
+		panic("Failed to init gorm")
+	}
+
+	data, err := db.DB()
+
+	if err != nil {
+		panic("Failed to fetch sql db")
 	}
 
 	fixtures, err = testfixtures.New(
-		testfixtures.Database(db),
+		testfixtures.Database(data),
 		testfixtures.Dialect("sqlite"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
 		testfixtures.DangerousSkipTestDatabaseCheck(),
 		testfixtures.Paths(
@@ -115,7 +123,6 @@ func TestMain(m *testing.M) {
 }
 
 func prepare() {
-	fmt.Println(fixtures)
 	if err := fixtures.Load(); err != nil {
 		panic(err.Error())
 	}
