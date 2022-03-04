@@ -1,0 +1,11 @@
+- id: 1
+  user_id: 1
+  username: "Roger Histand"
+  email: "Roger+Histand@hotmail.com"
+  pw_hash: "pbkdf2:sha256:50000$27tb2qgX$64cd47b7cbd27b0f27f170a26e0e434ae24a310cf2e4704f075fcc9f48339c8e"
+
+- id: 2
+  user_id: 2
+  username: "Geoffrey Stieff"
+  email: "Geoffrey.Stieff@gmail.com"
+  pw_hash: "pbkdf2:sha256:50000$ZKEH4LvN$c16172a5a217c2410d410daf558ffaa2fecb088bae29913277f75151f4719e27"

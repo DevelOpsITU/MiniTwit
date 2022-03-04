@@ -29,6 +29,7 @@ const SECRET_KEY = "development key"
 *			DATABASE RELATED			*
 ****************************************/
 func ConnectDb() *sql.DB {
+
 	connectionString := config.GetConfig().Database.ConnectionString
 	db, err := sql.Open("sqlite3", connectionString)
 	if err != nil {

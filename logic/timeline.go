@@ -18,7 +18,6 @@ func GetUserTwits(username string) ([]models.Twit, models.User, error) {
 		messages := database.GetUserMessages(user.User_id)
 		return ConvertMessagesToTwits(&messages), user, nil
 	}
-
 }
 
 func GetPublicTimelineTwits() ([]models.Twit, error) {
@@ -42,14 +41,14 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, models.Twit{getGavaterUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
+		twits = append(twits, models.Twit{GetGavateUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
 	}
 	print(twits)
 	return twits
 
 }
 
-func getGavaterUrl(email string, size int) string {
+func GetGavateUrl(email string, size int) string {
 	data := []byte(strings.ToLower(strings.TrimSpace(email)))
 	hash := md5.Sum(data)
 	hashStr := hex.EncodeToString(hash[:])
