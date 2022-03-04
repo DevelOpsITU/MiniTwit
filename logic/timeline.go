@@ -58,7 +58,7 @@ func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 
 }
 
-func GetGavateUrl(email string, size int) string {
+func GetGavaterUrl(email string, size int) string {
 	data := []byte(strings.ToLower(strings.TrimSpace(email)))
 	hash := md5.Sum(data)
 	hashStr := hex.EncodeToString(hash[:])
