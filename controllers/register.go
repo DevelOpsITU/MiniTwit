@@ -13,17 +13,17 @@ import (
 func registerHandlers(router *gin.Engine) {
 
 	router.GET("/register", func(c *gin.Context) {
-		handleRegisterGet(c.Writer, c.Request, c)
+		handleRegisterGet(c.Writer, c)
 	})
 	router.POST("/register", func(c *gin.Context) {
-		handleRegisterPost(c.Writer, c.Request, c)
+		handleRegisterPost(c.Writer, c)
 	})
 
 }
 
 var registerTemplate = gonja.Must(gonja.FromFile("templates/register.html"))
 
-func handleRegisterGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleRegisterGet(w gin.ResponseWriter, c *gin.Context) {
 	user, err := functions.GetCookie(c)
 
 	if err == nil && user.User.User_id != 0 {
@@ -39,7 +39,7 @@ func handleRegisterGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	w.Write([]byte(out))
 }
 
-func handleRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleRegisterPost(w gin.ResponseWriter, c *gin.Context) {
 	cookieUser, err := functions.GetCookie(c)
 
 	if err == nil && cookieUser.User.User_id != 0 {
@@ -49,10 +49,10 @@ func handleRegisterPost(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	}
 
 	registationUser := models.RegistrationUser{
-		c.PostForm("username"),
-		c.PostForm("email"),
-		c.PostForm("password"),
-		c.PostForm("password2"),
+		Username:  c.PostForm("username"),
+		Email:     c.PostForm("email"),
+		Password1: c.PostForm("password"),
+		Password2: c.PostForm("password2"),
 	}
 
 	err = logic.CreateUser(registationUser)

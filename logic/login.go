@@ -15,10 +15,10 @@ func CheckPassword(username string, pw string) (models.User, error) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
-		return models.User{}, errors.New("Invalid username")
+		return models.User{}, errors.New("invalid username")
 	}
 
-	s := strings.Split(user.Pw_hash, ":")
+	s := strings.Split(user.PwHash, ":")
 
 	s2 := strings.Split(s[2], "$")
 
@@ -31,8 +31,11 @@ func CheckPassword(username string, pw string) (models.User, error) {
 	dk := pbkdf2.Key([]byte(pw), []byte(pwSalt), passwordIterationInt, 32, sha256.New)
 
 	if hex.EncodeToString(dk) == pwHash {
-		return user, nil
+		return models.User{
+			User_id:  user.UserId,
+			Username: user.Username,
+		}, nil
 	} else {
-		return models.User{}, errors.New("Invalid password")
+		return models.User{}, errors.New("invalid password")
 	}
 }

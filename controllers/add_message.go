@@ -13,12 +13,12 @@ func addMessageHandlers(router *gin.Engine) {
 
 	// Add message
 	router.POST("/add_message", func(c *gin.Context) {
-		handleAddMessage(c.Writer, c.Request, c)
+		handleAddMessage(c)
 	})
 
 }
 
-func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleAddMessage(c *gin.Context) {
 
 	g, err := functions.GetCookie(c)
 
@@ -27,7 +27,7 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	err = logic.AddMessage(g.User, c.PostForm("text"))
+	err = logic.AddMessageFromUserModel(g.User, c.PostForm("text"))
 
 	if err != nil {
 		println(err.Error())

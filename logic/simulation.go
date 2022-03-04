@@ -6,7 +6,7 @@ import (
 	"minitwit/models"
 )
 
-func UnFollowSimulationUser(userId int, user models.User) error {
+func UnFollowSimulationUser(userId uint, user models.User) error {
 	err := database.UnFollowUser(userId, user.User_id)
 
 	if err != nil {
@@ -16,7 +16,7 @@ func UnFollowSimulationUser(userId int, user models.User) error {
 	return nil
 }
 
-func FollowSimulationUser(userId int, user models.User) error {
+func FollowSimulationUser(userId uint, user models.User) error {
 
 	err := database.FollowUser(userId, user.User_id)
 
@@ -27,7 +27,7 @@ func FollowSimulationUser(userId int, user models.User) error {
 	return nil
 }
 
-func GetUsernameOfWhoFollowsUser(userId int, noFollowers string) []string {
+func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) []string {
 	users, err := database.GetUsernameOfWhoFollowsUser(userId, noFollowers)
 
 	if err != nil {

@@ -1,15 +1,12 @@
 package models
 
-/****************************************
-*		   DATABASE ENTITIES			*
-****************************************/
 type Message struct {
-	MessageId int
-	AuthorId  int
-	Username  string
+	MessageId uint
+	AuthorId  uint
 	Text      string
 	Pubdate   int64
-	Flagged   bool
+	Flagged   int
+	Username  string
 	Email     string
 }
 
@@ -21,10 +18,8 @@ type RegistrationUser struct {
 }
 
 type User struct {
-	User_id  int
+	User_id  uint
 	Username string
-	Email    string
-	Pw_hash  string
 }
 
 type Session struct {

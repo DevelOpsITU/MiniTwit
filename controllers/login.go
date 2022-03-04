@@ -12,17 +12,17 @@ import (
 func loginHandlers(router *gin.Engine) {
 
 	router.GET("/login", func(c *gin.Context) {
-		handleloginGet(c.Writer, c.Request, c)
+		handleloginGet(c.Writer, c)
 	})
 
 	router.POST("/login", func(c *gin.Context) {
-		handleLogin(c.Writer, c.Request, c)
+		handleLogin(c)
 	})
 }
 
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 
-func handleloginGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleloginGet(w gin.ResponseWriter, c *gin.Context) {
 
 	cookie, err := functions.GetCookie(c)
 	if err != nil {
@@ -41,7 +41,7 @@ func handleloginGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 }
 
-func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleLogin(c *gin.Context) {
 
 	username := c.PostForm("username")
 	pw := c.PostForm("password")
