@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func loginHandlers(router *gin.Engine) {

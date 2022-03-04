@@ -18,6 +18,10 @@ var HttpHandlers = []interface{}{
 	simulationHandlers,
 }
 
+func GetHandlers() *[]interface{} {
+	return &HttpHandlers
+}
+
 // HandleRESTRequests - handles the rest requests
 func HandleRESTRequests() {
 

@@ -1,0 +1,35 @@
+<!doctype html>
+
+<title>{% block title %}Welcome{% endblock %} | MiniTwit</title>
+<link rel=stylesheet type=text/css href="/static/style.css">
+
+<div class=page>
+    <h1>MiniTwit</h1>
+    <div class=navigation>
+    {% if g.User and g.User.User_id%}
+        <a href="/">my timeline</a> |
+        <a href="/public">public timeline</a> |
+        <a href="/logout">sign out [{{ g.User.Username }}]</a>
+    {% else %}
+        <a href="/public">public timeline</a> |
+        <a href="/register">sign up</a> |
+        <a href="/login">sign in</a>
+    {% endif %}
+    </div>
+
+    {% if g.Message %}
+    <ul class=flashes>
+        {% for message in g.Messages %}
+        <li>{{ message }}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class=body>
+        {% block body %}{% endblock %}
+    </div>
+    <div class=footer>
+        MiniTwit &mdash; A Go` Application
+    </div>
+</div>
+</div>

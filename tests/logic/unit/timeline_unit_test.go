@@ -109,7 +109,7 @@ func TestMain(m *testing.M) {
 		testfixtures.Dialect("sqlite"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
 		testfixtures.DangerousSkipTestDatabaseCheck(),
 		testfixtures.Paths(
-			"fixtures",
+			"../../fixtures",
 		), // YAML files
 	)
 	if err != nil {
