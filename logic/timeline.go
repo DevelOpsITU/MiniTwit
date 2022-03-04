@@ -3,20 +3,30 @@ package logic
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"minitwit/database"
 	"minitwit/models"
 	"strconv"
 	"strings"
+	"time"
 )
 
-func GetUserTwits(username string) ([]models.Twit, models.User, error) {
+// Gets this users own messages
+func GetUserTwits(username string, limit int) ([]models.Twit, models.User, error) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
 		return []models.Twit{}, models.User{}, err
 	} else {
-		messages := database.GetUserMessages(user.User_id)
-		return ConvertMessagesToTwits(&messages), user, nil
+		messages, err := database.GetUserMessages(user.UserId, limit)
+		if err != nil {
+			return []models.Twit{}, models.User{}, err
+		}
+
+		return ConvertMessagesToTwits(&messages), models.User{
+			User_id:  user.UserId,
+			Username: user.Username,
+		}, nil
 	}
 }
 
@@ -27,12 +37,12 @@ func GetPublicTimelineTwits() ([]models.Twit, error) {
 }
 
 func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
-	user, err := database.GetUserFromDb(user.Username)
+	userFromDb, err := database.GetUserFromDb(user.Username)
 
 	if err != nil {
 		return []models.Twit{}, err
 	} else {
-		messages := database.GetPersonalTimelineMessages(user.User_id)
+		messages := database.GetPersonalTimelineMessages(userFromDb.UserId)
 		return ConvertMessagesToTwits(&messages), nil
 	}
 
@@ -41,7 +51,7 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	var twits []models.Twit
 	for _, message := range *messages {
-		twits = append(twits, models.Twit{GetGavateUrl(message.Email, 48), message.Username, strconv.Itoa(int(message.Pubdate)), message.Text})
+		twits = append(twits, models.Twit{GavatarUrl: GetGavaterUrl(message.Email, 48), Username: message.Username, Pub_date: (formatPubdate(message.Pubdate)), Text: message.Text})
 	}
 	print(twits)
 	return twits
@@ -55,4 +65,14 @@ func GetGavateUrl(email string, size int) string {
 
 	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", strconv.Itoa(size)}
 	return strings.Join(str, "")
+}
+
+func formatPubdate(Pubdate int64) string {
+	date := time.Unix(Pubdate, 0)
+
+	formatted := fmt.Sprintf("%d-%02d-%02d @ %02d:%02d",
+		date.Year(), date.Month(), date.Day(),
+		date.Hour(), date.Minute())
+
+	return formatted
 }

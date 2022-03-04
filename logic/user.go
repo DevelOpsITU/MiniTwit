@@ -30,7 +30,7 @@ func CreateUser(registationUser models.RegistrationUser) error {
 	}
 }
 
-func FollowUser(userId int, usernameToFollow string) error {
+func FollowUser(userId uint, usernameToFollow string) error {
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
@@ -39,28 +39,80 @@ func FollowUser(userId int, usernameToFollow string) error {
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
-	err = database.FollowUser(userId, userToFollow.User_id)
+	err = database.FollowUser(userId, userToFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
 }
 
-func UnFollowUser(userId int, usernameToUnFollow string) error {
+func FollowUserFromUsername(followerUsername string, usernameToFollow string) error {
+
+	follower, err := database.GetUserFromDb(followerUsername)
+	userToFollow, err := database.GetUserFromDb(usernameToFollow)
+
+	if err != nil {
+		return err
+	}
+
+	//TODO: Check that the user is not already following the user Issue #47
+	err = database.FollowUser(follower.UserId, userToFollow.UserId)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return nil
+}
+
+func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) error {
+
+	follower, err := database.GetUserFromDb(followerUsername)
+	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
+
+	if err != nil {
+		return err
+	}
+
+	//TODO: Check that the user is not already following the user Issue #47
+	err = database.UnFollowUser(follower.UserId, userToUnFollow.UserId)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return nil
+}
+
+func UnFollowUser(userId uint, usernameToUnFollow string) error {
 	userToUnFollow, err := database.GetUserFromDb(usernameToUnFollow)
 
 	if err != nil {
 		return err
 	}
 	// TODO: check if already following before trying this
-	err = database.UnFollowUser(userId, userToUnFollow.User_id)
+	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return nil
 
+}
+
+func GetUserFollowerUsernames(username string, limit int) ([]string, error) {
+	user, err := database.GetUserFromDb(username)
+	if err != nil {
+		return nil, err
+	}
+	users_int := database.GetFollowingUsers(user.UserId)
+	var usernames = []string{}
+	for _, user_id := range users_int {
+		usernames = append(usernames, database.GetUserFromDbWithId(user_id).Username)
+	}
+
+	return usernames, nil
 }

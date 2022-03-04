@@ -38,7 +38,7 @@ func SetCookie(c *gin.Context, session models.Session) {
 }
 
 func GetEndpoint(r *http.Request) models.Request {
-	var request = models.Request{r.URL.Path}
+	var request = models.Request{Endpoint: r.URL.Path}
 
 	if request.Endpoint == "/public" {
 		request.Endpoint = "public_timeline"
