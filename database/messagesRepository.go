@@ -3,6 +3,7 @@ package database
 import (
 	"errors"
 	"fmt"
+	"minitwit/log"
 	"minitwit/models"
 	"strings"
 	"time"
@@ -22,13 +23,15 @@ func GetAllMessages() []models.Message {
 		Rows()
 
 	if err != nil {
-		panic(err)
+		log.Logger.Error().Err(err).Caller().Msg("Could not get public messages")
+		return messages
 	}
 
 	for result.Next() {
 		var msg models.Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
+			log.Logger.Error().Err(err).Caller().Msg("Could not map the messages")
 			return messages
 		}
 		messages = append(messages, msg)

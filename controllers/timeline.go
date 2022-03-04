@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -63,10 +64,16 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request) {
 	request := functions.GetEndpoint(r)
 
-	twits, _ := logic.GetPublicTimelineTwits()
+	twits, err := logic.GetPublicTimelineTwits()
+
+	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not get public messages")
+
+	}
 	//print(string(request))
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not generate the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))

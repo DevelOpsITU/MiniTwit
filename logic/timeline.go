@@ -54,7 +54,6 @@ func ConvertMessagesToTwits(messages *[]models.Message) []models.Twit {
 	for _, message := range *messages {
 		twits = append(twits, models.Twit{GavatarUrl: getGavaterUrl(message.Email, 48), Username: message.Username, Pub_date: (formatPubdate(message.Pubdate)), Text: message.Text})
 	}
-	print(twits)
 	return twits
 
 }
