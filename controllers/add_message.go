@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -30,7 +31,7 @@ func handleAddMessage(c *gin.Context) {
 	err = logic.AddMessageFromUserModel(g.User, c.PostForm("text"))
 
 	if err != nil {
-		println(err.Error())
+		log.Logger.Error().Err(err).Str("text", c.PostForm("text")).Msg("Could not add message")
 	} else {
 		g = models.Session{
 			User:     g.User,

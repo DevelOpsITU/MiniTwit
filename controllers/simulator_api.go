@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"log"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -118,29 +118,31 @@ func handleSimLatest(w gin.ResponseWriter) {
 func handleSimRegisterPost(w gin.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
-	Paylaod := struct {
+	Payload := struct {
 		Username string `json:"username"`
 		Email    string `json:"email"`
 		Password string `json:"pwd"`
 	}{}
-	err := decoder.Decode(&Paylaod)
+	err := decoder.Decode(&Payload)
 	if err != nil {
-		log.Println(err.Error())
+		//Note: Maybe log the data that could not be parsed for debugging.
+		log.Logger.Error().Err(err).Msg("Could not parse the json data")
 		return
 	}
 
 	registrationUser := models.RegistrationUser{
-		Username:  Paylaod.Username,
-		Email:     Paylaod.Email,
-		Password1: Paylaod.Password,
-		Password2: Paylaod.Password,
+		Username:  Payload.Username,
+		Email:     Payload.Email,
+		Password1: Payload.Password,
+		Password2: Payload.Password,
 	}
 
 	err = logic.CreateUser(registrationUser)
 
 	if err != nil {
-		print(err.Error())
+		log.Logger.Error().Err(err).Str("username", registrationUser.Username).Msg("Could not create the user")
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	} else {
 		w.WriteHeader(http.StatusNoContent)
 		return
@@ -157,14 +159,14 @@ func handleSimAddMessage(w http.ResponseWriter, r *http.Request, username string
 	}{}
 	err := decoder.Decode(&Payload)
 	if err != nil {
-		log.Println(err)
+		log.Logger.Error().Err(err).Msg("Could not decode the data")
 		return
 	}
 
 	err = logic.AddMessageFromUsername(username, Payload.Content)
 
 	if err != nil {
-		log.Println("Could not add message: " + Payload.Content)
+		log.Logger.Error().Err(err).Str("text", Payload.Content).Msg("Could not add the message")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else {
@@ -181,7 +183,7 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 	if limitStr != "" {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil {
-			log.Println("Had an input that was not a number i could parse. " + limitStr)
+			log.Logger.Error().Err(err).Str("limit", limitStr).Msg("Could not parse the limit string")
 			limit = 9999999999
 		}
 	} else {
@@ -191,6 +193,7 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 	twits, _, err := logic.GetUserTwits(username, limit)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Msg("Could not retrive the users twits")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -221,7 +224,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 	if limitStr != "" {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil {
-			log.Println("Had an input that was not a number i could parse. " + limitStr)
+			log.Logger.Error().Err(err).Str("limit", limitStr).Msg("Could not parse the limit string")
 			limit = 9999999999
 		}
 	} else {
@@ -237,7 +240,8 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 		}{}
 		err := decoder.Decode(&Payload)
 		if err != nil {
-			log.Println(err)
+			log.Logger.Error().Err(err).Msg("Could not parse the data")
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -246,25 +250,28 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 
 			err = logic.FollowUserFromUsername(username, followUsername)
 			if err != nil {
+				log.Logger.Error().Err(err).Str("follower", username).Str("followed", followUsername).Msg("Could follow the user")
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 		} else if Payload.Unfollow != "" {
-			unfollowUsername := Payload.Unfollow
+			unFollowUsername := Payload.Unfollow
 
-			err = logic.UnFollowUserFromUsername(username, unfollowUsername)
+			err = logic.UnFollowUserFromUsername(username, unFollowUsername)
 			if err != nil {
+				log.Logger.Error().Err(err).Str("follower", username).Str("followed", unFollowUsername).Msg("Could unfollow the user")
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 		}
-
 		w.WriteHeader(http.StatusNoContent)
+		return
 	} else if r.Method == "GET" {
 
 		followedByUser, err := logic.GetUserFollowerUsernames(username, limit)
 
 		if err != nil {
+			log.Logger.Error().Err(err).Str("follower", username).Msg("Could not get who the user follows")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -278,6 +285,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 			follows.Follows = append(follows.Follows, username)
 		}
 
+		//TODO: Check that this is possible?
 		if followedByUser == nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return

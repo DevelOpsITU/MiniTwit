@@ -54,8 +54,13 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 
 	twits, err := logic.GetPersonalTimelineTwits(g.User)
 
+	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not get user twits")
+	}
+
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": g.User})
 	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not render the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))

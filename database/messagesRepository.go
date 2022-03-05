@@ -52,7 +52,7 @@ func AddMessage(userId uint, post string) error {
 	create := gormDb.Create(&message)
 
 	if create.Error != nil {
-		println(create.Error.Error())
+		log.Logger.Error().Str("userId", fmt.Sprint(userId)).Str("text", post).Msg("Could not create the message")
 		return errors.New(create.Error.Error())
 	}
 
@@ -60,6 +60,8 @@ func AddMessage(userId uint, post string) error {
 }
 
 func GetPersonalTimelineMessages(id uint) []models.Message {
+
+	var messages []models.Message
 
 	follows := GetFollowingUsers(id)
 
@@ -81,22 +83,21 @@ func GetPersonalTimelineMessages(id uint) []models.Message {
 		Rows()
 
 	if err != nil {
-		//TODO: Remove panic statements. it crashes the application.
-		panic(err)
+		log.Logger.Error().Str("userId", fmt.Sprint(id)).Msg("Could not get the messages from the user and followers")
+		return messages
 	}
-
-	var messages2 []models.Message
 
 	for result.Next() {
 		var msg models.Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
-			return []models.Message{}
+			log.Logger.Error().Err(err).Str("userId", fmt.Sprint(id)).Msg("Could not map the message from user")
+			return messages
 		}
-		messages2 = append(messages2, msg)
+		messages = append(messages, msg)
 	}
 
-	return messages2
+	return messages
 }
 
 func arrayToString(a []uint, delim string) string {
@@ -117,13 +118,15 @@ func GetUserMessages(userId uint, limit int) ([]models.Message, error) {
 		Rows()
 
 	if err != nil {
-		return messages, errors.New("Failed to get the userMessages: " + err.Error())
+		log.Logger.Error().Str("userId", fmt.Sprint(userId)).Msg("Could not get the messages from the user")
+		return messages, errors.New(err.Error())
 	}
 
 	for result.Next() {
 		var msg models.Message
 		err := result.Scan(&msg.MessageId, &msg.AuthorId, &msg.Username, &msg.Text, &msg.Pubdate, &msg.Email)
 		if err != nil {
+			log.Logger.Error().Str("userId", fmt.Sprint(userId)).Msg("Could not map the message from user")
 			return messages, errors.New("Failed to scan the element: " + err.Error())
 		}
 		messages = append(messages, msg)

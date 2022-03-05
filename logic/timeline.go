@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"minitwit/database"
+	"minitwit/log"
 	"minitwit/models"
 	"strconv"
 	"strings"
@@ -13,13 +14,16 @@ import (
 
 // Gets this users own messages
 func GetUserTwits(username string, limit int) ([]models.Twit, models.User, error) {
+
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
+		log.Logger.Error().Str("username", username).Msg("Could not get user")
 		return []models.Twit{}, models.User{}, err
 	} else {
 		messages, err := database.GetUserMessages(user.UserId, limit)
 		if err != nil {
+			log.Logger.Error().Str("username", username).Str("limit", fmt.Sprint(limit)).Msg("Could not get users messages")
 			return []models.Twit{}, models.User{}, err
 		}
 
@@ -41,6 +45,7 @@ func GetPersonalTimelineTwits(user models.User) ([]models.Twit, error) {
 	userFromDb, err := database.GetUserFromDb(user.Username)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Str("username", user.Username).Msg("Could not get user")
 		return []models.Twit{}, err
 	} else {
 		messages := database.GetPersonalTimelineMessages(userFromDb.UserId)

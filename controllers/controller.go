@@ -28,7 +28,10 @@ func HandleRESTRequests() {
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-	router.SetTrustedProxies(nil)
+	err := router.SetTrustedProxies(nil)
+	if err != nil {
+		log.Logger.Error().Err(err).Msg("Could not set trusted proxies")
+	}
 
 	// TODO: Add proxy header if running in container
 	router.Use(logger.SetLogger(
@@ -44,6 +47,9 @@ func HandleRESTRequests() {
 		handler.(func(engine *gin.Engine))(router)
 	}
 
-	router.Run(fmt.Sprintf(":%s", config.GetConfig().Server.Port))
+	err = router.Run(fmt.Sprintf(":%s", config.GetConfig().Server.Port))
+	if err != nil {
+		log.Logger.Error().Err(err).Msg("Could not open the server on " + fmt.Sprintf(":%s", config.GetConfig().Server.Port))
+	}
 
 }

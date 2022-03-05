@@ -34,7 +34,6 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 	create := gormDb.Model(&Follower{}).Create(obj)
 
 	if create.Error != nil {
-		println(create.Error.Error())
 		return errors.New(create.Error.Error())
 	}
 
@@ -52,7 +51,7 @@ func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 		Delete(&Follower{}, obj)
 
 	if result.RowsAffected != 1 {
-		return errors.New("error when unfollowing user")
+		return errors.New("Could not remove the follower")
 	}
 	return nil
 }
@@ -69,8 +68,7 @@ func GetFollowingUsers(userId uint) []uint {
 		Rows()
 
 	if err != nil {
-		//TODO: Remove panic statements. it crashes the application.
-		panic(err)
+		return follows
 	}
 
 	for subquery.Next() {

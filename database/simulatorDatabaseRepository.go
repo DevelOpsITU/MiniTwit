@@ -52,10 +52,10 @@ func GetUsernameOfWhoFollowsUser(userId uint, noFollowers string) ([]string, err
 	return usernames, nil
 }
 
-func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
+func GetAllSimulationMessages(limitStr string) ([]models.Message, error) {
 	var result *sql.Rows
 	var err error
-	if noFollowers == "" {
+	if limitStr == "" {
 		result, err = gormDb.
 			Model(models.User{}).
 			Table("message").
@@ -66,7 +66,7 @@ func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
 			Rows()
 	} else {
 		var limit int
-		limit, err = strconv.Atoi(noFollowers)
+		limit, err = strconv.Atoi(limitStr)
 		if limit == 0 {
 			return []models.Message{}, nil
 		}
@@ -98,10 +98,10 @@ func GetAllSimulationMessages(noFollowers string) ([]models.Message, error) {
 	return messages, nil
 }
 
-func GetUserSimulationMessages(userId uint, noFollowers string) ([]models.Message, error) {
+func GetUserSimulationMessages(userId uint, limitStr string) ([]models.Message, error) {
 	var result *sql.Rows
 	var err error
-	if noFollowers == "" {
+	if limitStr == "" {
 		result, err = gormDb.
 			Model(models.User{}).
 			Table("message").
@@ -112,7 +112,7 @@ func GetUserSimulationMessages(userId uint, noFollowers string) ([]models.Messag
 			Rows()
 	} else {
 		var limit int
-		limit, err = strconv.Atoi(noFollowers)
+		limit, err = strconv.Atoi(limitStr)
 		if limit == 0 {
 			return []models.Message{}, nil
 		}
