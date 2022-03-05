@@ -14,3 +14,7 @@ To start the application with an in memory sqlite database export this environme
 ````Shell
 export DB_CONNECTION_STRING=file::memory:
 ````
+
+## Contribution
+
+Run `git shortlog -se` to see commit distribution
