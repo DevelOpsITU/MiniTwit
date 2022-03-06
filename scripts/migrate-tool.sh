@@ -36,6 +36,7 @@ fi
 
 POSTGRES_USER=postgres
 POSTGRES_PASS=password
+POSTGRES_DB_NAME=minitwit
 # check if postgres database exists
 # l = list all databases, q = remove header from table, t = turn into tuples
 # cut = split on charater | (splits the table from psql), -f = select first item
@@ -48,8 +49,13 @@ else
     echo -e "${GREEN}[INFO] - postgres database found${NC}"
 fi
 
-# migrate the database
+#############################################################
+#                                                           #
+#                   migrate the database                    #
+#                                                           #
+#############################################################
 echo -e "${GREEN}[INFO] - starting migration...${NC}"
-# only copy data
-scp root@thomsen-it.dk:/tmp/minitwit.db /tmp/minitwit.db
-pgloader -v --with 'data only' /tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}&password=${POSTGRES_PASS}
+# copy database to this server (does not seem that you can directly do it in the pgloader command)
+scp -i ~/.ssh/id_rsa.pub root@thomsen-it.dk:/tmp/minitwit.db /tmp/minitwit.db
+# migrate the data only from the database
+pgloader -v --with 'data only' /tmp/minitwit.db postgresql:///${POSTGRES_DB_NAME}?user=${POSTGRES_USER}&password=${POSTGRES_PASS}
