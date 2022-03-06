@@ -58,7 +58,7 @@ func Test_Get_Public_Timline_Returns_Twits(t *testing.T) {
 **************************************************/
 func Test_Get_Personal_Timline_Returns_Twits(t *testing.T) {
 	prepare()
-	twits, _ := logic.GetPublicTimelineTwits()
+	twits, _ := logic.GetPersonalTimelineTwits(models.User{Username: "Roger Histand"})
 	twit := twits[0]
 	assert.Equal(t, "Roger Histand", twit.Username)
 	assert.Equal(t, logic.FormatPubdate(1233065594), twit.Pub_date)

@@ -1,7 +1,9 @@
 package tests
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -30,6 +32,14 @@ func setup() *gin.Engine {
 	}
 
 	return router
+}
+
+func performRequest(r http.Handler, method, path string, body io.Reader) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(method, path, body)
+	w := httptest.NewRecorder()
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	r.ServeHTTP(w, req)
+	return w
 }
 
 func TestMain(m *testing.M) {
@@ -84,4 +94,23 @@ func Test_Get_Public_Timline_Returns_Twits(t *testing.T) {
 	}
 	assert.Equal(t, 200, resp.StatusCode)
 	assert.NotEmpty(t, resp.Body)
+}
+
+/*************************************************
+* GetUserTwits
+**************************************************/
+func Test_Get_From_Non_Existing_User_Returns_Empty(t *testing.T) {
+	// expected result
+	body := gin.H{}
+
+	prepare()
+	router := setup()
+	w := performRequest(router, "GET", "/", nil)
+
+	var response map[string]string
+	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	value, exists := response["hello"]
+	assert.Nil(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, body["hello"], value)
 }

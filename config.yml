@@ -9,5 +9,5 @@ database:
   #connectionstring: "C:\\Users\\malth\\Desktop\\MiniTwit\\tmp\\minitwit.db"
   #connectionstring: "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
   #connectionstring: "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
-  #connectionstring: "H:/repos/MiniTwit/minitwit.db"
-  connectionstring: "/tmp/minitwit.db"
+  connectionstring: "H:/repos/MiniTwit/minitwit.db"
+  #connectionstring: "/tmp/minitwit.db"
