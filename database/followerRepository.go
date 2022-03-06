@@ -2,7 +2,9 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"minitwit/functions"
+	"minitwit/log"
 )
 
 func FollowUser(userId uint, UserIdToFollow uint) error {
@@ -16,7 +18,7 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 
 	followerids, err := GetFollowingUsers(follower.UserId)
 	if err != nil {
-		println(err.Error())
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(follower.UserId)).Msg("Could not get who the user follows")
 		return errors.New(err.Error())
 	}
 
@@ -32,7 +34,6 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 	create := gormDb.Model(&Follower{}).Create(obj)
 
 	if create.Error != nil {
-		println(create.Error.Error())
 		return errors.New(create.Error.Error())
 	}
 
@@ -50,7 +51,7 @@ func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 		Delete(&Follower{}, obj)
 
 	if result.RowsAffected != 1 {
-		return errors.New("error when unfollowing user")
+		return errors.New("Could not remove the follower")
 	}
 	return nil
 }
@@ -67,7 +68,6 @@ func GetFollowingUsers(userId uint) ([]uint, error) {
 		Rows()
 
 	if err != nil {
-		print(err)
 		return follows, errors.New("error getting following users")
 	}
 
@@ -75,8 +75,7 @@ func GetFollowingUsers(userId uint) ([]uint, error) {
 		var user uint
 		err := subquery.Scan(&user)
 		if err != nil {
-			print(err)
-			return follows, errors.New("error getting following users")
+			return follows, errors.New("error mapping user")
 		}
 		follows = append(follows, user)
 	}

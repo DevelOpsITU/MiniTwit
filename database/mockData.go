@@ -1,6 +1,7 @@
 package database
 
 import (
+	"minitwit/log"
 	"minitwit/models"
 )
 
@@ -37,7 +38,7 @@ var user4 = models.RegistrationUser{
 }
 
 func GenerateMockData() {
-	println("Let the testing begin!")
+	log.Logger.Warn().Msg("Creating mock data")
 
 	user1Id = AddUserToDb(user1)
 	user2Id = AddUserToDb(user2)

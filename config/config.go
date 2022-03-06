@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"minitwit/log"
 	"os"
 	"path/filepath"
 
@@ -26,7 +26,7 @@ type Configuration struct {
 }
 
 func processError(err error) {
-	fmt.Println(err)
+	log.Logger.Error().Err(err).Msg("Config error occurred")
 	os.Exit(2)
 }
 

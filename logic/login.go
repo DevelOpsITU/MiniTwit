@@ -6,6 +6,7 @@ import (
 	"errors"
 	"golang.org/x/crypto/pbkdf2"
 	"minitwit/database"
+	"minitwit/log"
 	"minitwit/models"
 	"strconv"
 	"strings"
@@ -15,6 +16,7 @@ func CheckPassword(username string, pw string) (models.User, error) {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
+		log.Logger.Error().Str("username", username).Msg("Could not get the user from the database")
 		return models.User{}, errors.New("invalid username")
 	}
 
@@ -36,6 +38,7 @@ func CheckPassword(username string, pw string) (models.User, error) {
 			Username: user.Username,
 		}, nil
 	} else {
+		log.Logger.Error().Str("username", username).Msg("User tried to login with an incorrect password")
 		return models.User{}, errors.New("invalid password")
 	}
 }

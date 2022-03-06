@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -36,19 +38,23 @@ func handleUnFollowUser(w http.ResponseWriter, c *gin.Context, username string) 
 
 	// If there is no cookie / no user logged in
 	if err != nil || g.User.Username == "" {
+		log.Logger.Error().Err(err).Msg("User tried to unfollow user with insufficient rights")
 		w.WriteHeader(http.StatusUnauthorized)
 		response := make(map[string]string)
 		response["message"] = "401 Unautherized - no user logged in!"
 		jsonText, err := json.Marshal(response)
 		if err != nil {
-			panic("Error handling JSON marshal")
+			log.Logger.Error().Err(err).Caller().Msg("Could not generate the json")
 		}
 		w.Write(jsonText)
 		return
 		// c.Redirect(http.StatusFound, "/public")
 	}
 
-	logic.UnFollowUser(g.User.User_id, username)
+	err = logic.UnFollowUser(g.User.User_id, username)
+	if err != nil {
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(g.User.User_id)).Str("unfollowed", username).Msg("Could not unfollow the user")
+	}
 
 	// set Message in cookie
 	g := models.Session{
@@ -66,12 +72,13 @@ func handleFollowUser(w http.ResponseWriter, c *gin.Context, username string) {
 
 	// If there is no cookie / no user logged in
 	if err != nil || g.User.Username == "" {
+		log.Logger.Error().Err(err).Msg("User tried to follow user with insufficient rights")
 		w.WriteHeader(http.StatusUnauthorized)
 		response := make(map[string]string)
 		response["message"] = "401 Unautherized - no user logged in!"
 		jsonText, err := json.Marshal(response)
 		if err != nil {
-			panic("Error handling JSON marshal")
+			log.Logger.Error().Err(err).Caller().Msg("Could not generate the json")
 		}
 		w.Write(jsonText)
 		return

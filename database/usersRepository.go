@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"golang.org/x/crypto/pbkdf2"
 	"io"
+	"minitwit/log"
 	"minitwit/models"
 	"strconv"
 )
@@ -18,7 +19,7 @@ func AddUserToDb(user models.RegistrationUser) uint {
 	salt := make([]byte, 4)
 	io.ReadFull(rand.Reader, salt)
 
-	pwIteration_int, _ := strconv.Atoi("50000")
+	pwIteration_int, _ := strconv.Atoi("50000") //TODO: Hvorfor fanden parser vi en streng ned til et tal? xD
 	dk := pbkdf2.Key([]byte(user.Password1), salt, pwIteration_int, 32, sha256.New)
 
 	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
@@ -33,9 +34,9 @@ func AddUserToDb(user models.RegistrationUser) uint {
 		Create(&user_obj)
 
 	if result.Error != nil {
-		panic(result.Error)
+		log.Logger.Error().Msg("Could not create the user")
 	} else if result.RowsAffected != 1 {
-		panic(fmt.Sprint(result.RowsAffected) + " rows were affected")
+		log.Logger.Error().Str("rowsAffected", fmt.Sprint(result.RowsAffected)).Msg("More rows affected than expected")
 	}
 
 	return user_obj.UserId
@@ -50,7 +51,6 @@ func GetUserFromDb(username string) (User, error) {
 
 	if result.Error != nil {
 		return User{}, errors.New("user not found")
-		//panic(result.Error)
 	}
 
 	return user, nil
@@ -71,11 +71,10 @@ func RemoveUserFromDb(userId uint) {
 		Delete(&User{}, userId)
 
 	if result.Error != nil {
-		panic(result.Error)
+		log.Logger.Error().Msg("Could not delete the user")
 	} else if result.RowsAffected != 1 {
-		panic(fmt.Sprint(result.RowsAffected) + " rows were affected")
+		log.Logger.Error().Str("rowsAffected", fmt.Sprint(result.RowsAffected)).Msg("More rows affected than expected")
 	}
-
 }
 
 func NumberOfUsers() int64 {

@@ -2,8 +2,9 @@ package logic
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"minitwit/database"
+	"minitwit/log"
 	"minitwit/functions"
 	"minitwit/models"
 	"strings"
@@ -36,6 +37,7 @@ func FollowUser(userId uint, usernameToFollow string) error {
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(userId)).Msg("Could not get user")
 		return err
 	}
 
@@ -43,7 +45,7 @@ func FollowUser(userId uint, usernameToFollow string) error {
 	err = database.FollowUser(userId, userToFollow.UserId)
 
 	if err != nil {
-		log.Println(err)
+		log.Logger.Error().Err(err).Str("followerId", fmt.Sprint(userId)).Str("followedId", fmt.Sprint(userToFollow.UserId)).Msg("Could not follow user")
 	}
 
 	return nil
@@ -52,9 +54,16 @@ func FollowUser(userId uint, usernameToFollow string) error {
 func FollowUserFromUsername(followerUsername string, usernameToFollow string) error {
 
 	follower, err := database.GetUserFromDb(followerUsername)
+
+	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		return err
+	}
+
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
 		return err
 	}
 
@@ -62,7 +71,7 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	err = database.FollowUser(follower.UserId, userToFollow.UserId)
 
 	if err != nil {
-		log.Println(err)
+		log.Logger.Error().Err(err).Caller().Str("follower", followerUsername).Str("followed", usernameToFollow).Msg("Could not follow user")
 	}
 
 	return nil
@@ -83,9 +92,16 @@ func IsFollowing(id uint, name string) (bool, error) {
 func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) error {
 
 	follower, err := database.GetUserFromDb(followerUsername)
+
+	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		return err
+	}
+
 	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", unfollowUsername).Msg("Could not get user")
 		return err
 	}
 
@@ -93,7 +109,7 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 	err = database.UnFollowUser(follower.UserId, userToUnFollow.UserId)
 
 	if err != nil {
-		log.Println(err)
+		log.Logger.Error().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
 	}
 
 	return nil
@@ -103,13 +119,14 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 	userToUnFollow, err := database.GetUserFromDb(usernameToUnFollow)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", usernameToUnFollow).Msg("Could not get user")
 		return err
 	}
 	// TODO: check if already following before trying this
 	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 
 	if err != nil {
-		log.Println(err)
+		log.Logger.Error().Err(err).Caller().Str("follower", fmt.Sprint(userId)).Str("followed", usernameToUnFollow).Msg("Could not unfollow user")
 	}
 
 	return nil
@@ -119,6 +136,7 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 func GetUserFollowerUsernames(username string, limit int) ([]string, error) {
 	user, err := database.GetUserFromDb(username)
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Str("username", username).Msg("Could not get user")
 		return nil, err
 	}
 

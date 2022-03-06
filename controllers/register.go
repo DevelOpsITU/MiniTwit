@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -34,9 +35,11 @@ func handleRegisterGet(w gin.ResponseWriter, c *gin.Context) {
 
 	out, err := registerTemplate.Execute(gonja.Context{"g": ""})
 	if err != nil {
+		log.Logger.Error().Err(err).Msg("Could not render register template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
+	return
 }
 
 func handleRegisterPost(w gin.ResponseWriter, c *gin.Context) {
@@ -48,30 +51,33 @@ func handleRegisterPost(w gin.ResponseWriter, c *gin.Context) {
 		return
 	}
 
-	registationUser := models.RegistrationUser{
+	registrationUser := models.RegistrationUser{
 		Username:  c.PostForm("username"),
 		Email:     c.PostForm("email"),
 		Password1: c.PostForm("password"),
 		Password2: c.PostForm("password2"),
 	}
 
-	err = logic.CreateUser(registationUser)
+	err = logic.CreateUser(registrationUser)
 
 	if err != nil {
+		log.Logger.Error().Err(err).Str("username", registrationUser.Username).Str("email", registrationUser.Email).
+			Msg("Could not register user")
 		out, err := registerTemplate.Execute(gonja.Context{"g": "", "error": err.Error()})
 		if err != nil {
+			log.Logger.Error().Err(err).Msg("Could not render register template")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.Write([]byte(out))
 		return
-	} else {
-		var g = models.Session{
-			User:     models.User{}, //TODO: Maybe get the user from creation of the user
-			Message:  true,
-			Messages: []string{"You were successfully registered and can login now"},
-		}
-		functions.SetCookie(c, g)
-		c.Redirect(http.StatusFound, "/login")
-		return
 	}
+
+	var g = models.Session{
+		User:     models.User{}, //TODO: Maybe get the user from creation of the user
+		Message:  true,
+		Messages: []string{"You were successfully registered and can login now"},
+	}
+	functions.SetCookie(c, g)
+	c.Redirect(http.StatusFound, "/login")
+	return
 }

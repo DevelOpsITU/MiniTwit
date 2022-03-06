@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -60,8 +61,13 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 
 	twits, err := logic.GetPersonalTimelineTwits(g.User)
 
+	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not get user twits")
+	}
+
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": g.User})
 	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not render the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
@@ -73,10 +79,16 @@ func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context)
 
 	g, _ = functions.GetCookie(c)
 
-	twits, _ := logic.GetPublicTimelineTwits()
+	twits, err := logic.GetPublicTimelineTwits()
+
+	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not get public messages")
+
+	}
 	//print(string(request))
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not generate the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
