@@ -58,7 +58,11 @@ func AddMessage(userId uint, post string) error {
 
 func GetPersonalTimelineMessages(id uint) []models.Message {
 
-	follows := GetFollowingUsers(id)
+	follows, err := GetFollowingUsers(id)
+	if err != nil {
+		//TODO: Remove panic statements. it crashes the application.
+		panic(err)
+	}
 
 	var where string
 

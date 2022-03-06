@@ -2,10 +2,11 @@ package functions
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"minitwit/config"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetCookie(c *gin.Context) (models.Session, error) {
@@ -48,4 +49,13 @@ func GetEndpoint(r *http.Request) models.Request {
 		request.Endpoint = "timeline"
 	}
 	return request
+}
+
+func ContainsUint(s []uint, e uint) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

@@ -17,8 +17,12 @@ type Configuration struct {
 		Port string `yaml:"port" envconfig:"SERVER_PORT"`
 	} `yaml:"server"`
 	Database struct {
-		ConnectionString string `yaml:"connectionstring" envconfig:"DB_CONNECTION_STRING"`
+		Type             string `yaml:"type" envconfig:"DB_TYPE"`
+		ConnectionString string `yaml:"connectionString" envconfig:"DB_CONNECTION_STRING"`
 	} `yaml:"database"`
+	Development struct {
+		GenerateMockData bool `yaml:"generateMockData" envconfig:"DEVELOPMENT_GENERATE_MOCK_DATA"`
+	} `yaml:"development"`
 }
 
 func processError(err error) {
