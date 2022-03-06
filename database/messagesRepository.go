@@ -17,8 +17,8 @@ func GetAllMessages() []models.Message {
 		Order("pub_date desc").
 		Limit(30).
 		Where("flagged = ?", 0).
-		Joins("JOIN user on message.author_id = user.user_id").
-		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
+		Joins("JOIN \"user\" AS u ON message.author_id = u.user_id").
+		Select("message.message_id, message.author_id, u.username, message.text, message.pub_date, u.email").
 		Rows()
 
 	if err != nil {
