@@ -2,16 +2,8 @@ package database
 
 import (
 	"errors"
+	"minitwit/functions"
 )
-
-func contains(s []uint, e uint) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
 
 func FollowUser(userId uint, UserIdToFollow uint) error {
 
@@ -22,7 +14,13 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 		return errors.New("user did not exist")
 	}
 
-	if contains(GetFollowingUsers(follower.UserId), followed.UserId) {
+	followerids, err := GetFollowingUsers(follower.UserId)
+	if err != nil {
+		println(err.Error())
+		return errors.New(err.Error())
+	}
+
+	if functions.ContainsUint(followerids, followed.UserId) {
 		return errors.New("user already follows given user")
 	}
 
@@ -57,7 +55,7 @@ func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 }
 
 // Returns a list of all the users a user is following
-func GetFollowingUsers(userId uint) []uint {
+func GetFollowingUsers(userId uint) ([]uint, error) {
 
 	var follows []uint
 
@@ -68,16 +66,16 @@ func GetFollowingUsers(userId uint) []uint {
 		Rows()
 
 	if err != nil {
-		return follows
+		return follows, errors.New("error getting following users")
 	}
 
 	for subquery.Next() {
 		var user uint
 		err := subquery.Scan(&user)
 		if err != nil {
-			//TODO
+			return follows, errors.New("error mapping user")
 		}
 		follows = append(follows, user)
 	}
-	return follows
+	return follows, nil
 }

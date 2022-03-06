@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
 	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func timelineHandlers(router *gin.Engine) {
@@ -15,7 +16,7 @@ func timelineHandlers(router *gin.Engine) {
 		handleRootTimeline(c.Writer, c.Request, c)
 	})
 	router.GET("/public", func(c *gin.Context) {
-		handlePublicTimeline(c.Writer, c.Request)
+		handlePublicTimeline(c.Writer, c.Request, c)
 	})
 
 }
@@ -34,7 +35,13 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, username string)
 		return
 	}
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
+	following, err := logic.IsFollowing(g.User.User_id, user.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user, "followed": following})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -66,8 +73,11 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 	w.Write([]byte(out))
 }
 
-func handlePublicTimeline(w gin.ResponseWriter, r *http.Request) {
+func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+
 	request := functions.GetEndpoint(r)
+
+	g, _ = functions.GetCookie(c)
 
 	twits, err := logic.GetPublicTimelineTwits()
 

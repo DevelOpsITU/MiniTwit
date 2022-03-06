@@ -32,7 +32,6 @@ func GetUserTwits(username string, limit int) ([]models.Twit, models.User, error
 			Username: user.Username,
 		}, nil
 	}
-
 }
 
 func GetPublicTimelineTwits() ([]models.Twit, error) {
