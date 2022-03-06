@@ -15,6 +15,8 @@ database:
   #connectionstring: "H:/repos/MiniTwit/minitwit.db"
 
   #type: "Postgres"
+  #connectionstring: "/tmp/minitwit.db"
+  #connectionstring: "host=localhost user=postgres password=password dbname=minitwit"
   #connectionString: "User ID=postgres;Password=example;Host=localhost;Port=5432;Database=minitwit;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
 
 development:

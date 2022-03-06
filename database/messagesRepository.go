@@ -18,8 +18,8 @@ func GetAllMessages() []models.Message {
 		Order("pub_date desc").
 		Limit(30).
 		Where("flagged = ?", 0).
-		Joins("JOIN user on message.author_id = user.user_id").
-		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
+		Joins("JOIN \"user\" AS u ON message.author_id = u.user_id").
+		Select("message.message_id, message.author_id, u.username, message.text, message.pub_date, u.email").
 		Rows()
 
 	if err != nil {
@@ -73,18 +73,18 @@ func GetPersonalTimelineMessages(id uint) []models.Message {
 	var where string
 
 	if follows == nil {
-		where = "flagged = ? AND message.author_id = user.user_id and ( user.user_id = ? )"
+		where = "flagged = ? AND message.author_id = u.user_id and ( u.user_id = ? )"
 	} else {
-		where = "flagged = ? AND message.author_id = user.user_id and ( user.user_id = ? or user.user_id in (" + arrayToString(follows, ",") + "))"
+		where = "flagged = ? AND message.author_id = u.user_id and ( u.user_id = ? or u.user_id in (" + arrayToString(follows, ",") + "))"
 	}
 
 	result, err := gormDb.
 		Model(&Message{}).
-		Joins("JOIN user on message.author_id = user.user_id").
+		Joins("JOIN \"user\" AS u ON message.author_id = u.user_id").
 		Order("pub_date desc").
 		Limit(30).
 		Where(where, 0, id).
-		Select("message.message_id , message.author_id , user.username , message.text , message.pub_date , user.email").
+		Select("message.message_id , message.author_id , u.username , message.text , message.pub_date , u.email").
 		Rows()
 
 	if err != nil {
@@ -117,9 +117,9 @@ func GetUserMessages(userId uint, limit int) ([]models.Message, error) {
 		Model(Message{}).
 		Limit(limit).
 		Order("pub_date desc").
-		Where("message.flagged = 0 AND user.user_id = message.author_id AND user.user_id = ?", userId).
-		Joins("JOIN user on message.author_id = user.user_id").
-		Select("message.message_id, message.author_id, user.username, message.text, message.pub_date, user.email").
+		Where("message.flagged = 0 AND u.user_id = message.author_id AND u.user_id = ?", userId).
+		Joins("JOIN \"user\" AS u ON message.author_id = u.user_id").
+		Select("message.message_id, message.author_id, u.username, message.text, message.pub_date, u.email").
 		Rows()
 
 	if err != nil {

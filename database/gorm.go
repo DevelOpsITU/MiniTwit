@@ -1,20 +1,21 @@
 package database
 
 import (
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var gormDb *gorm.DB
 
 type User struct {
 	UserId   uint   `gorm:"column:user_id;primaryKey;autoIncrement"`
-	Username string `gorm:"column:username;type:string not null"`
-	Email    string `gorm:"column:email;type:string not null"`
-	PwHash   string `gorm:"column:pw_hash;type:string not null"`
+	Username string `gorm:"column:username;type:string;not null"`
+	Email    string `gorm:"column:email;type:string;not null"`
+	PwHash   string `gorm:"column:pw_hash;type:string;not null"`
 }
 
 func (User) TableName() string {
@@ -35,8 +36,8 @@ func (Follower) TableName() string {
 
 type Message struct {
 	MessageId       uint   `gorm:"column:message_id;primaryKey;autoIncrement"`
-	AuthorId        uint   `gorm:"column:author_id;type:not null"`
-	Text            string `gorm:"column:text;type:string not null"`
+	AuthorId        uint   `gorm:"column:author_id;not null"`
+	Text            string `gorm:"column:text;type:string;not null"`
 	PublicationDate uint   `gorm:"column:pub_date"`
 	Flagged         int    `gorm:"column:flagged"`
 }
@@ -56,7 +57,6 @@ func InitGorm(dialector gorm.Dialector) (db *gorm.DB, err error) {
 			Colorful:                  false,       // Disable color
 		},
 	)
-
 	db, err = gorm.Open(dialector, &gorm.Config{
 		Logger: newLogger,
 	})
@@ -65,7 +65,6 @@ func InitGorm(dialector gorm.Dialector) (db *gorm.DB, err error) {
 	if err != nil {
 		return nil, err
 	}
-
 	err = db.AutoMigrate(&User{}, &Follower{}, &Message{})
 	if err != nil {
 		return nil, err

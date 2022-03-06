@@ -2,6 +2,8 @@ package database
 
 import (
 	"errors"
+	"fmt"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"minitwit/config"
 	"minitwit/log"
@@ -15,8 +17,7 @@ func Init() {
 		_, err = InitGorm(sqlite.Open(config.GetConfig().Database.ConnectionString))
 
 	} else if config.GetConfig().Database.Type == "Postgres" {
-		// Add postgres
-		//_, err = InitGorm(sqlite.Open(config.GetConfig().Database.ConnectionString))
+		_, err = InitGorm(postgres.Open(config.GetConfig().Database.ConnectionString))
 	} else {
 		err = errors.New("database type not selected")
 	}

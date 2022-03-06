@@ -7,22 +7,21 @@ import (
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/pbkdf2"
-	"io"
-	"minitwit/log"
 	"minitwit/models"
 	"strconv"
+
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // TODO: Return errors if any, and meybe the user
 func AddUserToDb(user models.RegistrationUser) uint {
 
-	salt := make([]byte, 4)
-	io.ReadFull(rand.Reader, salt)
+	salt := randString(8)
 
-	pwIteration_int, _ := strconv.Atoi("50000") //TODO: Hvorfor fanden parser vi en streng ned til et tal? xD
-	dk := pbkdf2.Key([]byte(user.Password1), salt, pwIteration_int, 32, sha256.New)
+	pwIteration_int, _ := strconv.Atoi("50000")
+	dk := pbkdf2.Key([]byte(user.Password1), []byte(salt), pwIteration_int, 32, sha256.New)
 
-	pw_hashed := "pbkdf2:sha256:50000$" + string(salt) + "$" + hex.EncodeToString(dk)
+	pw_hashed := "pbkdf2:sha256:50000$" + salt + "$" + hex.EncodeToString(dk)
 
 	user_obj := User{
 		Username: user.Username,
@@ -91,4 +90,14 @@ func CheckIfUserExists(username string) bool {
 	}
 
 	return false
+}
+
+func randString(n int) string {
+	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	var bytes = make([]byte, n)
+	rand.Read(bytes)
+	for i, b := range bytes {
+		bytes[i] = alphanum[b%byte(len(alphanum))]
+	}
+	return string(bytes)
 }
