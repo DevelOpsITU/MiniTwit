@@ -15,7 +15,7 @@ func timelineHandlers(router *gin.Engine) {
 		handleRootTimeline(c.Writer, c.Request, c)
 	})
 	router.GET("/public", func(c *gin.Context) {
-		handlePublicTimeline(c.Writer, c.Request)
+		handlePublicTimeline(c.Writer, c.Request, c)
 	})
 
 }
@@ -67,8 +67,11 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 	w.Write([]byte(out))
 }
 
-func handlePublicTimeline(w gin.ResponseWriter, r *http.Request) {
+func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+
 	request := functions.GetEndpoint(r)
+
+	g, _ = functions.GetCookie(c)
 
 	twits, _ := logic.GetPublicTimelineTwits()
 	//print(string(request))
