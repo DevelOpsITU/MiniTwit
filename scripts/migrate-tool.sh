@@ -49,4 +49,5 @@ fi
 
 # migrate the database
 echo -e "${GREEN}[INFO] - starting migration...${NC}"
-pgloader /tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}
+# only copy data
+pgloader -v --with 'data only' tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}
