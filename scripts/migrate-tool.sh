@@ -7,7 +7,7 @@ NC='\033[0m'
 if ! command -v pgloader &> /dev/null 
 then
     echo -e "${YELLOW}[WARNING] - unable to find pgloader - installing...${NC}"
-    apt-get install pgloader
+    apt-get install --yes pgloader
 else
     echo -e "${GREEN}[INFO] - pgloader found${NC}"
 fi
@@ -23,7 +23,7 @@ fi
 if ! command -v psql &> /dev/null 
 then
     echo -e "${YELLOW}[WARNING] - unable to find postgresql - installing...${NC}"
-    apt-get install postgresql-10
+    apt-get install --yes postgresql-10 
 else
     echo -e "${GREEN}[INFO] - postgresql found${NC}"
 fi
@@ -34,8 +34,12 @@ then
     exit
 fi
 
+POSTGRES_USER=postgres
 # check if postgres database exists
-if ! psql -lqt | cut -d \| -f 1 | grep -qw minitwit
+# l = list all databases, q = remove header from table, t = turn into tuples
+# cut = split on charater | (splits the table from psql), -f = select first item
+# grep -w match entire word, -q supress output
+if ! psql -U ${POSTGRES_USER} -lqt | cut -d \| -f 1 | grep -qw minitwit
 then
     echo -e "${RED}[ERROR] postgres database does not exists${NC}"
     exit
@@ -45,4 +49,4 @@ fi
 
 # migrate the database
 echo -e "${GREEN}[INFO] - starting migration...${NC}"
-pgloader /tmp/minitwit.db postgresql:///minitwit
+pgloader /tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}
