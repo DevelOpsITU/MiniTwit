@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"minitwit/database"
+	"minitwit/functions"
 	"minitwit/models"
 	"strings"
 )
@@ -67,6 +68,18 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	return nil
 }
 
+func IsFollowing(id uint, name string) (bool, error) {
+	followerids, err := database.GetFollowingUsers(id)
+	if err != nil {
+		return false, err
+	}
+	user, err := database.GetUserFromDb(name)
+	if err != nil {
+		return false, err
+	}
+	return functions.ContainsUint(followerids, user.UserId), nil
+}
+
 func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) error {
 
 	follower, err := database.GetUserFromDb(followerUsername)
@@ -108,7 +121,12 @@ func GetUserFollowerUsernames(username string, limit int) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	users_int := database.GetFollowingUsers(user.UserId)
+
+	users_int, err := database.GetFollowingUsers(user.UserId)
+	if err != nil {
+		return nil, err
+	}
+
 	var usernames = []string{}
 	for _, user_id := range users_int {
 		usernames = append(usernames, database.GetUserFromDbWithId(user_id).Username)
