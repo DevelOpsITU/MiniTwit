@@ -47,32 +47,45 @@ func TestFollowUserThatDontExists(t *testing.T) {
 func TestUnFollowUser(t *testing.T) {
 	setupTest()
 
-	assert.Empty(t, database.GetFollowingUsers(user1Id))
+	following, err := database.GetFollowingUsers(user1Id)
+	assert.Empty(t, following)
+	assert.Empty(t, err)
 
 	database.FollowUser(user1Id, user2Id)
 
-	assert.Equal(t, 1, len(database.GetFollowingUsers(user1Id)))
+	following, err = database.GetFollowingUsers(user1Id)
+	assert.Equal(t, 1, len(following))
 
-	err := database.UnFollowUser(user1Id, user2Id)
-
+	err = database.UnFollowUser(user1Id, user2Id)
 	assert.Empty(t, err)
-	assert.Empty(t, database.GetFollowingUsers(user1Id))
+
+	following, err = database.GetFollowingUsers(user1Id)
+	assert.Empty(t, following)
+	assert.Empty(t, err)
 
 }
 
 func TestUnFollowUserAgain(t *testing.T) {
 	setupTest()
 
-	assert.Empty(t, database.GetFollowingUsers(user1Id))
+	following, err := database.GetFollowingUsers(user1Id)
+	assert.Empty(t, following)
+	assert.Empty(t, err)
 
 	database.FollowUser(user1Id, user2Id)
 
-	assert.Equal(t, 1, len(database.GetFollowingUsers(user1Id)))
+	following, err = database.GetFollowingUsers(user1Id)
+	assert.Equal(t, 1, len(following))
+	assert.Empty(t, err)
 
-	err := database.UnFollowUser(user1Id, user2Id)
 	err = database.UnFollowUser(user1Id, user2Id)
+	assert.Empty(t, err)
 
+	err = database.UnFollowUser(user1Id, user2Id)
 	assert.NotEmpty(t, err)
-	assert.Empty(t, database.GetFollowingUsers(user1Id))
+
+	following, err = database.GetFollowingUsers(user1Id)
+	assert.Empty(t, following)
+	assert.Empty(t, err)
 
 }
