@@ -35,7 +35,7 @@ then
 fi
 
 POSTGRES_USER=postgres
-POSTGRES_USER=password
+POSTGRES_PASS=password
 # check if postgres database exists
 # l = list all databases, q = remove header from table, t = turn into tuples
 # cut = split on charater | (splits the table from psql), -f = select first item
@@ -52,4 +52,4 @@ fi
 echo -e "${GREEN}[INFO] - starting migration...${NC}"
 # only copy data
 scp root@thomsen-it.dk:/tmp/minitwit.db /tmp/minitwit.db
-pgloader -v --with 'data only' /tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}?password=${POSTGRES_PASS}
+pgloader -v --with 'data only' /tmp/minitwit.db postgresql:///minitwit?user=${POSTGRES_USER}&password=${POSTGRES_PASS}
