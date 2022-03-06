@@ -63,7 +63,12 @@ func GetPersonalTimelineMessages(id uint) []models.Message {
 
 	var messages []models.Message
 
-	follows := GetFollowingUsers(id)
+	follows, err := GetFollowingUsers(id)
+
+	if err != nil {
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(id)).Msg("Error getting the users following")
+		return messages
+	}
 
 	var where string
 

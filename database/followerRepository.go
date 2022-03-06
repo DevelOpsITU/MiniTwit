@@ -2,7 +2,9 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"minitwit/functions"
+	"minitwit/log"
 )
 
 func FollowUser(userId uint, UserIdToFollow uint) error {
@@ -16,7 +18,7 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 
 	followerids, err := GetFollowingUsers(follower.UserId)
 	if err != nil {
-		println(err.Error())
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(follower.UserId)).Msg("Could not get who the user follows")
 		return errors.New(err.Error())
 	}
 

@@ -2,9 +2,9 @@ package database
 
 import (
 	"errors"
-	"fmt"
 	"gorm.io/driver/sqlite"
 	"minitwit/config"
+	"minitwit/log"
 	"os"
 )
 
@@ -22,7 +22,7 @@ func Init() {
 	}
 	if err != nil {
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Logger.Err(err).Msg("Could not open database")
 			os.Exit(1)
 		}
 	}

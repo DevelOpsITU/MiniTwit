@@ -80,7 +80,7 @@ func updateLatest(c *gin.Context) {
 func handleSimGetAllMessages(c *gin.Context) {
 	/*err := not_req_from_simulator(r) // TODO: This should prob be added (he has it in his, but doesnt work when checking normally)
 	if err != nil {
-		fmt.Println(err)
+		log.Logger.Error().Err(err).Msg("error")
 		return
 	}*/
 

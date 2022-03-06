@@ -17,10 +17,7 @@ func GetCookie(c *gin.Context) (models.Session, error) {
 	if err != nil {
 		return g, err
 	} else {
-		//data,_ := json.Marshal(g)
-		//c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
 		json.Unmarshal([]byte(cookie), &g)
-		//println("Found Cookie:", string([]byte(cookie)))
 
 	}
 	newCookie := g
