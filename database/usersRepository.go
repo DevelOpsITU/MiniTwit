@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"minitwit/models"
 	"strconv"
 
@@ -16,13 +15,12 @@ import (
 // TODO: Return errors if any, and meybe the user
 func AddUserToDb(user models.RegistrationUser) uint {
 
-	salt := make([]byte, 4)
-	io.ReadFull(rand.Reader, salt)
+	salt := randString(8)
 
 	pwIteration_int, _ := strconv.Atoi("50000")
-	dk := pbkdf2.Key([]byte(user.Password1), salt, pwIteration_int, 32, sha256.New)
+	dk := pbkdf2.Key([]byte(user.Password1), []byte(salt), pwIteration_int, 32, sha256.New)
 
-	pw_hashed := "pbkdf2:sha256:50000$" + fmt.Sprint(salt) + "$" + hex.EncodeToString(dk)
+	pw_hashed := "pbkdf2:sha256:50000$" + salt + "$" + hex.EncodeToString(dk)
 
 	user_obj := User{
 		Username: user.Username,
@@ -93,4 +91,14 @@ func CheckIfUserExists(username string) bool {
 	}
 
 	return false
+}
+
+func randString(n int) string {
+	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	var bytes = make([]byte, n)
+	rand.Read(bytes)
+	for i, b := range bytes {
+		bytes[i] = alphanum[b%byte(len(alphanum))]
+	}
+	return string(bytes)
 }
