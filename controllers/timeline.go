@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func timelineHandlers(router *gin.Engine) {
@@ -33,7 +34,13 @@ func handleUserTimeline(w http.ResponseWriter, r *http.Request, username string)
 		return
 	}
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
+	following, err := logic.IsFollowing(g.User.User_id, user.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user, "followed": following})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
