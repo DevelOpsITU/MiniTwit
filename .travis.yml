@@ -41,9 +41,9 @@ stages:
     # require the type to be a PR
     if: type = pull_request OR type = push
 
-#  - name: deploy
+  - name: docker-build
     # require the type to be push to master
-#    if: type = push AND branch = master
+    if: type = push AND branch = master
 
 
 # Inspired from https://blog.travis-ci.com/2019-05-30-setting-up-a-ci-cd-process-on-github
