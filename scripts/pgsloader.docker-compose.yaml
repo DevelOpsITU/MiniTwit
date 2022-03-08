@@ -1,0 +1,15 @@
+version: '3'
+services:
+  pgloader:
+    container_name: pgloader
+    image: dimitri/pgloader:latest
+
+    volumes:
+      - ../data/:/tmp/
+    command: pgloader -v --with 'data only' ./tmp/minitwit.db postgresql://postgres:example@postgres:5432/minitwit
+    networks:
+      - minitwit_default
+
+networks:
+  minitwit_default:
+    external: true
