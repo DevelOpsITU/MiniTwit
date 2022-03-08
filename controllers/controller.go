@@ -21,6 +21,7 @@ var HttpHandlers = []interface{}{
 	staticHandlers,
 	addMessageHandlers,
 	simulationHandlers,
+	prometheusHandlers,
 }
 
 // HandleRESTRequests - handles the rest requests
