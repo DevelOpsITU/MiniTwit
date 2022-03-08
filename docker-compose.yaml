@@ -2,9 +2,9 @@ version: '3'
 services:
 
 
-  minitwit-go:
-    container_name: minitwit-go
-    image: minitwit-go:latest
+  minitwit-SQLite:
+    container_name: minitwit-SQLite
+    image: minitwit-go
     build: .
     environment:
       - SERVER_HOST=localhost
@@ -13,3 +13,24 @@ services:
       - 8080:8080
     volumes:
       - ../data/:/tmp/
+
+  minitwit-Postgres:
+    container_name: minitwit-Postgres
+    image: minitwit-go
+    build: .
+    environment:
+      - SERVER_HOST=localhost
+      - DB_CONNECTION_STRING=host=postgres user=postgres password=password dbname=minitwit
+    ports:
+      - 8000:8080
+    volumes:
+      - ../data/:/tmp/
+
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
