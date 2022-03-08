@@ -1,0 +1,10 @@
+# config file version
+apiVersion: 1
+
+datasources:
+  - name: Minitwit-prometheus
+    uid: PBFA97CFB590B2093
+    type: prometheus
+    # Access mode - proxy (server in the UI) or direct (browser in the UI).
+    access: proxy
+    url: http://prometheus:9090

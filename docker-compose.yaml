@@ -28,6 +28,13 @@ services:
 
 
   grafana:
-    image: grafana/grafana:4.5.2
+    build:
+      context: ./grafana
     ports:
       - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+# Explicitly define the persistent volume for your data storage
+volumes:
+  grafana-data:

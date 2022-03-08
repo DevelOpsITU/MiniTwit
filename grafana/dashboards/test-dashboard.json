@@ -1,0 +1,85 @@
+{
+  "title": "Minitwit Basic Checks",
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "gauge",
+      "title": "Latest",
+      "datasource": {
+        "uid": "PBFA97CFB590B2093",
+        "type": "prometheus"
+      },
+      "pluginVersion": "8.4.3",
+      "maxDataPoints": 100,
+      "links": [],
+      "targets": [
+        {
+          "expr": "minitwit_latest",
+          "legendFormat": "",
+          "interval": "",
+          "exemplar": false,
+          "refId": "A",
+          "datasource": {
+            "uid": "PBFA97CFB590B2093",
+            "type": "prometheus"
+          },
+          "hide": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "unit": "none",
+          "min": 0,
+          "max": 100,
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "mean"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "interval": null
+    }
+  ]
+}
