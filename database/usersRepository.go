@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/pbkdf2"
+	"minitwit/log"
 	"minitwit/models"
 	"strconv"
 

@@ -2,12 +2,12 @@ package database
 
 import (
 	"errors"
-	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"minitwit/config"
 	"minitwit/log"
 	"os"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 )
 
 func Init() {

@@ -18,7 +18,7 @@ type Configuration struct {
 	} `yaml:"server"`
 	Database struct {
 		Type             string `yaml:"type" envconfig:"DB_TYPE"`
-		ConnectionString string `yaml:"connectionString" envconfig:"DB_CONNECTION_STRING"`
+		ConnectionString string `yaml:"connectionstring" envconfig:"DB_CONNECTION_STRING"`
 	} `yaml:"database"`
 	Development struct {
 		GenerateMockData bool `yaml:"generateMockData" envconfig:"DEVELOPMENT_GENERATE_MOCK_DATA"`
