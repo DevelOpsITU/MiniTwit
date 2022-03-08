@@ -41,9 +41,6 @@ func TestFollowUserThatDontExists(t *testing.T) {
 	if err == nil {
 		t.Errorf("A user is not allowed to follow a user that does not exist")
 	}
-
-	assert.True(t, false)
-
 }
 
 func TestUnFollowUser(t *testing.T) {
