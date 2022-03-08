@@ -7,8 +7,8 @@ server:
 database:
 
   type: "SQLite"
-  connectionString: "/tmp/minitwit.db"
-  #connectionString: "file::memory:"
+  connectionstring: "/tmp/minitwit.db"
+  #connectionstring: "file::memory:"
   #connectionstring: "C:/Users/JTT/Documents/git/MiniTwit/data/minitwit.db"
   #connectionstring: "C:/Users/malth/Desktop/MiniTwit/tmp/minitwit.db"
   #connectionstring: "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
