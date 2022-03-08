@@ -39,7 +39,7 @@ jobs:
 stages:
   - name: test_PR
     # require the type to be a PR
-    if: branch = feature/#69-travis-ci AND (type = pull_request OR type = push)
+    if: branch = dev AND type = pull_request
 
   - name: docker-build
     # require the type to be push to master
