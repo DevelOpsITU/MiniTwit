@@ -5,7 +5,7 @@ services:
     image: dimitri/pgloader:latest
 
     volumes:
-      - ../data/:/tmp/
+      - ../../data/:/tmp/
     command: pgloader -v --with 'data only' ./tmp/minitwit.db postgresql://postgres:example@postgres:5432/minitwit
     networks:
       - minitwit_default
