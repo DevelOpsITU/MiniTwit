@@ -4,7 +4,7 @@ dist: bionic
 # safelist to only build and deploy the main branch
 branches:
   only:
-    - dev
+    - feature/#69-travis-ci
 
 # setup language. enables for test in Go later down the line
 language: go
@@ -50,8 +50,10 @@ jobs:
 
     - stage: test
       name: "Run tests"
-      script: |
-        echo "TODO - tests"
+      script:
+        - echo "Testing go program"
+        - ./scripts/run_test.sh
+        - echo "Done running unittests"
 
 #  - stage: deploy
 #    name: "Deploy new version"
