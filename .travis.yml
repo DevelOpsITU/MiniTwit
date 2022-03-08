@@ -51,6 +51,7 @@ jobs:
     - stage: test
       name: "Run tests"
       script:
+        - chmod +x -R ./scripts
         - echo "Testing go program"
         - ./scripts/run_test.sh
         - echo "Done running unittests"
