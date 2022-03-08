@@ -20,11 +20,12 @@ services:
     build: .
     environment:
       - SERVER_HOST=localhost
-      - DB_CONNECTION_STRING=host=postgres user=postgres password=password dbname=minitwit
+      - DB_CONNECTION_STRING=host=postgres port=5432 user=postgres password=example dbname=minitwit
+      - DB_TYPE=Postgres
     ports:
       - 8000:8080
-    volumes:
-      - ../data/:/tmp/
+    depends_on:
+      - postgres
 
 
   postgres:
@@ -33,4 +34,4 @@ services:
     environment:
       POSTGRES_PASSWORD: example
     ports:
-      - 5432:5432
+      - "5433:5432"
