@@ -6,6 +6,7 @@ language: go
 go:
   - "1.17"
 
+
 env:
   - GO111MODULE=on
 
@@ -18,15 +19,13 @@ services:
 jobs:
   include:
     - stage: test_PR
-
       name: "Run tests"
       script:
         - chmod +x -R ./scripts
         - echo "Testing go program"
         - ./scripts/run_test.sh
         - echo "Done running unittests"
-
-   - stage: docker-build
+    - stage: docker-build
       name: "Build and push docker"
       script:
       - chmod +x -R ./scripts
@@ -40,12 +39,13 @@ jobs:
 stages:
   - name: test_PR
     # require the type to be a PR
-    if: type = pull_request OR type = push
+    if: branch = feature/#69-travis-ci AND (type = pull_request OR type = push)
 
 
   - name: docker-build
     # require the type to be push to master
     if: type = push AND branch = master
+
 
 
 # Inspired from https://blog.travis-ci.com/2019-05-30-setting-up-a-ci-cd-process-on-github
