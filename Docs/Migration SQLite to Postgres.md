@@ -34,13 +34,14 @@ In this section will the migration plan be described and there will be a couple 
 
 ## Test migration
 
-- [ ] Locally deploy groupddevops/minitwit-go:237df00 with a clean database
-- [ ] Run simulation 0-1000 on the groupddevops/minitwit-go:237df00
-- [ ] Start the postgres 13.5 on the database server
-- [ ] Create the database "minitwit" on the database server.
-- [ ] Connect the local Minitwit-Postgres to the database server.
-- [ ] Create a test user and note the pw_hash entry
-- [ ] Change the data in pw_hash column of the sqlite database.
+- [x] Locally deploy groupddevops/minitwit-go:237df00 with a clean database
+- [x] Run simulation 0-1000 on the groupddevops/minitwit-go:237df00
+- [x] Start the postgres 13.5 on the database server
+- [x] Create the database "minitwit" on the database server.
+- [x] Connect the local Minitwit-Postgres to the database server. (Create the tables)
+- [x] Create a test user and note the pw_hash entry (pbkdf2:sha256:50000$CCWW6o8F$c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9) = a
+- [x] Stop all services
+- [x] Change the data in pw_hash column of the sqlite database. `./scripts/updateSQLitePw_hash.sh`
 - [ ] Use Pgloader to transfer the data to Postgres
 - [ ] Test logging in to a user with the password created for the test user 
 - [ ] run simulation 1001-2000 and verify that it looks okay.
