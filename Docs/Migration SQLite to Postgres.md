@@ -27,9 +27,12 @@ In this section will the migration plan be described and there will be a couple 
 5. Make a local copy of the database as a backup.
 6. Change the data in the pwhash column to be a new valid option, maybe taken from the test?
 7. Use Pgloader to move the data from SQLite to Postgres
-8. Start the Minitwit-Postgres with the connection string to the postgres database.
-9. Verify that it works. 
-10. If does not work then gather information of why and then start the old minitwit-main application again.
+8. Run the sql qurry: `UPDATE minitwit.public."user"
+   SET pw_hash='pbkdf2:sha256:50000' || '$' || 'CCWW6o8F' || '$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'
+   where 1=1` Because the values was still messed up.
+9. Start the Minitwit-Postgres with the connection string to the postgres database.
+10. Verify that it works. 
+11. If does not work then gather information of why and then start the old minitwit-main application again.
 
 
 ## Test migration
@@ -42,8 +45,9 @@ In this section will the migration plan be described and there will be a couple 
 - [x] Create a test user and note the pw_hash entry (pbkdf2:sha256:50000$CCWW6o8F$c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9) = a
 - [x] Stop all services
 - [x] Change the data in pw_hash column of the sqlite database. `./scripts/updateSQLitePw_hash.sh`
-- [ ] Use Pgloader to transfer the data to Postgres
-- [ ] Test logging in to a user with the password created for the test user 
-- [ ] run simulation 1001-2000 and verify that it looks okay.
+- [x] Use Pgloader to transfer the data to Postgres
+- [x] run the SQL stamtement to update all columns again.
+- [x] Test logging in to a user with the password created for the test user 
+- [x] run simulation 1001-2000 and verify that it looks okay.
 
 

@@ -19,6 +19,6 @@ services:
     environment:
       - SERVER_HOST=localhost
       - DB_TYPE=Postgres
-      - DB_CONNECTION_STRING=host=database.thomsen-it.dk port=5432 user=postgres password=aVAa7BdTEMC6F9koEzPUTNAy dbname=minitwit
+      - DB_CONNECTION_STRING=host=database.thomsen-it.dk port=5432 user=postgres password=example dbname=minitwit
     ports:
       - 8080:8080

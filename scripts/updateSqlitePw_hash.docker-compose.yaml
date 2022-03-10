@@ -6,9 +6,20 @@ services:
 
     volumes:
       - ../../data/:/tmp/
-    command: /tmp/minitwit.db.bak "UPDATE user SET pw_hash=x'70626B6466323A7368613235363A35303030302443435757366F38462463336639323934363739613939623764613135366434663236376265356463656533376166656262613235653363383933633864643637653738353133636239'"
+    command: /tmp/minitwit-bak.db "UPDATE user SET pw_hash='pbkdf2:sha256:50000' || '$$' || 'CCWW6o8F' || '$$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'"
 
 # https://stackoverflow.com/questions/6776657/how-to-change-a-value-in-a-column-on-a-sqlite-database
-# https://database.guide/2-ways-to-insert-a-new-line-into-a-string-in-sqlite/
 
+# This did not work.
+# https://database.guide/2-ways-to-insert-a-new-line-into-a-string-in-sqlite/
 # x'70626B646...' = pbkdf2:sha256:50000$CCWW6o8F$c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9
+
+# https://www.sqlitetutorial.net/sqlite-update/
+
+  # 'pbkdf2:sha256:50000' || '$' || 'CCWW6o8F' || '$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'"
+
+  # invalid interpolation format for services.sqlite.command: "/tmp/minitwit-bak.db \"UPDATE user SET pw_hash='pbkdf2:sha256:50000' || '$' || 'CCWW6o8F' || '$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'\"". Yo
+  # u may need to escape any $ with another $.
+  # Error: No such container: sqlite.. Thanks..
+
+  # 'pbkdf2:sha256:50000' || '$$' || 'CCWW6o8F' || '$$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'
