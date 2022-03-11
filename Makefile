@@ -39,6 +39,9 @@ test: ## Run Go tests (Not implemented)
 test_coverage: ## Run Go tests with coverage (Not implemented)
 	go test ./main.go -coverprofile=coverage.out
 
+go_lint: ## Lint all go files
+	 golint -set_exit_status ./...
+
 
 deps: ## Install dependencies
 	go mod tidy
@@ -46,6 +49,7 @@ deps: ## Install dependencies
 	go install gorm.io/gorm
 	go install gorm.io/driver/sqlite
 	go install gorm.io/driver/postgres
+	go install golang.org/x/lint/golint
 
 
 # From https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705 ,
