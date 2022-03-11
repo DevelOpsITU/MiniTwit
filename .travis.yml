@@ -26,7 +26,7 @@ jobs:
         - ./scripts/run_test.sh
         - echo "Done running unittests"
         - echo "Setting up golint"
-        - go install golang.org/x/lint/golint
+        - go get -u golang.org/x/lint/golint
         - echo "running golint"
         - ./scripts/golinter.sh
     - stage: docker-build
