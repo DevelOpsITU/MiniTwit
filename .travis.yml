@@ -6,6 +6,11 @@ language: go
 go:
   - "1.17"
 
+cache:
+    directories:
+      - $HOME/.cache/go-build
+      - $HOME/gopath/pkg/mod
+
 
 env:
   - GO111MODULE=on
