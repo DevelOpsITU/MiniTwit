@@ -25,6 +25,8 @@ jobs:
         - echo "Testing go program"
         - ./scripts/run_test.sh
         - echo "Done running unittests"
+        - echo "running golint"
+        - ./scripts/golinter.sh
     - stage: docker-build
       name: "Build and push docker"
       script:
