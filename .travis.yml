@@ -10,6 +10,8 @@ cache:
     directories:
       - $HOME/.cache/go-build
       - $HOME/gopath/pkg/mod
+      - $GOPATH/.cache/go-build
+      - $GOPATH/pkg/mod
 
 
 env:
