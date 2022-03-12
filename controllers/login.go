@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
@@ -12,28 +13,30 @@ import (
 func loginHandlers(router *gin.Engine) {
 
 	router.GET("/login", func(c *gin.Context) {
-		handleloginGet(c.Writer, c.Request, c)
+		handleloginGet(c.Writer, c)
 	})
 
 	router.POST("/login", func(c *gin.Context) {
-		handleLogin(c.Writer, c.Request, c)
+		handleLogin(c)
 	})
 }
 
 var loginTemplate = gonja.Must(gonja.FromFile("templates/login.html"))
 
-func handleloginGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleloginGet(w gin.ResponseWriter, c *gin.Context) {
 
 	cookie, err := functions.GetCookie(c)
 	if err != nil {
 		out, err := loginTemplate.Execute(gonja.Context{"g": ""})
 		if err != nil {
+			log.Logger.Error().Err(err).Msg("Could not create Login template")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.Write([]byte(out))
 	} else {
 		out, err := loginTemplate.Execute(gonja.Context{"g": cookie})
 		if err != nil {
+			log.Logger.Error().Err(err).Msg("Could not create Login template")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.Write([]byte(out))
@@ -41,7 +44,7 @@ func handleloginGet(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 
 }
 
-func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleLogin(c *gin.Context) {
 
 	username := c.PostForm("username")
 	pw := c.PostForm("password")
@@ -49,7 +52,7 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 	user, err := logic.CheckPassword(username, pw)
 
 	if err != nil {
-		println(err.Error())
+		log.Logger.Error().Err(err).Str("username", username).Msg("Could not verify login for user")
 		var g = models.Session{
 			User:     models.User{},
 			Message:  true,
@@ -57,15 +60,14 @@ func handleLogin(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
 		functions.SetCookie(c, g)
 		c.Redirect(http.StatusFound, "/login")
 		return
-	} else {
-		var g = models.Session{
-			User:     user,
-			Message:  true,
-			Messages: []string{"You were successfully logged in"},
-		}
-		functions.SetCookie(c, g)
-		c.Redirect(http.StatusFound, "/")
-		return
-
 	}
+	var g = models.Session{
+		User:     user,
+		Message:  true,
+		Messages: []string{"You were successfully logged in"},
+	}
+	functions.SetCookie(c, g)
+	c.Redirect(http.StatusFound, "/")
+	return
+	
 }

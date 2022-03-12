@@ -1,24 +1,25 @@
 package controllers
 
 import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func addMessageHandlers(router *gin.Engine) {
 
 	// Add message
 	router.POST("/add_message", func(c *gin.Context) {
-		handleAddMessage(c.Writer, c.Request, c)
+		handleAddMessage(c)
 	})
 
 }
 
-func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
+func handleAddMessage(c *gin.Context) {
 
 	g, err := functions.GetCookie(c)
 
@@ -27,10 +28,10 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		c.Redirect(http.StatusFound, "/public")
 	}
 
-	err = logic.AddMessage(g.User, c.PostForm("text"))
+	err = logic.AddMessageFromUserModel(g.User, c.PostForm("text"))
 
 	if err != nil {
-		println(err.Error())
+		log.Logger.Error().Err(err).Str("text", c.PostForm("text")).Msg("Could not add message")
 	} else {
 		g = models.Session{
 			User:     g.User,
@@ -39,7 +40,6 @@ func handleAddMessage(w http.ResponseWriter, r *http.Request, c *gin.Context) {
 		}
 	}
 
-	var data, _ = json.Marshal(g)
-	c.SetCookie("session", string(data), 3600, "/", "localhost", false, true)
+	functions.SetCookie(c, g)
 	c.Redirect(http.StatusFound, "/")
 }

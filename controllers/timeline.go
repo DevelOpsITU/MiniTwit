@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/noirbizarre/gonja"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/logic"
 	"minitwit/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noirbizarre/gonja"
 )
 
 func timelineHandlers(router *gin.Engine) {
@@ -23,17 +25,23 @@ var timelineTemplate = gonja.Must(gonja.FromFile("templates/timeline.html"))
 
 var g models.Session
 
-func handleUserTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context, username string) {
+func handleUserTimeline(w http.ResponseWriter, r *http.Request, username string) {
 
 	request := functions.GetEndpoint(r)
 
-	twits, user, err := logic.GetUserTwits(username)
+	twits, user, err := logic.GetUserTwits(username, 30)
 	if err != nil {
 		http.Error(w, "404 - "+err.Error(), http.StatusNotFound)
 		return
 	}
 
-	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user})
+	following, err := logic.IsFollowing(g.User.User_id, user.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": user, "followed": following})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -53,20 +61,34 @@ func handleRootTimeline(w http.ResponseWriter, r *http.Request, c *gin.Context) 
 
 	twits, err := logic.GetPersonalTimelineTwits(g.User)
 
+	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not get user twits")
+	}
+
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits, "profile_user": g.User})
 	if err != nil {
+		log.Logger.Error().Err(err).Str("user", g.User.Username).Msg("Could not render the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))
 }
 
 func handlePublicTimeline(w gin.ResponseWriter, r *http.Request, c *gin.Context) {
+
 	request := functions.GetEndpoint(r)
 
-	twits, _ := logic.GetPublicTimelineTwits()
+	g, _ = functions.GetCookie(c)
+
+	twits, err := logic.GetPublicTimelineTwits()
+
+	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not get public messages")
+
+	}
 	//print(string(request))
 	out, err := timelineTemplate.Execute(gonja.Context{"g": g, "request": request, "messages": twits})
 	if err != nil {
+		log.Logger.Error().Err(err).Caller().Msg("Could not generate the timeline template")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write([]byte(out))

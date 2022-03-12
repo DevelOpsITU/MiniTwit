@@ -31,10 +31,10 @@ HEADERS = {
 }
 
 
-def get_actions():
+def get_actions(csvfile):
 
     # read scenario .csv and parse to a list of lists
-    with open(CSV_FILENAME, "r", encoding="utf-8") as f:
+    with open(csvfile, "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", quotechar=None)
 
         # for each line in .csv
@@ -102,8 +102,8 @@ def get_actions():
                 print(traceback.format_exc())
 
 
-def main(host):
-    for action, delay in get_actions():
+def main(host, csvfile):
+    for action, delay in get_actions(csvfile):
         try:
             # SWITCH ON TYPE
             command = action["post_type"]
@@ -349,5 +349,6 @@ def main(host):
 
 if __name__ == "__main__":
     host = sys.argv[1]
+    csvfile = sys.argv[2]
 
-    main(host)
+    main(host, csvfile)

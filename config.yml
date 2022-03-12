@@ -5,8 +5,17 @@ server:
 
 # Postgresql DB
 database:
-  #connectionstring: "C:\\Users\\JTT\\Documents\\git\\MiniTwit\\MiniTwit\\minitwit.db"
-  connectionstring: "/tmp/minitwit.db"
-  #connectionstring: "C:/Users/hardk/source/repos/MiniTwit/minitwit.db"
+
+  #type: "SQLite"
+  #connectionstring: "/tmp/minitwit.db"
+  #connectionstring: "file::memory:"
+  #connectionstring: "C:/Users/JTT/Documents/git/MiniTwit/data/minitwit.db"
+  #connectionstring: "C:/Users/malth/Desktop/MiniTwit/tmp/minitwit.db"
   #connectionstring: "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
   #connectionstring: "H:/repos/MiniTwit/minitwit.db"
+
+  type: "Postgres"
+  connectionstring: "host=localhost port=5433 user=postgres password=example dbname=minitwit"
+
+development:
+  generateMockData: false
