@@ -1,20 +1,20 @@
 version: '3'
 services:
 
-  minitwit-main:
-    container_name: minitwit-main
-    image: groupddevops/minitwit-go:237df00
-    environment:
-      - SERVER_HOST=localhost
-      - DB_TYPE=SQLite
-      - DB_CONNECTION_STRING=/tmp/minitwit-main.db
-    ports:
-      - 8000:8080
-    volumes:
-      - ../data/:/tmp/
-    depends_on:
-      - grafana
-      - prometheus
+  #minitwit-main:
+  #  container_name: minitwit-main
+  #  image: groupddevops/minitwit-go:237df00
+  #  environment:
+  #    - SERVER_HOST=localhost
+  #    - DB_TYPE=SQLite
+  #    - DB_CONNECTION_STRING=/tmp/minitwit-main.db
+  #  ports:
+  #    - 8000:8080
+  #  volumes:
+  #    - ../data/:/tmp/
+  #  depends_on:
+  #    - grafana
+  #    - prometheus
 
   minitwit-postgres:
     container_name: minitwit-postgres
@@ -22,10 +22,20 @@ services:
     environment:
       - SERVER_HOST=localhost
       - DB_TYPE=Postgres
-      - DB_CONNECTION_STRING=host=database.thomsen-it.dk port=5432 user=postgres password=example dbname=minitwit
+      - DB_CONNECTION_STRING=host=localhost port=5433 user=postgres password=example dbname=minitwit
     ports:
-      - 8080:8080
-    
+      - 8000:8080
+    volumes:
+      - ../data/:/tmp/
+  
+  postgres:
+    container_name: postgres
+    image: postgres:13.5
+    environment:
+      - POSTGRES_PASSWORD=example
+    ports:
+      - 5433:5432
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -33,7 +43,6 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-
 
   grafana:
     build:
