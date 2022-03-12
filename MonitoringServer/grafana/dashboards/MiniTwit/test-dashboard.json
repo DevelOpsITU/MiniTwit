@@ -1,85 +1,215 @@
 {
-  "title": "Minitwit Basic Checks",
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
   "editable": true,
-  "hideControls": false,
-  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "id": 1,
-      "type": "gauge",
-      "title": "Latest",
       "datasource": {
-        "uid": "PBFA97CFB590B2093",
-        "type": "prometheus"
+        "type": "postgres",
+        "uid": "POSTGRES1234567890"
       },
-      "pluginVersion": "8.4.3",
-      "maxDataPoints": 100,
-      "links": [],
-      "targets": [
-        {
-          "expr": "minitwit_latest",
-          "legendFormat": "",
-          "interval": "",
-          "exemplar": false,
-          "refId": "A",
-          "datasource": {
-            "uid": "PBFA97CFB590B2093",
-            "type": "prometheus"
-          },
-          "hide": false,
-          "instant": true
-        }
-      ],
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 100
+              },
+              {
+                "color": "#EAB839",
+                "value": 1000
+              },
+              {
+                "color": "red",
+                "value": 100000
+              },
+              {
+                "color": "dark-red",
+                "value": 10000000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "POSTGRES1234567890"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*)\nFROM \"user\"",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"user\"",
+          "timeColumn": "time",
+          "where": []
+        }
+      ],
+      "title": "Current Users",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [
             {
-              "type": "special",
               "options": {
                 "match": "null",
                 "result": {
                   "text": "N/A"
                 }
-              }
+              },
+              "type": "special"
             }
           ],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
-                "value": 80,
-                "color": "red"
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "none",
-          "min": 0,
-          "max": 100,
-          "color": {
-            "mode": "thresholds"
-          }
+          "unit": "none"
         },
         "overrides": []
       },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
+      "id": 1,
+      "links": [],
+      "maxDataPoints": 100,
       "options": {
+        "orientation": "horizontal",
         "reduceOptions": {
-          "values": false,
           "calcs": [
             "mean"
           ],
-          "fields": ""
+          "fields": "",
+          "values": false
         },
-        "orientation": "horizontal",
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "interval": null
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": false,
+          "expr": "minitwit_latest",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Latest",
+      "type": "gauge"
     }
-  ]
+  ],
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Minitwit Basic Checks",
+  "uid": "nwWEUkP7k",
+  "version": 1,
+  "weekStart": ""
 }

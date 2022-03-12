@@ -8,3 +8,14 @@ datasources:
     # Access mode - proxy (server in the UI) or direct (browser in the UI).
     access: proxy
     url: http://prometheus:9090
+
+  - name: Minitwit-postgres
+    uid: POSTGRES1234567890
+    type: postgres
+    url: postgres:5432
+    database: minitwit
+    user: postgres
+    secureJsonData:
+      password: example
+    jsonData:
+      sslmode: "disable"
