@@ -15,9 +15,9 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  - job_name:       'minitwit-postgres-app'
+  - job_name:       'minitwit'
     scrape_interval: 5s
     static_configs:
-      - targets: ['minitwit-postgres:8080']
+      - targets: ['minitwit:8080']
         labels:
           group: 'production'

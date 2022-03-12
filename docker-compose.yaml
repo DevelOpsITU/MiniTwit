@@ -2,11 +2,45 @@ version: '3'
 services:
 
   minitwit:
-    container_name: minitwit
     build: .
+    container_name: minitwit
     environment:
       - SERVER_HOST=localhost
       - DB_TYPE=Postgres
-      - DB_CONNECTION_STRING=host=localhost port=5432 user=postgres password=example dbname=minitwit
+      - DB_CONNECTION_STRING=host=postgres port=5432 user=postgres password=example dbname=minitwit
     ports:
       - 8080:8080
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13.5
+    container_name: postgres
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - ./docker-data/postgres/:/var/lib/postgresql/data
+
+  prometheus:
+    image: prom/prometheus:v2.33.5
+    container_name: prometheus
+    volumes:
+      - ./docker-data/prometheus/config/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:8.4.3
+    container_name: grafana
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker-data/grafana/internal:/var/lib/grafana
+      - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
+      - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/

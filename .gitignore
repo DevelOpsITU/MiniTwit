@@ -4,3 +4,5 @@ src/go.sum
 .idea/*
 __pycache__
 go.sum
+docker-data/postgres/**
+docker-data/grafana/internal/**
