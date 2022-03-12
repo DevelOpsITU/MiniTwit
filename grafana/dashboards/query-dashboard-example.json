@@ -1,0 +1,90 @@
+{
+    "id": 3,
+    "gridPos": {
+      "x": 0,
+      "y": 0,
+      "w": 4,
+      "h": 4
+    },
+    "type": "gauge",
+    "title": "Current Users",
+    "targets": [
+      {
+        "datasource": {
+          "uid": "POSTGRES1234567890",
+          "type": "postgres"
+        },
+        "refId": "A",
+        "hide": false,
+        "format": "table",
+        "timeColumn": "time",
+        "metricColumn": "none",
+        "group": [],
+        "where": [],
+        "select": [
+          [
+            {
+              "type": "column",
+              "params": [
+                "value"
+              ]
+            }
+          ]
+        ],
+        "rawQuery": true,
+        "rawSql": "SELECT COUNT(*)\nFROM \"user\"",
+        "table": "\"user\""
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "values": false,
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": ""
+      },
+      "orientation": "auto",
+      "showThresholdLabels": false,
+      "showThresholdMarkers": true
+    },
+    "fieldConfig": {
+      "defaults": {
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "value": 100,
+              "color": "#6ED0E0"
+            },
+            {
+              "value": 1000,
+              "color": "#EAB839"
+            },
+            {
+              "color": "red",
+              "value": 100000
+            },
+            {
+              "value": 10000000,
+              "color": "dark-red"
+            }
+          ]
+        },
+        "color": {
+          "mode": "thresholds"
+        }
+      },
+      "overrides": []
+    },
+    "datasource": {
+      "uid": "POSTGRES1234567890",
+      "type": "postgres"
+    },
+    "pluginVersion": "8.4.3"
+  }
