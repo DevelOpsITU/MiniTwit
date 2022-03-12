@@ -25,8 +25,10 @@ services:
       - DB_CONNECTION_STRING=host=localhost port=5433 user=postgres password=example dbname=minitwit
     ports:
       - 8000:8080
-    volumes:
-      - ../data/:/tmp/
+    depends_on:
+      - postgres
+      - grafane
+      - prometheus
   
   postgres:
     container_name: postgres
@@ -45,6 +47,7 @@ services:
       - "9090:9090"
 
   grafana:
+    container_name: grafana
     build:
       context: ./grafana
     ports:
