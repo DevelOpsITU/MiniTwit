@@ -13,11 +13,11 @@ else
 fi
 
 # if the installation failed exit
-if ! command -v pgloader &> /dev/null 
-then
-    echo -e "${RED}[ERROR] something went wrong in the installation of pgloader${NC}"
-    exit
-fi
+#if ! command -v pgloader &> /dev/null 
+#then
+#    echo -e "${RED}[ERROR] something went wrong in the installation of pgloader${NC}"
+#    exit
+#fi
 
 # check if postgres is installed
 if ! command -v psql &> /dev/null 
@@ -58,4 +58,5 @@ echo -e "${GREEN}[INFO] - starting migration...${NC}"
 # copy database to this server (does not seem that you can directly do it in the pgloader command)
 scp -i ~/.ssh/id_rsa.pub root@thomsen-it.dk:/tmp/minitwit.db /tmp/minitwit.db
 # migrate the data only from the database
-pgloader -v --with 'data only' /tmp/minitwit.db postgresql:///${POSTGRES_DB_NAME}?user=${POSTGRES_USER}&password=${POSTGRES_PASS}
+docker run --network="minitwit_default" -v "$(pwd)"/tmp/:/tmp/ --rm --name pgloader dimitri/pgloader:latest pgloader -v --with 'data only' ./tmp/minitwit.db postgresql://root@postgres:5432/minitwit?user=postgres&password=example
+

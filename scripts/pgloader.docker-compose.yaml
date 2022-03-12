@@ -1,0 +1,9 @@
+version: '3'
+services:
+  pgloader:
+    container_name: pgloader
+    image: dimitri/pgloader:latest
+
+    volumes:
+      - ../../data/:/tmp/
+    command: pgloader -v --with 'data only' /tmp/minitwit22.db postgresql://postgres:example@database.thomsen-it.dk:5432/minitwit
