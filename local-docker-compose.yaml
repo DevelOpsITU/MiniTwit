@@ -27,7 +27,7 @@ services:
       - 8000:8080
     depends_on:
       - postgres
-      - grafane
+      - grafana
       - prometheus
   
   postgres:
