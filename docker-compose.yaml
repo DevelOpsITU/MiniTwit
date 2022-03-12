@@ -22,7 +22,7 @@ services:
     environment:
       - SERVER_HOST=localhost
       - DB_TYPE=Postgres
-      - DB_CONNECTION_STRING=host=localhost port=5433 user=postgres password=example dbname=minitwit
+      - DB_CONNECTION_STRING=host=postgres port=5432 user=postgres password=example dbname=minitwit
     ports:
       - 8000:8080
     depends_on:
