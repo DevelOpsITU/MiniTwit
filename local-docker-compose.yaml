@@ -27,7 +27,7 @@ services:
       - 8000:8080
     depends_on:
       - postgres
-      - grafane
+      - grafana
       - prometheus
   
   postgres:
@@ -42,14 +42,14 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./MonitoringServer/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
 
   grafana:
     container_name: grafana
     build:
-      context: ./grafana
+      context: ./MonitoringServer/grafana
     ports:
       - "3000:3000"
     volumes:
