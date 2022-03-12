@@ -1,0 +1,40 @@
+$ ./scripts/migrateSQLiteToPostgres.sh
+[+] Running 1/1
+ - Container pgloader  Created                                                                                                                                                                                                     0.8s
+Attaching to pgloader
+pgloader  | 2022-03-10T12:09:45.014000Z NOTICE Starting pgloader, log system is ready.
+pgloader  | 2022-03-10T12:09:45.020000Z LOG pgloader version "3.6.3~devel"
+pgloader  | 2022-03-10T12:09:45.312000Z LOG Migrating from #<SQLITE-CONNECTION sqlite:///tmp/minitwit22.db {1005D6D7E3}>
+pgloader  | 2022-03-10T12:09:45.318000Z LOG Migrating into #<PGSQL-CONNECTION pgsql://postgres@104.248.103.10:5432/minitwit {1005EAFCD3}>
+pgloader  | 2022-03-10T12:09:45.353000Z NOTICE SQLite column user.user_id uses a sequence
+pgloader  | 2022-03-10T12:09:45.360000Z NOTICE SQLite column message.message_id uses a sequence
+pgloader  | 2022-03-10T12:09:45.379000Z NOTICE Prepare PostgreSQL database.
+pgloader  | 2022-03-10T12:09:46.094000Z WARNING Source column "public"."user"."username" is casted to type "string" which is not the same as "text", the type of current target database column "public"."user"."username".
+pgloader  | 2022-03-10T12:09:46.095000Z WARNING Source column "public"."user"."email" is casted to type "string" which is not the same as "text", the type of current target database column "public"."user"."email".
+pgloader  | 2022-03-10T12:09:46.095000Z WARNING Source column "public"."user"."pw_hash" is casted to type "string" which is not the same as "text", the type of current target database column "public"."user"."pw_hash".
+pgloader  | 2022-03-10T12:09:46.096000Z WARNING Source column "public"."message"."text" is casted to type "string" which is not the same as "text", the type of current target database column "public"."message"."text".
+pgloader  | 2022-03-10T12:09:46.165000Z NOTICE COPY "user" with 0 rows estimated [3/4]
+pgloader  | 2022-03-10T12:09:46.177000Z NOTICE COPY follower with 0 rows estimated [1/4]
+pgloader  | 2022-03-10T12:09:46.184000Z NOTICE COPY message with 0 rows estimated [3/4]
+pgloader  | 2022-03-10T12:09:46.626000Z NOTICE Completing PostgreSQL database.
+pgloader  | 2022-03-10T12:09:46.626000Z NOTICE Reset sequences
+pgloader  | 2022-03-10T12:09:47.605000Z LOG report summary reset
+pgloader  |              table name     errors       read   imported      bytes      total time       read      write
+pgloader  | -----------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+pgloader  |                   fetch          0          0          0                     0.000s
+pgloader  |         fetch meta data          0          3          3                     0.048s
+pgloader  |       Drop Foreign Keys          0          0          0                     0.000s
+pgloader  | -----------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+pgloader  |                  "user"          0         86         86    29.7 kB          0.400s     0.011s     0.004s
+pgloader  |                follower          0         54         54     0.3 kB          0.373s     0.009s
+pgloader  |                 message          0        859        859    83.8 kB          0.441s     0.012s     0.003s
+pgloader  | -----------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+pgloader  | COPY Threads Completion          0          4          4                     0.453s
+pgloader  |         Reset Sequences          0          2          2                     0.551s
+pgloader  |     Create Foreign Keys          0          0          0                     0.001s
+pgloader  |        Install Comments          0          0          0                     0.000s
+pgloader  | -----------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+pgloader  |       Total import time          ?        999        999   113.8 kB          1.005s
+pgloader exited with code 0
+pgloader
+

@@ -6,18 +6,16 @@ server:
 # Postgresql DB
 database:
 
-  type: "SQLite"
-  connectionstring: "/tmp/minitwit.db"
+  #type: "SQLite"
+  #connectionstring: "/tmp/minitwit.db"
   #connectionstring: "file::memory:"
   #connectionstring: "C:/Users/JTT/Documents/git/MiniTwit/data/minitwit.db"
   #connectionstring: "C:/Users/malth/Desktop/MiniTwit/tmp/minitwit.db"
   #connectionstring: "/home/turbo/ITU/DevOps/MiniTwit/tmp/minitwit.db"
   #connectionstring: "H:/repos/MiniTwit/minitwit.db"
 
-  #type: "Postgres"
-  #connectionstring: "/tmp/minitwit.db"
-  #connectionstring: "host=localhost user=postgres password=password dbname=minitwit"
-  #connectionString: "User ID=postgres;Password=example;Host=localhost;Port=5432;Database=minitwit;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+  type: "Postgres"
+  connectionstring: "host=localhost port=5433 user=postgres password=example dbname=minitwit"
 
 development:
   generateMockData: false

@@ -1,0 +1,23 @@
+
+jtt@JTT-P14s MINGW64 ~/Documents/git/MiniTwit/MiniTwit (feature/#92-migrate-data-from-SQLite-to-PostgreSQL)
+$ ./scripts/updateSQLitePw_hash.sh
+[+] Running 1/1
+ - Container sqlite  Created                                                                                                                                                                                                       0.8s
+Attaching to sqlite
+sqlite exited with code 0
+sqlite
+
+jtt@JTT-P14s MINGW64 ~/Documents/git/MiniTwit/MiniTwit (feature/#92-migrate-data-from-SQLite-to-PostgreSQL)
+$ diff ../data/minitwit.db ../data/minitwit.db.bak
+
+jtt@JTT-P14s MINGW64 ~/Documents/git/MiniTwit/MiniTwit (feature/#92-migrate-data-from-SQLite-to-PostgreSQL)
+$ ./scripts/updateSQLitePw_hash.sh
+[+] Running 1/1
+ - Container sqlite  Created                                                                                                                                                                                                       0.8s
+Attaching to sqlite
+sqlite exited with code 0
+sqlite
+
+jtt@JTT-P14s MINGW64 ~/Documents/git/MiniTwit/MiniTwit (feature/#92-migrate-data-from-SQLite-to-PostgreSQL)
+$ diff ../data/minitwit.db ../data/minitwit.db.bak
+Binary files ../data/minitwit.db and ../data/minitwit.db.bak differ

@@ -1,15 +1,24 @@
 version: '3'
 services:
 
+  minitwit-main:
+    container_name: minitwit-main
+    image: groupddevops/minitwit-go:237df00
+    environment:
+      - SERVER_HOST=localhost
+      - DB_TYPE=SQLite
+      - DB_CONNECTION_STRING=/tmp/minitwit-main.db
+    ports:
+      - 8000:8080
+    volumes:
+      - ../data/:/tmp/
 
-  minitwit-go:
-    container_name: minitwit-go
-    image: minitwit-go:latest
+  minitwit-postgres:
+    container_name: minitwit-postgres
     build: .
     environment:
       - SERVER_HOST=localhost
-      - DB_CONNECTION_STRING=/tmp/minitwit.db
+      - DB_TYPE=Postgres
+      - DB_CONNECTION_STRING=host=database.thomsen-it.dk port=5432 user=postgres password=example dbname=minitwit
     ports:
       - 8080:8080
-    volumes:
-      - ../data/:/tmp/
