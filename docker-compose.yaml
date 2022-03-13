@@ -22,7 +22,7 @@ services:
       - POSTGRES_PASSWORD=example
     volumes:
       - ./docker-data/postgres/:/var/lib/postgresql/data
-    user: '1000'
+    #user: '1000'
 
   prometheus:
     image: prom/prometheus:v2.33.5
