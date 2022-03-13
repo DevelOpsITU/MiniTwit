@@ -25,7 +25,19 @@
   "liveNow": false,
   "panels": [
     {
-      "description": "",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Row title",
+      "type": "row"
+    },
+    {
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -45,12 +57,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 24,
         "x": 0,
-        "y": 0
+        "y": 1
       },
-      "id": 2,
+      "id": 7,
       "options": {
         "displayMode": "gradient",
         "orientation": "auto",
@@ -61,10 +73,7 @@
           "fields": "",
           "values": false
         },
-        "showUnfilled": true,
-        "text": {
-          "titleSize": 20
-        }
+        "showUnfilled": true
       },
       "pluginVersion": "8.4.3",
       "targets": [
@@ -74,13 +83,13 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "minitwit_total_http{method=\"GET\"}",
+          "expr": "sum by (code) (minitwit_total_http)",
           "interval": "",
-          "legendFormat": "{{code}}",
+          "legendFormat": "HTTP Status Code {{code}}",
           "refId": "A"
         }
       ],
-      "title": "HTTP GET Requests",
+      "title": "HTTP Requests",
       "type": "bargauge"
     },
     {
@@ -104,10 +113,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
+        "h": 7,
+        "w": 7,
+        "x": 0,
+        "y": 7
       },
       "id": 3,
       "options": {
@@ -133,14 +142,76 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "minitwit_total_http{method=\"POST\"}",
+          "expr": "sum by (method) (minitwit_total_http)",
           "interval": "",
-          "legendFormat": "{{code}}",
+          "legendFormat": "{{method}}",
           "refId": "A"
         }
       ],
-      "title": "HTTP POST Requests",
+      "title": "HTTP Method",
       "type": "bargauge"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 7,
+        "y": 7
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "avg(minitwit_latest_time)/10^9",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Average Handling Time",
+      "type": "stat"
     }
   ],
   "schemaVersion": 35,
@@ -150,13 +221,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
-    "to": "now"
+    "from": "now/d",
+    "to": "now/d"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Network data",
   "uid": "P9sNjkEnk",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

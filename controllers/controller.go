@@ -30,7 +30,7 @@ func HandleRESTRequests() {
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-	router.Use(ErrorHandler)
+	router.Use(HttpGinMiddleware)
 
 	err := router.SetTrustedProxies(nil)
 	if err != nil {

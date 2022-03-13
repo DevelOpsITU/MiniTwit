@@ -14,9 +14,11 @@ import (
 *					Prometheus metrics					*
 *														*
 ********************************************************/
-var LatestValue = prometheus.NewGauge(prometheus.GaugeOpts{
-	Name: "minitwit_latest",
-})
+var LatestValue = prometheus.NewGauge(
+	prometheus.GaugeOpts{
+		Name: "minitwit_latest",
+	},
+)
 
 var LatestTime = prometheus.NewGauge(
 	prometheus.GaugeOpts{
@@ -27,9 +29,10 @@ var LatestTime = prometheus.NewGauge(
 var TotalRequest = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
 		Name: "minitwit_total_http",
-		Help: "total number of GET requests",
+		Help: "total number of http requests",
 	},
-	[]string{"code", "method"})
+	[]string{"code", "method"},
+)
 
 /************** REMEMBER TO REGISTER *******************/
 func init() {
@@ -61,7 +64,7 @@ func prometheusHandler() gin.HandlerFunc {
 *														*
 ********************************************************/
 // error handling middleware (could be reused for logging as well)
-func ErrorHandler(c *gin.Context) {
+func HttpGinMiddleware(c *gin.Context) {
 
 	// get request from context
 	request := c.Request
