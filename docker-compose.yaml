@@ -22,6 +22,7 @@ services:
       - POSTGRES_PASSWORD=example
     volumes:
       - ./docker-data/postgres/:/var/lib/postgresql/data
+    user: '1000'
 
   prometheus:
     image: prom/prometheus:v2.33.5
@@ -41,6 +42,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./docker-data/grafana/internal:/var/lib/grafana
+      - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
+    user: '1000'
