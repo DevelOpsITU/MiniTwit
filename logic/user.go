@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"minitwit/database"
-	"minitwit/log"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/models"
 	"strings"
 )
@@ -63,7 +63,7 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		log.Logger.Error().Err(err).Caller().Str("username", usernameToFollow).Msg("Could not get user")
 		return err
 	}
 
