@@ -39,6 +39,8 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - DATABASE_HOSTNAME=$DATABASE_HOSTNAME
+      - DATABASE_PASSWORD=$DATABASE_PASSWORD
     ports:
       - "3000:3000"
     volumes:
