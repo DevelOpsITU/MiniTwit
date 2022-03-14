@@ -48,10 +48,10 @@ datasources:
   - name: postgres
     uid: POSTGRES1234567890
     type: postgres
-    url: postgres:5432
+    url: $DATABASE_HOSTNAME:5432
     database: minitwit
     user: postgres
     secureJsonData:
-      password: example
+      password: $DATABASE_PASSWORD
     jsonData:
       sslmode: "disable"
