@@ -439,7 +439,7 @@
           ]
         }
       ],
-      "title": "Top 10 Following users",
+      "title": "Top 10 Following users (Who is following the most ppl)",
       "type": "barchart"
     },
     {
@@ -524,7 +524,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select count(*), u.username\nfrom follower f\n    join \"user\" u on u.user_id = f.who_id\ngroup by whom_id, u.username\norder by count(*) desc\nlimit 10",
+          "rawSql": "select count(*), u.username\nfrom follower f\n    join \"user\" u on u.user_id = f.whom_id\ngroup by who_id, u.username\norder by count(*) desc\nlimit 10",
           "refId": "A",
           "select": [
             [
@@ -546,7 +546,7 @@
           ]
         }
       ],
-      "title": "Top 10 Followed users",
+      "title": "Top 10 Followed users (Who is followed by most ppl)",
       "type": "barchart"
     },
     {

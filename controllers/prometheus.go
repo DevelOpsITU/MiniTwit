@@ -31,7 +31,7 @@ var TotalRequest = prometheus.NewCounterVec(
 		Name: "minitwit_total_http",
 		Help: "total number of http requests",
 	},
-	[]string{"code", "method"},
+	[]string{"code", "method", "url"},
 )
 
 /************** REMEMBER TO REGISTER *******************/
@@ -88,6 +88,7 @@ func HttpGinMiddleware(c *gin.Context) {
 	}
 
 	LatestTime.Set(float64(handleTime.Nanoseconds()))
-	TotalRequest.WithLabelValues(statuscode, request.Method).Inc()
+	TotalRequest.WithLabelValues(statuscode, request.Method, request.RequestURI).Inc()
+
 	LatestValue.Add(1)
 }
