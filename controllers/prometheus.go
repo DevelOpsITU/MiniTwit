@@ -26,6 +26,22 @@ var LatestTime = prometheus.NewGauge(
 	},
 )
 
+var EndpointAvgResponseTime = prometheus.NewSummaryVec(
+	prometheus.SummaryOpts{
+		Name: "minitwit_endpoint_avg_responsetime",
+		Help: "The response times of endpoints",
+	},
+	[]string{"code", "method", "url"},
+)
+
+var EndpointResponseTime = prometheus.NewGaugeVec(
+	prometheus.GaugeOpts{
+		Name: "minitwit_endpoint_responsetime",
+		Help: "The response times of endpoints",
+	},
+	[]string{"code", "method", "url"},
+)
+
 var TotalRequest = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
 		Name: "minitwit_total_http",
@@ -36,9 +52,12 @@ var TotalRequest = prometheus.NewCounterVec(
 
 /************** REMEMBER TO REGISTER *******************/
 func init() {
+	LatestValue.Set(-1)
 	prometheus.MustRegister(LatestValue)
 	prometheus.MustRegister(TotalRequest)
 	prometheus.MustRegister(LatestTime)
+	prometheus.MustRegister(EndpointAvgResponseTime)
+	prometheus.MustRegister(EndpointResponseTime)
 }
 
 /********************************************************
@@ -87,8 +106,9 @@ func HttpGinMiddleware(c *gin.Context) {
 		// TotalRequest.WithLabelValues(statuscode, request.Method).Inc()
 	}
 
+	EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, request.RequestURI).Observe(float64(handleTime.Nanoseconds()))
+	EndpointResponseTime.WithLabelValues(statuscode, request.Method, request.RequestURI).Set(float64(handleTime.Nanoseconds()))
+
 	LatestTime.Set(float64(handleTime.Nanoseconds()))
 	TotalRequest.WithLabelValues(statuscode, request.Method, request.RequestURI).Inc()
-
-	LatestValue.Add(1)
 }
