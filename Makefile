@@ -36,7 +36,7 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 test: ## Run Go tests
 	 go test -v ./...
 
-test_coverage: ## Run Go tests with coverage (Not implemented)
+test_coverage: ## Run Go tests with coverage
 	go test ./main.go -coverprofile=coverage.out
 
 go_lint: ## Lint all go files
