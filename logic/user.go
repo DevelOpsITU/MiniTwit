@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"minitwit/database"
-	"minitwit/log"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/models"
 	"strings"
 )
@@ -56,15 +56,25 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	follower, err := database.GetUserFromDb(followerUsername)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
-		return err
+		log.Logger.Warn().Err(err).Caller().Str("username", followerUsername).Msg("Created user. Did not exists.")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  followerUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 	}
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
-		return err
+		log.Logger.Warn().Err(err).Caller().Str("username", usernameToFollow).Msg("Created user. Did not exists.")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  usernameToFollow,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
@@ -94,15 +104,25 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 	follower, err := database.GetUserFromDb(followerUsername)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
-		return err
+		log.Logger.Warn().Err(err).Caller().Str("username", followerUsername).Msg("Created user. Did not exists.")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  followerUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 	}
 
 	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", unfollowUsername).Msg("Could not get user")
-		return err
+		log.Logger.Warn().Err(err).Caller().Str("username", unfollowUsername).Msg("Created user. Did not exists.")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  unfollowUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
@@ -110,6 +130,7 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
+		return err
 	}
 
 	return nil

@@ -63,7 +63,7 @@ func handleUnFollowUser(w http.ResponseWriter, c *gin.Context, username string) 
 		Messages: []string{"You are no longer following " + username},
 	}
 	functions.SetCookie(c, g)
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, fmt.Sprintf("/%s", username))
 }
 
 func handleFollowUser(w http.ResponseWriter, c *gin.Context, username string) {
@@ -94,5 +94,5 @@ func handleFollowUser(w http.ResponseWriter, c *gin.Context, username string) {
 		Messages: []string{"You are now following " + username},
 	}
 	functions.SetCookie(c, g)
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, fmt.Sprintf("/%s", username))
 }
