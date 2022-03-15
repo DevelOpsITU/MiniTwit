@@ -53,7 +53,8 @@ deps: ## Install dependencies
 	go get -u golang.org/x/lint/golint
 	go get github.com/pilu/fresh
 	go install github.com/pilu/fresh
-	go install gorm.io/gorm
+	
+	go get gorm.io/gorm
 	go install gorm.io/driver/sqlite
 	go install gorm.io/driver/postgres
 	go install golang.org/x/lint/golint
