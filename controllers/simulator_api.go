@@ -74,6 +74,7 @@ func updateLatest(c *gin.Context) {
 	atoi, err := strconv.Atoi(c.Query("latest"))
 	if err == nil {
 		latest = atoi
+		LatestValue.Set(float64(atoi))
 	}
 }
 
