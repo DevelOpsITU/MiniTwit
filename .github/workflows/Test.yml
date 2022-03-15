@@ -42,6 +42,7 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Build docker image
-      run: make docker-build
+        uses: actions/checkout@v2
+      
+        run: make docker-build
