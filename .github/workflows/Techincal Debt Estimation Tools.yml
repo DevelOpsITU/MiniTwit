@@ -7,6 +7,7 @@ on:
   pull_request:
       types: [opened, synchronize, reopened]
 name: Technical Debt Estimation Tools
+
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
