@@ -9,11 +9,12 @@ on:
 jobs:
   lint-docker:
     runs-on: ubuntu-latest
-    container: hadolint/hadolint
     steps:
       - uses: actions/checkout@v2
-      - name: hadolint
-        run: hadolint ./**/*Dockerfile
+      - name: Hlint
+        uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile
 
   build:
 
