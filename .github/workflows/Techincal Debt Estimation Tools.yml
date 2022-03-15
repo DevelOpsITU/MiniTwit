@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+      types: [opened, synchronize, reopened]
+
+name: Technical Debt Estimation Tools
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v1.6
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
