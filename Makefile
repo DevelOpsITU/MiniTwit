@@ -33,7 +33,7 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 
 
 ## Tests
-test: ## Run Go tests (Not implemented)
+test: ## Run Go tests
 	 go test -v ./...
 
 test_coverage: ## Run Go tests with coverage (Not implemented)
