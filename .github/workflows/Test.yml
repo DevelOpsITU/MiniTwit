@@ -64,9 +64,11 @@ jobs:
         run: make docker-build
         #run: make docker-release
 
-      - name: Scan docker image
-        run: make docker-scan
+      # DOES NOT WORK YET
+      #- name: Scan docker image
+      #  run: make docker-scan
       
+      # DOES WORK 
       #- uses: azure/container-scan@v0
       #  with:
       #    image-name: gominitwit:latest
