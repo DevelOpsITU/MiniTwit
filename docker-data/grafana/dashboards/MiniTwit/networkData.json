@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -81,7 +81,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 9,
+        "w": 17,
         "x": 0,
         "y": 0
       },
@@ -112,6 +112,69 @@
       ],
       "title": "Endpoint response times (in seconds)",
       "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 7,
+        "x": 17,
+        "y": 0
+      },
+      "id": 18,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "text": {
+          "titleSize": 18,
+          "valueSize": 16
+        }
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "sum by (url, code) (minitwit_total_http)",
+          "interval": "",
+          "legendFormat": "{{url}} {{code}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Errorcodes + url",
+      "type": "bargauge"
     },
     {
       "fieldConfig": {
@@ -167,9 +230,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 9,
-        "y": 0
+        "w": 17,
+        "x": 0,
+        "y": 8
       },
       "id": 15,
       "options": {
@@ -202,68 +265,6 @@
       "type": "timeseries"
     },
     {
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 19,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "avg(minitwit_latest_time)/10^9",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Average Handling Time",
-      "type": "stat"
-    },
-    {
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -291,7 +292,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 8
+        "y": 16
       },
       "id": 13,
       "options": {
@@ -348,9 +349,9 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 5,
+        "w": 6,
         "x": 6,
-        "y": 8
+        "y": 16
       },
       "id": 11,
       "options": {
@@ -363,7 +364,11 @@
           "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": false,
+        "text": {
+          "titleSize": 18,
+          "valueSize": 16
+        }
       },
       "pluginVersion": "8.4.3",
       "targets": [
@@ -403,9 +408,9 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 11,
-        "y": 8
+        "w": 5,
+        "x": 12,
+        "y": 16
       },
       "id": 7,
       "options": {
@@ -430,7 +435,7 @@
           "exemplar": true,
           "expr": "sum by (code) (minitwit_total_http)",
           "interval": "",
-          "legendFormat": "HTTP Status Code {{code}}",
+          "legendFormat": "{{code}}",
           "refId": "A"
         }
       ],
@@ -461,7 +466,7 @@
         "h": 6,
         "w": 7,
         "x": 17,
-        "y": 8
+        "y": 16
       },
       "id": 3,
       "options": {
@@ -497,12 +502,74 @@
       "type": "bargauge"
     },
     {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 22
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "avg(minitwit_latest_time)/10^9",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Average Handling Time",
+      "type": "stat"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 26
       },
       "id": 9,
       "panels": [],
@@ -510,6 +577,7 @@
       "type": "row"
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 35,
   "style": "dark",
   "tags": [],
@@ -522,8 +590,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Network data",
+  "title": "Endpoint",
   "uid": "P9sNjkEnk",
-  "version": 14,
+  "version": 1,
   "weekStart": ""
 }
