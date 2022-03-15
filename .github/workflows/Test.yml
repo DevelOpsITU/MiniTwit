@@ -11,10 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Hlint
-        uses: hadolint/hadolint-action@v1.5.0
-        with:
-          dockerfile: Dockerfile
+      - name: Run docker linter
+        run: make docker_lint
 
   build:
 
@@ -44,3 +42,10 @@ jobs:
 
     - name: Run tests
       run: make test
+
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      name: Build docker image
+      run: make docker-build

@@ -32,6 +32,12 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 	fresh -c ./fresh/my_fresh_runner.conf
 
 
+
+## Linters
+docker_lint ## Run docker linting script
+	./scripts/docker_lint.sh
+
+
 ## Tests
 test: ## Run Go tests
 	 go test -v ./...
