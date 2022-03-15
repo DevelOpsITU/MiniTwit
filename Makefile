@@ -40,7 +40,7 @@ test_coverage: ## Run Go tests with coverage
 	go test ./main.go -coverprofile=coverage.out
 
 go_lint: ## Lint all go files
-	 golint -set_exit_status ./...
+	 golint  ./...
 
 
 deps: ## Install dependencies
