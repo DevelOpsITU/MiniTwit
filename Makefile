@@ -81,7 +81,7 @@ docker-run: docker-build ## Build and run the container locally with port 8080
 	docker logs Minitwit-container
 
 docker-scan: ## Scan the image built
-	sudo apt-get update && sudo apt-get install docker-scan-plugin -y
+	docker --version
 	docker scan $(BINARY_NAME):latest
 
 GREEN  := $(shell tput -Txterm setaf 2)
