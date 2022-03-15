@@ -3,6 +3,7 @@ on:
     branches:
       - dev
       - main
+      - feature/#114-TD-tools
   pull_request:
       types: [opened, synchronize, reopened]
 
