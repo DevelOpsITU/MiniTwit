@@ -56,27 +56,25 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	follower, err := database.GetUserFromDb(followerUsername)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		log.Logger.Warn().Err(err).Caller().Str("username", followerUsername).Msg("Created user. Did not exists.")
 		database.AddUserToDb(models.RegistrationUser{
 			Username:  followerUsername,
 			Email:     "@",
 			Password1: "123",
 			Password2: "123",
 		})
-		return err
 	}
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Caller().Str("username", usernameToFollow).Msg("Could not get user")
+		log.Logger.Warn().Err(err).Caller().Str("username", usernameToFollow).Msg("Created user. Did not exists.")
 		database.AddUserToDb(models.RegistrationUser{
 			Username:  usernameToFollow,
 			Email:     "@",
 			Password1: "123",
 			Password2: "123",
 		})
-		return err
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
