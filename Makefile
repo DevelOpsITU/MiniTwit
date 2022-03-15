@@ -44,13 +44,13 @@ go_lint: ## Lint all go files
 
 
 deps: ## Install dependencies
+	go mod download golang.org/x/lint
 	go mod tidy
 	go get github.com/pilu/fresh
 	go install github.com/pilu/fresh
 	go install gorm.io/gorm
 	go install gorm.io/driver/sqlite
 	go install gorm.io/driver/postgres
-	go mod download golang.org/x/lint
 	go install golang.org/x/lint/golint
 
 
