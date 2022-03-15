@@ -80,9 +80,11 @@ docker-run: docker-build ## Build and run the container locally with port 8080
 	docker ps -l
 	docker logs Minitwit-container
 
+#works locally with 'Docker version 20.10.12, build e91ed57'
 docker-scan: ## Scan the image built
 	docker --version
 	docker scan $(BINARY_NAME):latest
+	
 
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
