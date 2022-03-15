@@ -45,6 +45,7 @@ go_lint: ## Lint all go files
 
 deps: ## Install dependencies
 	go mod tidy
+	go get github.com/pilu/fresh
 	go install github.com/pilu/fresh
 	go install gorm.io/gorm
 	go install gorm.io/driver/sqlite
