@@ -10,7 +10,7 @@ jobs:
 
 
 
-  Test and lint Go application:
+  Test_and_lint_Go_application:
 
     runs-on: ubuntu-latest
 
@@ -63,3 +63,6 @@ jobs:
       - name: Build docker image      
         run: make docker-build
         #run: make docker-release
+      
+      - name: Docker scan image
+        run: make docker-scan

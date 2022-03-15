@@ -64,7 +64,7 @@ deps: ## Install dependencies
 # https://golangdocs.com/makefiles-golang and
 
 ## Docker:
-docker-build: ## Use the dockerfile to build the container
+docker-build: ## Use the dockerfile to build the image
 	docker build --rm --tag $(BINARY_NAME) .
 
 docker-release: ## Release the container with tag latest and version
@@ -79,6 +79,9 @@ docker-run: docker-build ## Build and run the container locally with port 8080
 	docker run -d -p 8080:8080 --name=$(CONTAINER_NAME) $(BINARY_NAME)
 	docker ps -l
 	docker logs Minitwit-container
+
+docker-scan: docker-build ## Scan the image built
+	docker scan $(BINARY_NAME)
 
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
