@@ -57,6 +57,12 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  followerUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 		return err
 	}
 
@@ -64,6 +70,12 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("username", usernameToFollow).Msg("Could not get user")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  usernameToFollow,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 		return err
 	}
 
@@ -95,6 +107,12 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("username", followerUsername).Msg("Could not get user")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  followerUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 		return err
 	}
 
@@ -102,6 +120,12 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("username", unfollowUsername).Msg("Could not get user")
+		database.AddUserToDb(models.RegistrationUser{
+			Username:  unfollowUsername,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
 		return err
 	}
 
