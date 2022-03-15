@@ -34,7 +34,7 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 
 
 ## Linters
-docker_lint ## Run docker linting script
+docker_lint: ## Run docker linting script
 	./scripts/docker_lint.sh
 
 
