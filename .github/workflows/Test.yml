@@ -10,7 +10,7 @@ jobs:
 
 
 
-  build:
+  Test and lint Go application:
 
     runs-on: ubuntu-latest
 
@@ -44,8 +44,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: docker linting
-        run: make docker_lint
       # From https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       # This is the a separate action that sets up buildx runner
       - name: Set up Docker Buildx
@@ -58,6 +56,10 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+      
+      - name: docker linting
+        run: make docker_lint
 
       - name: Build docker image      
         run: make docker-build
+        #run: make docker-release
