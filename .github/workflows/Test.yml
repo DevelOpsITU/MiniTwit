@@ -10,7 +10,7 @@ jobs:
 
 
 
-  Test_and_lint_Go_application:
+  LintanTest:
 
     runs-on: ubuntu-latest
 
@@ -64,5 +64,6 @@ jobs:
         run: make docker-build
         #run: make docker-release
       
-      - name: Docker scan image
-        run: make docker-scan
+      - uses: azure/container-scan@v0
+        with:
+          image-name: gominitwit:latest

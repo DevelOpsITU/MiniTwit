@@ -65,7 +65,7 @@ deps: ## Install dependencies
 
 ## Docker:
 docker-build: ## Use the dockerfile to build the image
-	docker build --rm --tag $(BINARY_NAME) .
+	docker build --rm --tag $(BINARY_NAME):latest .
 
 docker-release: ## Release the container with tag latest and version
 	docker tag $(BINARY_NAME) $(DOCKER_REGISTRY)$(BINARY_NAME):latest
