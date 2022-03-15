@@ -7,13 +7,20 @@ on:
     branches: [ feature/#117_Setup_Github_action_as_CI ]
 
 jobs:
+  lint-docker:
+    runs-on: ubuntu-latest
+    container: hadolint/hadolint:latest-debian
+    steps:
+    - uses: actions/checkout@v2
+    - name: hadolint
+      run: hadolint ./**/*Dockerfile*
+
   build:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-      run: hadolint ./**/*Dockerfile*
 
     - uses: actions/cache@v2
       with:
