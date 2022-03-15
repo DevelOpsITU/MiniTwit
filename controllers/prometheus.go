@@ -106,9 +106,9 @@ func HttpGinMiddleware(c *gin.Context) {
 		// TotalRequest.WithLabelValues(statuscode, request.Method).Inc()
 	}
 
-	EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, request.RequestURI).Observe(float64(handleTime.Nanoseconds()))
-	EndpointResponseTime.WithLabelValues(statuscode, request.Method, request.RequestURI).Set(float64(handleTime.Nanoseconds()))
+	EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, request.URL.Path).Observe(float64(handleTime.Nanoseconds()))
+	EndpointResponseTime.WithLabelValues(statuscode, request.Method, request.URL.Path).Set(float64(handleTime.Nanoseconds()))
 
 	LatestTime.Set(float64(handleTime.Nanoseconds()))
-	TotalRequest.WithLabelValues(statuscode, request.Method, request.RequestURI).Inc()
+	TotalRequest.WithLabelValues(statuscode, request.Method, request.URL.Path).Inc()
 }

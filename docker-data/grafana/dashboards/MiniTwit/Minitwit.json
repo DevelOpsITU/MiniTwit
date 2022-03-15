@@ -21,6 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -324,7 +325,7 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": false,
-          "expr": "minitwit_latest{instance=\"minitwit:8080\"}",
+          "expr": "minitwit_latest{job=\"minitwit\"}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -671,6 +672,6 @@
   "timezone": "browser",
   "title": "Minitwit - Business Intelligence",
   "uid": "nwWEUkP7k",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
