@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run docker linter
-        run: make docker_lint
+      - run: make docker_lint
 
   build:
 
@@ -47,5 +47,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      name: Build docker image
-      run: make docker-build
+      - name: Build docker image
+      - run: make docker-build
