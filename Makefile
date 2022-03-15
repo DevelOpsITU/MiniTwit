@@ -81,7 +81,7 @@ docker-run: docker-build ## Build and run the container locally with port 8080
 	docker logs Minitwit-container
 
 docker-scan: docker-build ## Scan the image built
-	docker scan $(BINARY_NAME)
+	docker scan $(BINARY_NAME):latest
 
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
