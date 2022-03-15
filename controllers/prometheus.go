@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -106,9 +107,15 @@ func HttpGinMiddleware(c *gin.Context) {
 		// TotalRequest.WithLabelValues(statuscode, request.Method).Inc()
 	}
 
-	EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, request.URL.Path).Observe(float64(handleTime.Nanoseconds()))
-	EndpointResponseTime.WithLabelValues(statuscode, request.Method, request.URL.Path).Set(float64(handleTime.Nanoseconds()))
+	// Replaces parameters with :key so that they are grouped under one
+	url := request.URL.Path
+	for _, p := range c.Params {
+		url = strings.ReplaceAll(url, p.Value, ":"+p.Key)
+	}
+
+	EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, url).Observe(float64(handleTime.Nanoseconds()))
+	EndpointResponseTime.WithLabelValues(statuscode, request.Method, url).Set(float64(handleTime.Nanoseconds()))
 
 	LatestTime.Set(float64(handleTime.Nanoseconds()))
-	TotalRequest.WithLabelValues(statuscode, request.Method, request.URL.Path).Inc()
+	TotalRequest.WithLabelValues(statuscode, request.Method, url).Inc()
 }

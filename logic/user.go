@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"minitwit/database"
-	"minitwit/log"
 	"minitwit/functions"
+	"minitwit/log"
 	"minitwit/models"
 	"strings"
 )
@@ -110,6 +110,7 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
+		return err
 	}
 
 	return nil
