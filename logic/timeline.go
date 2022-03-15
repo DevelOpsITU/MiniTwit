@@ -67,7 +67,7 @@ func getGavaterUrl(email string, size int) string {
 	hash := md5.Sum(data)
 	hashStr := hex.EncodeToString(hash[:])
 
-	str := []string{"http://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", strconv.Itoa(size)}
+	str := []string{"https://www.gravatar.com/avatar/", hashStr, "?d=identicon&s=", strconv.Itoa(size)}
 	return strings.Join(str, "")
 }
 

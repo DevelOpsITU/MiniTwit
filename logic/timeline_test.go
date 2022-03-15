@@ -11,7 +11,7 @@ func TestGavatarString(t *testing.T) {
 	hashStr := "6ad193f57f79ac444c3621370da955e9"
 	gavatarStr := getGavaterUrl(email, sizeInt)
 
-	expectedString := "http://www.gravatar.com/avatar/" + hashStr + "?d=identicon&s=" + size
+	expectedString := "https://www.gravatar.com/avatar/" + hashStr + "?d=identicon&s=" + size
 
 	if gavatarStr != expectedString {
 		t.Fatalf("Gavtar failed")
