@@ -16,7 +16,7 @@ func HttpGinMiddleware(c *gin.Context) {
 
 	// maybe sort away /metrics
 	// ------------------------
-	metrics.HackCreateUserOnFollow.Inc()
+
 	// measure time of request
 	start := time.Now()
 	c.Next()
