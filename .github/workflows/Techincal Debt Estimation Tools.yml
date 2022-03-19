@@ -11,16 +11,12 @@ name: Technical Debt Estimation Tools
 jobs:
 # Code Climate
   coverage:
-    name: coverage
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@master
-      with:
-        node-version: '12'
-    - uses: paambaati/codeclimate-action@v3.0.0
+    - name: Test & publish code coverage
+      uses: paambaati/codeclimate-action@v3.0.0
       env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: <code_climate_reporter_id>
       with:
         coverageCommand: npm run coverage
         debug: true
