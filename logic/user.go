@@ -57,8 +57,8 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	follower, err := database.GetUserFromDb(followerUsername)
 
 	if err != nil {
-		log.Logger.Warn().Err(err).Caller().Str("username", followerUsername).Msg("Created user. Did not exists.")
-		database.AddUserToDb(models.RegistrationUser{
+		log.Logger.Warn().Err(err).Caller().Bool("hack", true).Str("username", followerUsername).Msg("Created user. Did not exists.")
+		follower.UserId = database.AddUserToDb(models.RegistrationUser{
 			Username:  followerUsername,
 			Email:     "@",
 			Password1: "123",
@@ -70,8 +70,8 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
 
 	if err != nil {
-		log.Logger.Warn().Err(err).Caller().Str("username", usernameToFollow).Msg("Created user. Did not exists.")
-		database.AddUserToDb(models.RegistrationUser{
+		log.Logger.Warn().Err(err).Caller().Bool("hack", true).Str("username", usernameToFollow).Msg("Created user. Did not exists.")
+		userToFollow.UserId = database.AddUserToDb(models.RegistrationUser{
 			Username:  usernameToFollow,
 			Email:     "@",
 			Password1: "123",
@@ -107,25 +107,27 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 	follower, err := database.GetUserFromDb(followerUsername)
 
 	if err != nil {
-		log.Logger.Warn().Err(err).Caller().Str("username", followerUsername).Msg("Created user. Did not exists.")
-		database.AddUserToDb(models.RegistrationUser{
+		log.Logger.Warn().Err(err).Caller().Bool("hack", true).Str("username", followerUsername).Msg("Created user. Did not exists.")
+		follower.UserId = database.AddUserToDb(models.RegistrationUser{
 			Username:  followerUsername,
 			Email:     "@",
 			Password1: "123",
 			Password2: "123",
 		})
+		metrics.HackCreateUserOnFollow.Inc()
 	}
 
 	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
 
 	if err != nil {
-		log.Logger.Warn().Err(err).Caller().Str("username", unfollowUsername).Msg("Created user. Did not exists.")
-		database.AddUserToDb(models.RegistrationUser{
+		log.Logger.Warn().Err(err).Caller().Bool("hack", true).Str("username", unfollowUsername).Msg("Created user. Did not exists.")
+		userToUnFollow.UserId = database.AddUserToDb(models.RegistrationUser{
 			Username:  unfollowUsername,
 			Email:     "@",
 			Password1: "123",
 			Password2: "123",
 		})
+		metrics.HackCreateUserOnFollow.Inc()
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
