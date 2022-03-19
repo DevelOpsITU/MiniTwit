@@ -29,6 +29,7 @@ services:
     container_name: prometheus
     volumes:
       - ./docker-data/prometheus/config/:/etc/prometheus/
+      - ./docker-data/prometheus/internal/:/prometheus/
     ports:
       - "9090:9090"
 

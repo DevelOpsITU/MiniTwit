@@ -6,6 +6,7 @@ import (
 	"minitwit/database"
 	"minitwit/functions"
 	"minitwit/log"
+	"minitwit/metrics"
 	"minitwit/models"
 	"strings"
 )
@@ -63,6 +64,7 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 			Password1: "123",
 			Password2: "123",
 		})
+		metrics.HackCreateUserOnFollow.Inc()
 	}
 
 	userToFollow, err := database.GetUserFromDb(usernameToFollow)
@@ -75,6 +77,7 @@ func FollowUserFromUsername(followerUsername string, usernameToFollow string) er
 			Password1: "123",
 			Password2: "123",
 		})
+		metrics.HackCreateUserOnFollow.Inc()
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47

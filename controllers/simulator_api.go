@@ -5,6 +5,7 @@ import (
 	"errors"
 	"minitwit/log"
 	"minitwit/logic"
+	"minitwit/metrics"
 	"minitwit/models"
 	"net/http"
 	"strconv"
@@ -74,7 +75,7 @@ func updateLatest(c *gin.Context) {
 	atoi, err := strconv.Atoi(c.Query("latest"))
 	if err == nil {
 		latest = atoi
-		LatestValue.Set(float64(atoi))
+		metrics.LatestValue.Set(float64(atoi))
 	}
 }
 
@@ -195,7 +196,7 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 	twits, _, err := logic.GetUserTwits(username, limit)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Msg("Could not retrive the users twits")
+		log.Logger.Error().Err(err).Msg("Could not retrieve the users twits")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
