@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '14'
     - name: Test & publish code coverage
-      uses: paambaati/codeclimate-action@v3.0.0
+      uses: paambaati/codeclimate-action@v2.7.3
       env:
         CC_TEST_REPORTER_ID: <code_climate_reporter_id>
       with:
