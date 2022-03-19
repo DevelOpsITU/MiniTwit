@@ -9,6 +9,22 @@ on:
 name: Technical Debt Estimation Tools
 
 jobs:
+# Code Climate
+  codeclimate:
+    runs-on: ubuntu-latest
+    name: coverage
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '12'
+      uses: paambaati/codeclimate-action@v3.0.0
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      with:
+        coverageCommand: npm run coverage
+        debug: true
+# Sonar Cloud
   sonarcloud:
     runs-on: ubuntu-latest
     steps:
@@ -16,17 +32,8 @@ jobs:
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
-# Sonar Cloud
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@v1.6
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-# Code Climate
-    - name: Test & publish code coverage
-      uses: paambaati/codeclimate-action@v3.0.0
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-        coverageCommand: npm run coverage
-        debug: true
