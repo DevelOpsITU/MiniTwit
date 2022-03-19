@@ -1,5 +1,8 @@
-# MiniTwit [![Build Status](https://app.travis-ci.com/DevelOpsITU/MiniTwit.svg?branch=main)](https://app.travis-ci.com/github/DevelOpsITU/MiniTwit)
-
+# MiniTwit 
+[![Build Status](https://app.travis-ci.com/DevelOpsITU/MiniTwit.svg?branch=main)](https://app.travis-ci.com/github/DevelOpsITU/MiniTwit)
+[![BCH compliance](https://bettercodehub.com/edge/badge/DevelOpsITU/MiniTwit?branch=main)](https://bettercodehub.com/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/84bd1bebd4e389e62861/maintainability)](https://codeclimate.com/github/DevelOpsITU/MiniTwit/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/84bd1bebd4e389e62861/test_coverage)](https://codeclimate.com/github/DevelOpsITU/MiniTwit/test_coverage)
 
 MiniTwit is a Go' Twitter clone done by [Group D](https://github.com/DevelOpsITU).
 

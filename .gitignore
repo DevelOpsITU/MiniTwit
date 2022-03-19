@@ -10,3 +10,4 @@ docker-data/grafana/internal/**
 docker-data/prometheus/internal/
 fresh/fresh-minitwit.exe~
 fresh/fresh-minitwit-errors.log
+
