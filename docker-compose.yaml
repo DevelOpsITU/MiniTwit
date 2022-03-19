@@ -12,6 +12,11 @@ services:
       - 8080:8080
     depends_on:
       - postgres
+      - fluentbit
+    logging:
+      driver: fluentd
+      options:
+        tag: minitwit
 
   postgres:
     image: postgres:13.5
@@ -48,4 +53,25 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    #user: '1000'
+    user: '0'
+
+  fluentbit:
+    image: fluent/fluent-bit:1.8
+    container_name: fluentbit
+    environment:
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./docker-data/fluentbit/config/:/fluent-bit/etc/
+
+  loki:
+    image: grafana/loki:2.4.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./docker-data/loki/config/:/etc/loki/
+    command: -config.file=/etc/loki/loki.yaml
+    user: '0'
