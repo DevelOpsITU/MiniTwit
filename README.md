@@ -1,5 +1,6 @@
-# MiniTwit [![Build Status](https://app.travis-ci.com/DevelOpsITU/MiniTwit.svg?branch=main)](https://app.travis-ci.com/github/DevelOpsITU/MiniTwit)
-
+# MiniTwit 
+[![Build Status](https://app.travis-ci.com/DevelOpsITU/MiniTwit.svg?branch=main)](https://app.travis-ci.com/github/DevelOpsITU/MiniTwit)
+[![BCH compliance](https://bettercodehub.com/edge/badge/DevelOpsITU/MiniTwit?branch=main)](https://bettercodehub.com/)
 
 MiniTwit is a Go' Twitter clone done by [Group D](https://github.com/DevelOpsITU).
 
