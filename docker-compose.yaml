@@ -51,10 +51,9 @@ services:
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
     user: '0'
 
-
   data-scraper:
+    image: groupddevops/data-scraper:f16c0db
     container_name: data-scraper
-    image: datascraper_data-scraper
     environment:
       - INTERVAL=5
     ports:
