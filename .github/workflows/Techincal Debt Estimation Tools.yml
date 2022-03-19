@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: npm init
+        run: npm init -y
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v2.7.3
       env:
