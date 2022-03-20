@@ -16,7 +16,7 @@ services:
     logging:
       driver: fluentd
       options:
-        tag: minitwit
+        tag: docker.{{.Name}}
 
   postgres:
     image: postgres:13.5
@@ -54,6 +54,10 @@ services:
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
     user: '0'
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.{{.Name}}
 
   fluentbit:
     image: fluent/fluent-bit:1.9.0
