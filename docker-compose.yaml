@@ -58,8 +58,6 @@ services:
   fluentbit:
     image: fluent/fluent-bit:1.9.0
     container_name: fluentbit
-    environment:
-      - LOKI_URL=http://loki:3100/loki/api/v1/push
     ports:
       - "24224:24224"
       - "24224:24224/udp"
