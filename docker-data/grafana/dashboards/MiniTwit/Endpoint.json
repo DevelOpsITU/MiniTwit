@@ -21,7 +21,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -34,6 +33,7 @@
           "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMax": 0.04,
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -59,10 +59,11 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -72,10 +73,11 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 0.03
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -185,6 +187,7 @@
           "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMax": 0.04,
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 10,
@@ -207,7 +210,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "mappings": [],
@@ -220,11 +223,11 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 0.03
               }
             ]
           },
-          "unit": "short"
+          "unit": "s"
         },
         "overrides": []
       },
@@ -265,70 +268,40 @@
       "type": "timeseries"
     },
     {
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 85
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 0,
-        "y": 16
-      },
-      "id": 13,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "sum (minitwit_total_http{code!~\"2.*|3.*\"})",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total errors (not 2.. or 3..)",
-      "type": "gauge"
-    },
-    {
+      "description": "Distribution of response times",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-GrYlRd"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 0.04,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -340,34 +313,55 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 0.03
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "50 Quantile"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
               }
             ]
           }
-        },
-        "overrides": []
+        ]
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 6,
+        "w": 9,
+        "x": 0,
         "y": 16
       },
-      "id": 11,
+      "id": 26,
       "options": {
-        "displayMode": "basic",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "showUnfilled": false,
-        "text": {
-          "titleSize": 18,
-          "valueSize": 16
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.4.3",
@@ -378,14 +372,122 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "sum by (url, code) (minitwit_total_http{code!~\"2.*|3.*\"})",
+          "expr": "histogram_quantile(0.95, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
+          "hide": false,
           "interval": "",
-          "legendFormat": "{{url}} {{code}}",
+          "legendFormat": "95 Quantile",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "histogram_quantile(0.9, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
+          "interval": "",
+          "legendFormat": "90 Quantile",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "histogram_quantile(0.5, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "50 Quantile",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "histogram_quantile(0.10, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "10 Quantile",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "histogram_quantile(0.05, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "5 Quantile",
+          "refId": "E"
+        }
+      ],
+      "title": "Response time",
+      "type": "timeseries"
+    },
+    {
+      "description": "Amount of status codes returned that is not 2xx or 3xx",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 9,
+        "y": 16
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": false,
+          "expr": "sum (minitwit_total_http{code!~\"2.*|3.*\"})",
+          "interval": "",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "Errorcodes + url",
-      "type": "bargauge"
+      "title": "Total errors",
+      "type": "stat"
     },
     {
       "fieldConfig": {
@@ -567,6 +669,70 @@
       "type": "gauge"
     },
     {
+      "description": "Entries in this panel have a status code that is not 2xx or 3xx.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 7,
+        "x": 6,
+        "y": 22
+      },
+      "id": 11,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "text": {
+          "titleSize": 18,
+          "valueSize": 16
+        }
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "sum by (url, code) (minitwit_total_http{code!~\"2.*|3.*\"})",
+          "interval": "",
+          "legendFormat": "{{url}} {{code}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Endpoints with errors",
+      "type": "bargauge"
+    },
+    {
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -623,7 +789,7 @@
       "gridPos": {
         "h": 7,
         "w": 11,
-        "x": 6,
+        "x": 13,
         "y": 22
       },
       "id": 22,
@@ -653,67 +819,6 @@
       ],
       "title": "Error Rate",
       "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 85
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 17,
-        "y": 22
-      },
-      "id": 26,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "histogram_quantile(0.9, minitwit_endpoint_responsetime_histogram_bucket)",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "90% response time percentile",
-      "type": "gauge"
     },
     {
       "description": "",
@@ -829,7 +934,7 @@
       "gridPos": {
         "h": 7,
         "w": 11,
-        "x": 6,
+        "x": 13,
         "y": 29
       },
       "id": 24,
@@ -861,67 +966,6 @@
       "type": "timeseries"
     },
     {
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 85
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 17,
-        "y": 29
-      },
-      "id": 28,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "histogram_quantile(0.95, minitwit_endpoint_responsetime_histogram_bucket)",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "95% response time percentile",
-      "type": "gauge"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -943,13 +987,13 @@
     "list": []
   },
   "time": {
-    "from": "now/d",
-    "to": "now/d"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Endpoint",
   "uid": "P9sNjkEnk",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
