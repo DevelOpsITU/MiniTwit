@@ -18,6 +18,13 @@ var EndpointResponseTime = prometheus.NewGaugeVec(
 	[]string{"code", "method", "url"},
 )
 
+var EndpointResponseTimeHistogram = prometheus.NewHistogram(
+	prometheus.HistogramOpts{
+		Name: "minitwit_endpoint_responsetime_histogram",
+		Help: "The response times of endpoints as histogram",
+	},
+)
+
 var TotalRequest = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
 		Name: "minitwit_total_http",
