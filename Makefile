@@ -76,11 +76,8 @@ docker-build: ## Use the dockerfile to build the image
 	docker build --rm --tag $(BINARY_NAME):latest .
 
 docker-release: ## Release the container with tag latest and version
-	docker tag $(BINARY_NAME) $(DOCKER_REGISTRY)$(BINARY_NAME):latest
-	docker tag $(BINARY_NAME) $(DOCKER_REGISTRY)$(BINARY_NAME):$(VERSION)
-	# Push the docker images
-	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):latest
-	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):$(VERSION)
+	./scripts/docker-build.sh
+	./scripts/docker-release.sh
 
 docker-run: docker-build ## Build and run the container locally with port 8080
 	docker rm -f $(CONTAINER_NAME)

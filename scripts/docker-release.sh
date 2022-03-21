@@ -1,5 +1,5 @@
 #!/bin/bash
-BINARY_NAME=minitwit-go
+BINARY_NAME=minitwit-go-dev
 DOCKER_REGISTRY=groupddevops/
 VERSION=$(git rev-parse --short HEAD)
 
