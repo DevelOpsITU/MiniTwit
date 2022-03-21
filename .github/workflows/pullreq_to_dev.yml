@@ -41,8 +41,9 @@ jobs:
   scancode:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Shellcheck the script folder
-      run: make shellcheck
+        run: make shellcheck
 
   docker:
     runs-on: ubuntu-latest
