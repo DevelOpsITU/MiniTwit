@@ -20,8 +20,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-    - name: Run Scancode on the project
-      run: make scancode
+    - name: Shellcheck the script folder
+      run: make shellcheck
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -42,8 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Shellcheck the script folder
-        run: make shellcheck
+      - name: Run Scancode on the project
+        run: make scancode
 
   docker:
     runs-on: ubuntu-latest
