@@ -5,4 +5,4 @@ docker run -v $(pwd)/:/scan groupddevops/scancode
 pip install jq
 echo ''
 echo '-----------------------------------'
-cat tests/licenses.json | jq .
+cat licenses.json | jq .
