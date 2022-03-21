@@ -34,13 +34,13 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 
 
 ## Linters
-docker_lint: ## Run docker linting script
+docker_lint: setup_scripts ## Run docker linting script
 	./scripts/docker-lint.sh
 
-shellcheck: ## Run the shellcheck in the script folder
+shellcheck: setup_scripts ## Run the shellcheck in the script folder
 	./scripts/shellchecker.sh
 
-scancode: ## Run the scancode program
+scancode: setup_scripts ## Run the scancode program
 	./scripts/scancode_run.sh
 
 ## Tests
@@ -64,6 +64,9 @@ deps: ## Install dependencies
 	go install gorm.io/driver/postgres
 	go install golang.org/x/lint/golint
 
+## Setup:
+setup_scripts: ## Setup scripts in script folder
+	chmod +x -R ./scripts
 
 # From https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705 ,
 # https://golangdocs.com/makefiles-golang and
