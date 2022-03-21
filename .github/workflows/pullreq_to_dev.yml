@@ -67,9 +67,9 @@ jobs:
         run: make docker_lint
 
       - name: Docker Login
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
         # You may pin to the exact commit or the version.
         # uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
