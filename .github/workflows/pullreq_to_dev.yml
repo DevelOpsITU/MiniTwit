@@ -1,9 +1,7 @@
 name: Lint, Build, Test go app CI
 
 on:
-  pull_request:
-    branches: [ feature/#117_Setup_Github_action_as_CI ]
-  push:
+ push:
     branches: [ feature/#117_Setup_Github_action_as_CI ]
 
 jobs:
