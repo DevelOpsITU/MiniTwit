@@ -40,6 +40,9 @@ docker_lint: ## Run docker linting script
 shellcheck: ## Run the shellcheck in the script folder
 	./scripts/shellchecker.sh
 
+scancode: ## Run the scancode program
+	./scripts/scancode_run.sh
+
 ## Tests
 test: ## Run Go tests
 	 go test -v ./...
