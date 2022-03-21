@@ -37,6 +37,8 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 docker_lint: ## Run docker linting script
 	./scripts/docker-lint.sh
 
+shellcheck: ## Run the shellcheck in the script folder
+	./scripts/shellchecker.sh
 
 ## Tests
 test: ## Run Go tests
