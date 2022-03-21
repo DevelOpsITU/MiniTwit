@@ -68,6 +68,20 @@ services:
     volumes:
       - ./docker-data/fluentbit/config/:/fluent-bit/etc/
 
+  nginx:
+    container_name: nginx
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker-data/nginx/:/etc/nginx/
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.{{.Name}}
+    depends_on:
+      - minitwit
+
   loki:
     image: grafana/loki:2.4.2
     container_name: loki
