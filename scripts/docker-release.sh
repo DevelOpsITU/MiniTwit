@@ -36,21 +36,21 @@ VERSION=$(git rev-parse --short HEAD)
 if [[ -z $3 ]];
 then
     BINARY_NAME=minitwit-go
-    echo "production release choosen, also tagging with latest"
-    echo "tagging:" $BINARY_NAME:$VERSION $DOCKER_REGISTRY$BINARY_NAME:latest
-    echo "pushing " $DOCKER_REGISTRY$BINARY_NAME:latest "to dockerhub"
+    echo "production release choosen"
+
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:latest
     docker push $DOCKER_REGISTRY$BINARY_NAME:latest
+    docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
+    docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
     echo "Done"
 else
     BINARY_NAME=minitwit-go-dev
     echo "dev release choosen"
-    echo "tagging:" $BINARY_NAME:$VERSION $DOCKER_REGISTRY$BINARY_NAME:$VERSION
-    echo "pushing " $DOCKER_REGISTRY$BINARY_NAME:$VERSION "to dockerhub"
 
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
-    # Push the docker images
     docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
+    docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:latest
+    docker push $DOCKER_REGISTRY$BINARY_NAME:latest
     echo "Done"
 
 fi
