@@ -39,17 +39,17 @@ then
     echo "production release choosen"
 
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:latest
-    docker push $DOCKER_REGISTRY$BINARY_NAME:latest
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
     docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
+    docker push $DOCKER_REGISTRY$BINARY_NAME:latest
     echo "Done"
 else
     BINARY_NAME=minitwit-go-dev
     echo "dev release choosen"
 
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
-    docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
     docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:latest
+    docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
     docker push $DOCKER_REGISTRY$BINARY_NAME:latest
     echo "Done"
 
