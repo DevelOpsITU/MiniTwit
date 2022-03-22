@@ -73,10 +73,9 @@ setup_scripts: ## Setup scripts in script folder
 
 ## Docker:
 docker-build: ## Use the dockerfile to build the image
-	docker build --rm --tag $(BINARY_NAME):latest .
+	./scripts/docker-build.sh
 
 docker-release: ## Release the container with tag latest and version
-	./scripts/docker-build.sh
 	./scripts/docker-release.sh
 
 docker-run: docker-build ## Build and run the container locally with port 8080
