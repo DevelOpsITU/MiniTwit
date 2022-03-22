@@ -67,12 +67,12 @@ jobs:
         run: make docker_lint
 
       - name: Build docker image
-        run: make docker-build
+        run: make docker-build-dev
 
       - name: Release docker image
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: ./scripts/docker-release.sh groupddevops $DOCKER_PASSWORD test
+        run: ./scripts/docker-release.sh groupddevops $DOCKER_PASSWORD dev
 
       # DOES NOT WORK YET
       #- name: Scan docker image

@@ -72,7 +72,13 @@ setup_scripts: ## Setup scripts in script folder
 # https://golangdocs.com/makefiles-golang and
 
 ## Docker:
-docker-build: ## Use the dockerfile to build the image
+docker-build-dev: ## Use the dockerfile to build the "minitwit-go-dev" image
+	./scripts/docker-build.sh dev
+
+docker-release-dev: ## Release the dev container with tag latest and version
+	./scripts/docker-release.sh groupddevops $MY_SECRET_DOCKER_PASSWORD dev
+
+docker-build: ## Use the dockerfile to build the "minitwit-go" image
 	./scripts/docker-build.sh
 
 docker-release: ## Release the container with tag latest and version
