@@ -1,0 +1,22 @@
+{
+  "name": "minitwit",
+  "version": "1.0.0",
+  "description": "MiniTwit is a Go' Twitter clone done by [Group D](https://github.com/DevelOpsITU).",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevelOpsITU/MiniTwit.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DevelOpsITU/MiniTwit/issues"
+  },
+  "homepage": "https://github.com/DevelOpsITU/MiniTwit#readme"
+}
