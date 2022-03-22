@@ -12,7 +12,6 @@ services:
       - 8080:8080
     depends_on:
       - postgres
-      - fluentbit
     logging:
       driver: fluentd
       options:
@@ -58,15 +57,19 @@ services:
       driver: fluentd
       options:
         tag: docker.{{.Name}}
+    depends_on:
+      - loki
 
   fluentbit:
-    image: fluent/fluent-bit:1.9.0
+    image: fluent/fluent-bit:1.9.0-debug
     container_name: fluentbit
     ports:
       - "24224:24224"
       - "24224:24224/udp"
     volumes:
       - ./docker-data/fluentbit/config/:/fluent-bit/etc/
+    depends_on:
+      - loki
 
   nginx:
     container_name: nginx
