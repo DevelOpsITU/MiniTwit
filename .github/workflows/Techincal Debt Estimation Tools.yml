@@ -1,10 +1,10 @@
 # maybe revisit if time later. current issue, is that code climate wants some type of coverage tool (look actions)
 
-#on:
-#  push:
-#    branches:
+on:
+  push:
+    branches:
 #      - dev
-#      - main
+      - main
 #      - feature/#114-TD-tools
 #  pull_request:
 #      types: [opened, synchronize, reopened]
