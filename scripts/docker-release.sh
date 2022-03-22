@@ -22,12 +22,14 @@ BINARY_NAME=minitwit-go-dev
 DOCKER_REGISTRY=groupddevops/
 VERSION=$(git rev-parse --short HEAD)
 
-echo "pushing:" $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION "to dockerhub"
+echo "tagging:" $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
+echo "pushing " $DOCKER_REGISTRY$BINARY_NAME:$VERSION "to dockerhub"
 
 
 docker tag $BINARY_NAME $DOCKER_REGISTRY$BINARY_NAME:$VERSION
 # Push the docker images
 docker push $DOCKER_REGISTRY$BINARY_NAME:$VERSION
+
 
 if [[ -z $3 ]];
 then

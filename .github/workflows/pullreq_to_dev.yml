@@ -73,7 +73,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: ./scripts/docker-release.sh $DOCKER_USERNAME $DOCKER_PASSWORD
+        run: ./scripts/docker-release.sh $DOCKER_USERNAME $DOCKER_PASSWORD test
 
       # DOES NOT WORK YET
       #- name: Scan docker image
