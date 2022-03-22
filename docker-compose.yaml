@@ -2,8 +2,8 @@ version: '3'
 services:
 
   minitwit:
-    #build: .
-    image: groupddevops/minitwit-go:a46e0b3
+    build: .
+    #image: groupddevops/minitwit-go:a46e0b3
     container_name: minitwit
     environment:
       - SERVER_HOST=localhost
