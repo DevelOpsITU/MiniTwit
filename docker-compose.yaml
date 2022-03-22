@@ -3,6 +3,7 @@ services:
 
   minitwit:
     build: .
+    #image: groupddevops/minitwit-go:a46e0b3
     container_name: minitwit
     environment:
       - SERVER_HOST=localhost
@@ -29,6 +30,7 @@ services:
     container_name: prometheus
     volumes:
       - ./docker-data/prometheus/config/:/etc/prometheus/
+      - ./docker-data/prometheus/internal/:/prometheus/
     ports:
       - "9090:9090"
 
@@ -47,4 +49,13 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    #user: '1000'
+    user: '0'
+
+  data-scraper:
+    image: groupddevops/data-scraper:f16c0db
+    container_name: data-scraper
+    environment:
+      - INTERVAL=5
+    ports:
+      - "8000:8080"
+
