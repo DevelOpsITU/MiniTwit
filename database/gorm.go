@@ -26,8 +26,10 @@ func (User) TableName() string {
 // Maybe add a post migration script that adds it or live with it?.
 
 type Follower struct {
-	WhoId  uint `gorm:"column:who_id"`
-	WhomId uint `gorm:"column:whom_id"`
+	WhoId    uint `gorm:"uniqueIndex:compositeindex;column:who_id"`
+	WhoUser  User `gorm:"foreignKey:WhoId"`
+	WhomId   uint `gorm:"uniqueIndex:compositeindex;column:whom_id"`
+	WhomUser User `gorm:"foreignKey:WhomId"`
 }
 
 func (Follower) TableName() string {

@@ -148,9 +148,8 @@ func UnFollowUser(userId uint, usernameToUnFollow string) error {
 		log.Logger.Error().Err(err).Caller().Str("username", usernameToUnFollow).Msg("Could not get user")
 		return err
 	}
-	// TODO: check if already following before trying this
-	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 
+	err = database.UnFollowUser(userId, userToUnFollow.UserId)
 	if err != nil {
 		log.Logger.Error().Err(err).Caller().Str("follower", fmt.Sprint(userId)).Str("followed", usernameToUnFollow).Msg("Could not unfollow user")
 	}

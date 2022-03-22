@@ -23,6 +23,7 @@ func FollowUser(userId uint, UserIdToFollow uint) error {
 	}
 
 	if functions.ContainsUint(followerids, followed.UserId) {
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(follower.UserId)).Msg("user already follows given user")
 		return errors.New("user already follows given user")
 	}
 
@@ -51,7 +52,10 @@ func UnFollowUser(userId uint, UserIdToUnFollow uint) error {
 		Delete(&Follower{}, obj)
 
 	if result.RowsAffected != 1 {
-		return errors.New("Could not remove the follower")
+		err := errors.New("Could not remove the follower, user is not following the given user")
+		log.Logger.Error().Err(err).Str("userId", fmt.Sprint(userId)).Msg(
+			fmt.Sprintf("Could not remove follower as user is not following the given user in id: %d", UserIdToUnFollow))
+		return err
 	}
 	return nil
 }
