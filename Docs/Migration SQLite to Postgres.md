@@ -24,9 +24,9 @@ In this section will the migration plan be described and there will be a couple 
 2. Create the database "minitwit"
 3. Connect the Minitwit-Postgres container to the database to create table with GORM.
 4. Stop Minitwit-main on the application server
-5. Make a local copy of the database as a backup.
-6. Change the data in the pwhash column to be a new valid option, maybe taken from the test?
-7. Use Pgloader to move the data from SQLite to Postgres
+5. Make a local copy of the database as a backup. `cp ./data/minitwit/minitwit.db ./data/minitwit/minitwit-bak.db`
+6. Change the data in the pwhash column to be a new valid option, maybe taken from the test? run: `updateSqlitePw_hash.docker-compose.yaml`
+7. Use Pgloader to move the data from SQLite to Postgres `pgloader.docker-compose`
 8. Run the sql qurry: `UPDATE minitwit.public."user"
    SET pw_hash='pbkdf2:sha256:50000' || '$' || 'CCWW6o8F' || '$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'
    where 1=1` Because the values was still messed up.

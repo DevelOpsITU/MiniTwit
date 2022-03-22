@@ -3,12 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"minitwit/log"
 	"minitwit/logic"
+	"minitwit/metrics"
 	"minitwit/models"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 var latest = -1
@@ -73,6 +75,7 @@ func updateLatest(c *gin.Context) {
 	atoi, err := strconv.Atoi(c.Query("latest"))
 	if err == nil {
 		latest = atoi
+		metrics.LatestValue.Set(float64(atoi))
 	}
 }
 
@@ -193,7 +196,7 @@ func handleSimGetUserMessages(w http.ResponseWriter, c *gin.Context, username st
 	twits, _, err := logic.GetUserTwits(username, limit)
 
 	if err != nil {
-		log.Logger.Error().Err(err).Msg("Could not retrive the users twits")
+		log.Logger.Error().Err(err).Msg("Could not retrieve the users twits")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -250,7 +253,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 
 			err = logic.FollowUserFromUsername(username, followUsername)
 			if err != nil {
-				log.Logger.Error().Err(err).Str("follower", username).Str("followed", followUsername).Msg("Could follow the user")
+				log.Logger.Error().Err(err).Str("follower", username).Str("followed", followUsername).Msg("Could not follow the user")
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
@@ -259,7 +262,7 @@ func handleSimFollowUser(w http.ResponseWriter, r *http.Request, c *gin.Context,
 
 			err = logic.UnFollowUserFromUsername(username, unFollowUsername)
 			if err != nil {
-				log.Logger.Error().Err(err).Str("follower", username).Str("followed", unFollowUsername).Msg("Could unfollow the user")
+				log.Logger.Error().Err(err).Str("follower", username).Str("followed", unFollowUsername).Msg("Could not unfollow the user")
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}

@@ -324,7 +324,7 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": false,
-          "expr": "minitwit_latest{instance=\"minitwit:8080\"}",
+          "expr": "minitwit_latest{job=\"minitwit\"}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -439,7 +439,7 @@
           ]
         }
       ],
-      "title": "Top 10 Following users",
+      "title": "Top 10 Following users (Who is following the most ppl)",
       "type": "barchart"
     },
     {
@@ -524,7 +524,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select count(*), u.username\nfrom follower f\n    join \"user\" u on u.user_id = f.who_id\ngroup by whom_id, u.username\norder by count(*) desc\nlimit 10",
+          "rawSql": "select count(*), u.username\nfrom follower f\n    join \"user\" u on u.user_id = f.whom_id\ngroup by who_id, u.username\norder by count(*) desc\nlimit 10",
           "refId": "A",
           "select": [
             [
@@ -546,7 +546,7 @@
           ]
         }
       ],
-      "title": "Top 10 Followed users",
+      "title": "Top 10 Followed users (Who is followed by most ppl)",
       "type": "barchart"
     },
     {
@@ -655,8 +655,95 @@
       ],
       "title": "Top 10 Twitters",
       "type": "barchart"
+    },
+    {
+      "description": "Rate of how many times we use a \"dirty hack\"",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 12
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus12345678"
+          },
+          "exemplar": true,
+          "expr": "rate(minitwit_total_hack_create_user_on_follow[5m])",
+          "interval": "",
+          "legendFormat": "Create user on follow",
+          "refId": "A"
+        }
+      ],
+      "title": "Hack Usage",
+      "type": "timeseries"
     }
   ],
+  "refresh": "30s",
   "schemaVersion": 35,
   "style": "dark",
   "tags": [],
@@ -671,6 +758,6 @@
   "timezone": "browser",
   "title": "Minitwit - Business Intelligence",
   "uid": "nwWEUkP7k",
-  "version": 1,
+  "version": 4,
   "weekStart": ""
 }

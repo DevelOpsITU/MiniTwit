@@ -5,7 +5,7 @@ services:
     image: nouchka/sqlite3:latest
 
     volumes:
-      - ../../data/:/tmp/
+      - ./data/minitwit/:/tmp/
     command: /tmp/minitwit-bak.db "UPDATE user SET pw_hash='pbkdf2:sha256:50000' || '$$' || 'CCWW6o8F' || '$$' || 'c3f9294679a99b7da156d4f267be5dcee37afebba25e3c893c8dd67e78513cb9'"
 
 # https://stackoverflow.com/questions/6776657/how-to-change-a-value-in-a-column-on-a-sqlite-database

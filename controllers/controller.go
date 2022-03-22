@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-contrib/logger"
-	"github.com/rs/zerolog"
 	"io"
 	"minitwit/config"
 	"minitwit/log"
 	"time"
+
+	"github.com/gin-contrib/logger"
+	"github.com/rs/zerolog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,6 +30,8 @@ func HandleRESTRequests() {
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	router.Use(HttpGinMiddleware)
+
 	err := router.SetTrustedProxies(nil)
 	if err != nil {
 		log.Logger.Error().Err(err).Msg("Could not set trusted proxies")

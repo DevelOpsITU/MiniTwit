@@ -6,3 +6,8 @@ __pycache__
 go.sum
 docker-data/postgres/**
 docker-data/grafana/internal/**
+.env
+docker-data/prometheus/internal/
+fresh/fresh-minitwit.exe~
+fresh/fresh-minitwit-errors.log
+
