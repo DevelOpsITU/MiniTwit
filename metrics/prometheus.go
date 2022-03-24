@@ -9,5 +9,6 @@ func init() {
 	prometheus.MustRegister(LatestTime)
 	prometheus.MustRegister(EndpointAvgResponseTime)
 	prometheus.MustRegister(EndpointResponseTime)
+	prometheus.MustRegister(EndpointResponseTimeHistogram)
 	prometheus.MustRegister(HackCreateUserOnFollow)
 }
