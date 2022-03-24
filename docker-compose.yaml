@@ -103,5 +103,7 @@ services:
       - "3100:3100"
     volumes:
       - ./docker-data/loki/config/:/etc/loki/
+      - ./docker-data/loki/internal/:/tmp/loki/
+
     command: -config.file=/etc/loki/loki.yaml
     user: "0"
