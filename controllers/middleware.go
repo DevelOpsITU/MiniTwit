@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"math"
 	"minitwit/metrics"
 	"strings"
 	"time"
@@ -40,6 +41,7 @@ func HttpGinMiddleware(c *gin.Context) {
 
 	metrics.EndpointAvgResponseTime.WithLabelValues(statuscode, request.Method, url).Observe(float64(handleTime.Nanoseconds()))
 	metrics.EndpointResponseTime.WithLabelValues(statuscode, request.Method, url).Set(float64(handleTime.Nanoseconds()))
+	metrics.EndpointResponseTimeHistogram.Observe(float64(handleTime.Nanoseconds()) / (math.Pow(10, 9)))
 
 	metrics.LatestTime.Set(float64(handleTime.Nanoseconds()))
 	metrics.TotalRequest.WithLabelValues(statuscode, request.Method, url).Inc()

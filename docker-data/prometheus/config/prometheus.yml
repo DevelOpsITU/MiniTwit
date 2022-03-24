@@ -23,8 +23,15 @@ scrape_configs:
           group: 'production'
 
   - job_name: 'node-exporter'
-    scrape_interval: 5s
+    scrape_interval: 15s
     static_configs:
       - targets: ['monitoring.thomsen-it.dk:9100','database.thomsen-it.dk:9100', 'thomsen-it.dk:9100']
+        labels:
+          group: 'production'
+
+  - job_name: 'scraper'
+    scrape_interval: 120s
+    static_configs:
+      - targets: ['data-scraper:8080']
         labels:
           group: 'production'
