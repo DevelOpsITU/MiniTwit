@@ -11,3 +11,4 @@ docker-data/prometheus/internal/
 fresh/fresh-minitwit.exe~
 fresh/fresh-minitwit-errors.log
 
+docker-data/loki/internal/
