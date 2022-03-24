@@ -24,6 +24,7 @@ services:
       - 5433:5432
     environment:
       - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=minitwit
     volumes:
       - ./docker-data/postgres/:/var/lib/postgresql/data
     #user: '1000'
