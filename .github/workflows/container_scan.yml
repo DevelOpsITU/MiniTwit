@@ -5,7 +5,7 @@ on:
     branches: [ code-analysis/#149Address_feedback_from_various_code_analysis_tools ]
 
 jobs:
-  docker:
+  docker-container-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
