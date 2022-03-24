@@ -29,7 +29,6 @@ services:
       - POSTGRES_DB=minitwit
     volumes:
       - ./docker-data/postgres/:/var/lib/postgresql/data
-    user: $USER
 
   prometheus:
     image: prom/prometheus:v2.33.5
@@ -39,6 +38,7 @@ services:
       - ./docker-data/prometheus/internal/:/prometheus/
     ports:
       - "9090:9090"
+    user: "0"
 
   grafana:
     image: grafana/grafana:8.4.3
@@ -55,7 +55,6 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    user: $USER
     logging:
       driver: fluentd
       options:
@@ -63,14 +62,13 @@ services:
     depends_on:
       - loki
       - fluentbit
+    user: "0"
 
   data-scraper:
     image: groupddevops/data-scraper:f16c0db
     container_name: data-scraper
     environment:
       - INTERVAL=5
-    ports:
-      - "8000:8080"
 
   fluentbit:
     image: fluent/fluent-bit:1.9.0-debug
@@ -106,4 +104,4 @@ services:
     volumes:
       - ./docker-data/loki/config/:/etc/loki/
     command: -config.file=/etc/loki/loki.yaml
-    user: $USER
+    user: "0"
