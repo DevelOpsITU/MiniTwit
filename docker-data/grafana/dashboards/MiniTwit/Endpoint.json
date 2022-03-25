@@ -1013,6 +1013,7 @@
         "y": 37
       },
       "id": 28,
+      "interval": "1h",
       "options": {
         "from": "0",
         "legendGradientQuality": "high",
@@ -1029,7 +1030,7 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "sum(count_over_time(minitwit_total_http[1h]))",
+          "expr": "sum(increase(minitwit_total_http[$__interval]))",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -1072,6 +1073,7 @@
         "y": 37
       },
       "id": 29,
+      "interval": "1h",
       "options": {
         "from": "0",
         "legendGradientQuality": "high",
@@ -1088,7 +1090,7 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "sum(count_over_time(minitwit_total_http{code=~\"2.*|3.*\"}[1h]))",
+          "expr": "sum(increase(minitwit_total_http{code=~\"2.*|3.*\"}[$__interval]))",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -1131,6 +1133,7 @@
         "y": 37
       },
       "id": 30,
+      "interval": "1h",
       "options": {
         "from": "0",
         "legendGradientQuality": "high",
@@ -1147,7 +1150,8 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "sum(count_over_time(minitwit_total_http{code=~\"4.*|5.*\"}[1h]))",
+          "expr": "sum(increase(minitwit_total_http{code=~\"4.*|5.*\"}[$__interval]))",
+          "hide": false,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
