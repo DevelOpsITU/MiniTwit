@@ -43,6 +43,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - DATABASE_HOSTNAME=$DATABASE_HOSTNAME
       - DATABASE_PASSWORD=$DATABASE_PASSWORD
+      - GF_INSTALL_PLUGINS=marcusolsson-hourly-heatmap-panel
     ports:
       - "3000:3000"
     volumes:
