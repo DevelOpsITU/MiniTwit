@@ -43,6 +43,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - DATABASE_HOSTNAME=$DATABASE_HOSTNAME
       - DATABASE_PASSWORD=$DATABASE_PASSWORD
+      - GF_RENDERING_SERVER_URL=http://renderer:8081/render
       - GF_INSTALL_PLUGINS=marcusolsson-hourly-heatmap-panel,grafana-image-renderer
     ports:
       - "3000:3000"
@@ -51,6 +52,12 @@ services:
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
     user: '0'
+
+  renderer:
+    container_name: renderer
+    image: grafana/grafana-image-renderer:3.4.2
+    ports:
+    - "8081:8081"
 
   data-scraper:
     image: groupddevops/data-scraper:f16c0db
