@@ -1,0 +1,17 @@
+notifiers:
+  - name: Discord
+    type: discord
+    uid: discordGrafana
+    is_default: true
+    send_reminder: true
+    frequency: 1h
+    disable_resolve_message: false
+    settings:
+      use_discord_username: true
+      url: https://discord.com/api/webhooks/957222266737950790/yaGNpJl4UfEafC38EYNNR-XRDzS2Z545Y8LPN9PbuOyN9iFYJR-vz1MaaosBagwUMPnm
+    secure_settings:
+      url: https://discord.com/api/webhooks/957222266737950790/yaGNpJl4UfEafC38EYNNR-XRDzS2Z545Y8LPN9PbuOyN9iFYJR-vz1MaaosBagwUMPnm
+
+delete_notifiers:
+  - name: Discord
+    uid: discordGrafana
