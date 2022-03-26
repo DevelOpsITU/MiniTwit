@@ -31,7 +31,7 @@
             {
               "evaluator": {
                 "params": [
-                  0.008
+                  0.001
                 ],
                 "type": "gt"
               },
@@ -78,7 +78,7 @@
                 "tooltip": false,
                 "viz": false
               },
-              "lineInterpolation": "linear",
+              "lineInterpolation": "stepAfter",
               "lineWidth": 1,
               "pointSize": 5,
               "scaleDistribution": {
@@ -114,8 +114,8 @@
           "overrides": []
         },
         "gridPos": {
-          "h": 9,
-          "w": 12,
+          "h": 10,
+          "w": 23,
           "x": 0,
           "y": 0
         },
@@ -141,7 +141,7 @@
             "exemplar": true,
             "expr": "histogram_quantile(0.95, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "Qauntile .95 Response Rate",
             "refId": "A",
             "scenarioId": "random_walk"
           }
@@ -150,11 +150,11 @@
           {
             "colorMode": "critical",
             "op": "gt",
-            "value": 0.008,
+            "value": 0.001,
             "visible": true
           }
         ],
-        "title": "Panel Title",
+        "title": "Alert Test Panel",
         "type": "timeseries"
       }
     ],
@@ -171,8 +171,8 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "Update alert rule via API",
+    "title": "Alert testing",
     "uid": "dHEquNzGz",
-    "version": 1,
+    "version": 3,
     "weekStart": ""
   }
