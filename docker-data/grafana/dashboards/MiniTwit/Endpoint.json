@@ -666,7 +666,7 @@
           "refId": "A"
         }
       ],
-      "title": "Error Rate",
+      "title": "Error Procentage",
       "type": "gauge"
     },
     {
@@ -812,7 +812,7 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "(sum(minitwit_total_http{code!~\"2.*|3.*\"}) / 2)\n/\n(sum(minitwit_total_http / 2))",
+          "expr": "(sum(increase(minitwit_total_http{code!~\"2.*|3.*\"}[$__interval])))\n/\n(sum(increase(minitwit_total_http[$__interval])))",
           "interval": "",
           "legendFormat": "Error Rate",
           "refId": "A"
