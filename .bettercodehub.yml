@@ -1,0 +1,11 @@
+component_depth: 2 # for deeper nested projects
+languages:
+- name: go
+  production:
+    exclude:
+    - /API_SPEC
+    - /fresh
+  test:
+    include:
+    - /tests
+# manuel https://bettercodehub.com/docs/configuration-manual#

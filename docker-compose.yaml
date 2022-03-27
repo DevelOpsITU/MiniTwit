@@ -13,6 +13,11 @@ services:
       - 8080:8080
     depends_on:
       - postgres
+      - fluentbit
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.{{.Name}}
 
   postgres:
     image: postgres:13.5
@@ -21,9 +26,9 @@ services:
       - 5433:5432
     environment:
       - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=minitwit
     volumes:
       - ./docker-data/postgres/:/var/lib/postgresql/data
-    #user: '1000'
 
   prometheus:
     image: prom/prometheus:v2.33.5
@@ -33,6 +38,7 @@ services:
       - ./docker-data/prometheus/internal/:/prometheus/
     ports:
       - "9090:9090"
+    user: "0"
 
   grafana:
     image: grafana/grafana:8.4.3
@@ -51,7 +57,14 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    user: '0'
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.{{.Name}}
+    depends_on:
+      - loki
+      - fluentbit
+    user: "0"
 
   renderer:
     container_name: renderer
@@ -64,6 +77,41 @@ services:
     container_name: data-scraper
     environment:
       - INTERVAL=5
-    ports:
-      - "8000:8080"
 
+  fluentbit:
+    image: fluent/fluent-bit:1.9.0-debug
+    container_name: fluentbit
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./docker-data/fluentbit/config/:/fluent-bit/etc/
+    depends_on:
+      - loki
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker-data/nginx/:/etc/nginx/
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.{{.Name}}
+    depends_on:
+      - minitwit
+      - fluentbit
+
+  loki:
+    image: grafana/loki:2.4.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./docker-data/loki/config/:/etc/loki/
+      - ./docker-data/loki/internal/:/tmp/loki/
+
+    command: -config.file=/etc/loki/loki.yaml
+    user: "0"
