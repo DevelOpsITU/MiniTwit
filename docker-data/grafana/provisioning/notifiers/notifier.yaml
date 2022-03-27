@@ -11,8 +11,21 @@ notifiers:
       url: https://discord.com/api/webhooks/957216287422050354/kQ2zNumEEkI7nH7wd4xKbu_mmydmifo8p4dtzccDqedEA_QjMaJvijO4IMFW9BySadrV
     secure_settings:
       url: https://discord.com/api/webhooks/957216287422050354/kQ2zNumEEkI7nH7wd4xKbu_mmydmifo8p4dtzccDqedEA_QjMaJvijO4IMFW9BySadrV
+  - name: discord-test-channel2
+    type: discord
+    uid: discordGrafanaTest2
+    org_id: 1
+    frequency: 1m
+    settings:
+      use_discord_username: true
+      url: https://discordapp.com/api/webhooks/957646689420857404/xXkp3SpaOIelvq44vZAnaF4qi0uuBJcTIeALl53e-AQB-K2lEwJtkCjmL1oG6whQ1ATM
+    secure_settings:
+      url: https://discordapp.com/api/webhooks/957646689420857404/xXkp3SpaOIelvq44vZAnaF4qi0uuBJcTIeALl53e-AQB-K2lEwJtkCjmL1oG6whQ1ATM
 
 delete_notifiers:
   - name: discord-channel
     uid: discordGrafana
+    org_id: 1
+  - name: discord-test-channel2
+    uid: discordGrafanaTest2
     org_id: 1
