@@ -32,41 +32,69 @@ run_fresh: ## Run go application with fresh (Auto-reloading)
 	fresh -c ./fresh/my_fresh_runner.conf
 
 
+
+## Linters
+docker_lint: setup_scripts ## Run docker linting script
+	./scripts/docker-lint.sh
+
+shellcheck: setup_scripts ## Run the shellcheck in the script folder
+	./scripts/shellchecker.sh
+
+scancode: setup_scripts ## Run the scancode program
+	./scripts/scancode_run.sh
+
 ## Tests
-test: ## Run Go tests (Not implemented)
+test: ## Run Go tests
 	 go test -v ./...
 
-test_coverage: ## Run Go tests with coverage (Not implemented)
+test_coverage: ## Run Go tests with coverage
 	go test ./main.go -coverprofile=coverage.out
+
+go_lint: ## Lint all go files
+	 golint  ./...
 
 
 deps: ## Install dependencies
 	go mod tidy
+	go get -u golang.org/x/lint/golint
+	go get github.com/pilu/fresh
 	go install github.com/pilu/fresh
 	go install gorm.io/gorm
 	go install gorm.io/driver/sqlite
 	go install gorm.io/driver/postgres
+	go install golang.org/x/lint/golint
 
+## Setup:
+setup_scripts: ## Setup scripts in script folder
+	chmod +x -R ./scripts
 
 # From https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705 ,
 # https://golangdocs.com/makefiles-golang and
 
 ## Docker:
-docker-build: ## Use the dockerfile to build the container
-	docker build --rm --tag $(BINARY_NAME) .
+docker-build-dev: ## Use the dockerfile to build the "minitwit-go-dev" image
+	./scripts/docker-build.sh dev
+
+docker-release-dev: ## Release the dev container with tag latest and version
+	./scripts/docker-release.sh groupddevops $MY_SECRET_DOCKER_PASSWORD dev
+
+docker-build: ## Use the dockerfile to build the "minitwit-go" image
+	./scripts/docker-build.sh
 
 docker-release: ## Release the container with tag latest and version
-	docker tag $(BINARY_NAME) $(DOCKER_REGISTRY)$(BINARY_NAME):latest
-	docker tag $(BINARY_NAME) $(DOCKER_REGISTRY)$(BINARY_NAME):$(VERSION)
-	# Push the docker images
-	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):latest
-	docker push $(DOCKER_REGISTRY)$(BINARY_NAME):$(VERSION)
+	./scripts/docker-release.sh
 
 docker-run: docker-build ## Build and run the container locally with port 8080
 	docker rm -f $(CONTAINER_NAME)
 	docker run -d -p 8080:8080 --name=$(CONTAINER_NAME) $(BINARY_NAME)
 	docker ps -l
 	docker logs Minitwit-container
+
+#works locally with 'Docker version 20.10.12, build e91ed57'
+docker-scan: ## Scan the image built
+	docker --version
+	docker scan $(BINARY_NAME):latest
+	
 
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)

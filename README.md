@@ -1,5 +1,4 @@
 # MiniTwit 
-[![Build Status](https://app.travis-ci.com/DevelOpsITU/MiniTwit.svg?branch=main)](https://app.travis-ci.com/github/DevelOpsITU/MiniTwit)
 
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/DevelOpsITU/MiniTwit?branch=main)](https://bettercodehub.com/)
