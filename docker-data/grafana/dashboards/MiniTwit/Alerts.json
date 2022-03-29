@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
+  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -57,6 +57,7 @@
         "for": "15m",
         "frequency": "1m",
         "handler": 1,
+        "message": "",
         "name": "Ram usage",
         "noDataState": "no_data",
         "notifications": [
@@ -300,30 +301,7 @@
           {
             "evaluator": {
               "params": [
-                0.01
-              ],
-              "type": "gt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "A",
-                "2m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "last"
-            },
-            "type": "query"
-          },
-          {
-            "evaluator": {
-              "params": [
-                0.008
+                100
               ],
               "type": "gt"
             },
@@ -339,7 +317,7 @@
             },
             "reducer": {
               "params": [],
-              "type": "diff"
+              "type": "max"
             },
             "type": "query"
           }
@@ -444,7 +422,7 @@
         {
           "colorMode": "critical",
           "op": "gt",
-          "value": 0.01,
+          "value": 100,
           "visible": true
         }
       ],
@@ -458,7 +436,7 @@
           {
             "evaluator": {
               "params": [
-                10
+                10000
               ],
               "type": "gt"
             },
@@ -568,9 +546,9 @@
             "uid": "Prometheus12345678"
           },
           "exemplar": true,
-          "expr": "(minitwit_total_http{code!~\"2.*|3.*\"})",
+          "expr": "sum(minitwit_total_http{code!~\"2.*|3.*\"})",
           "interval": "",
-          "legendFormat": "Codes != 2.* | 3.*",
+          "legendFormat": "Error Summation",
           "refId": "A"
         }
       ],
@@ -578,144 +556,11 @@
         {
           "colorMode": "critical",
           "op": "gt",
-          "value": 10,
+          "value": 10000,
           "visible": true
         }
       ],
       "title": "Errors",
-      "type": "timeseries"
-    },
-    {
-      "alert": {
-        "alertRuleTags": {},
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                0.001
-              ],
-              "type": "gt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "for": "5m",
-        "frequency": "1m",
-        "handler": 1,
-        "message": "",
-        "name": "Quantile 95 Response Time",
-        "noDataState": "no_data",
-        "notifications": []
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line+area"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 0.1
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 23,
-        "x": 0,
-        "y": 16
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "histogram_quantile(0.95, sum(rate(minitwit_endpoint_responsetime_histogram_bucket[5m])) by(le))",
-          "interval": "",
-          "legendFormat": "Qauntile .95 Response Rate",
-          "refId": "A",
-          "scenarioId": "random_walk"
-        }
-      ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "op": "gt",
-          "value": 0.001,
-          "visible": true
-        }
-      ],
-      "title": "Alert Test Panel",
       "type": "timeseries"
     }
   ],
@@ -727,13 +572,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
-    "to": "now"
+    "from": "2022-03-19T03:09:08.212Z",
+    "to": "2022-04-02T01:09:08.212Z"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Alert testing",
+  "title": "Alerts",
   "uid": "dHEquNzGz",
-  "version": 12,
+  "version": 1,
   "weekStart": ""
 }
