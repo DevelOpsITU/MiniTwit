@@ -2,6 +2,7 @@
 
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/DevelOpsITU/MiniTwit?branch=main)](https://bettercodehub.com/)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDevelOpsITU%2FMiniTwit.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FDevelOpsITU%2FMiniTwit?ref=badge_shield)
 
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/84bd1bebd4e389e62861/maintainability)](https://codeclimate.com/github/DevelOpsITU/MiniTwit/maintainability)
@@ -35,3 +36,7 @@ export DB_CONNECTION_STRING=file::memory:
 ## Contribution
 
 Run `git shortlog -se` to see commit distribution
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDevelOpsITU%2FMiniTwit.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDevelOpsITU%2FMiniTwit?ref=badge_large)
