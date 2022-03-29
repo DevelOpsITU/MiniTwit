@@ -8,24 +8,11 @@ notifiers:
     frequency: 1h
     settings:
       use_discord_username: true
-      url: $DISCORD_URL
+      url: $DISCORD_WEBHOOK_URL
     secure_settings:
-      url: $DISCORD_URL
-  - name: discord-test-channel2
-    type: discord
-    uid: discordGrafanaTest2
-    org_id: 1
-    frequency: 1m
-    settings:
-      use_discord_username: true
-      url: $DISCORD_URL_TESTING
-    secure_settings:
-      url: $DISCORD_URL_TESTING
+      url: $DISCORD_WEBHOOK_URL
 
 delete_notifiers:
   - name: discord-channel
     uid: discordGrafana
-    org_id: 1
-  - name: discord-test-channel2
-    uid: discordGrafanaTest2
     org_id: 1

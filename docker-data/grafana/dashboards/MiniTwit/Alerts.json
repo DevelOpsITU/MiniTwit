@@ -61,9 +61,6 @@
         "name": "Ram usage",
         "noDataState": "no_data",
         "notifications": [
-          {
-            "uid": "discordGrafanaTest2"
-          }
         ]
       },
       "description": "Alerts if ram usage is above 75% for 15 minutes",
@@ -195,9 +192,6 @@
         "name": "Disk usage",
         "noDataState": "no_data",
         "notifications": [
-          {
-            "uid": "discordGrafanaTest2"
-          }
         ]
       },
       "description": "Alerts when disk usage is above 50% for 15 minutes",
@@ -330,9 +324,6 @@
         "name": "Response time",
         "noDataState": "no_data",
         "notifications": [
-          {
-            "uid": "discordGrafanaTest2"
-          }
         ]
       },
       "description": "Alerts if avg response time is above 10 ms for 5 min or that it increases by 8 ms",
@@ -465,9 +456,6 @@
         "name": "Increase in errors",
         "noDataState": "no_data",
         "notifications": [
-          {
-            "uid": "discordGrafanaTest2"
-          }
         ]
       },
       "description": "Alerts if number of errors increases by 10 for 1 minute",

@@ -1,5 +1,4 @@
 DATABASE_HOSTNAME=postgres
 DATABASE_PASSWORD=example
 USER=0
-DISCORD_URL=? %%%% Replace with DevelOps discord %%%%%
-DISCORD_URL_TESTING=? %%% Replace with your own discord webhookurl (mainly for local testing) %%%
+DISCORD_WEBHOOK_URL=? %%%% Replace with DevelOps discord %%%%%
