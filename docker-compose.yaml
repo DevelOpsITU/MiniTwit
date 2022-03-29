@@ -49,6 +49,8 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - DATABASE_HOSTNAME=$DATABASE_HOSTNAME
       - DATABASE_PASSWORD=$DATABASE_PASSWORD
+      - DISCORD_URL=$DISCORD_URL
+      - DISCORD_URL_TESTING=$DISCORD_URL_TESTING
       - GF_RENDERING_SERVER_URL=http://renderer:8081/render
       - GF_INSTALL_PLUGINS=marcusolsson-hourly-heatmap-panel,grafana-image-renderer
     ports:
