@@ -38,6 +38,7 @@ services:
       - ./docker-data/prometheus/internal/:/prometheus/
     ports:
       - "9090:9090"
+    user: "0"
 
   grafana:
     image: grafana/grafana:8.4.3
@@ -49,8 +50,7 @@ services:
       - DATABASE_HOSTNAME=$DATABASE_HOSTNAME
       - DATABASE_PASSWORD=$DATABASE_PASSWORD
       - DISCORD_WEBHOOK_URL=$DISCORD_WEBHOOK_URL
-      - GF_RENDERING_SERVER_URL=http://renderer:8081/render
-      - GF_INSTALL_PLUGINS=marcusolsson-hourly-heatmap-panel,grafana-image-renderer
+      - GF_INSTALL_PLUGINS=marcusolsson-hourly-heatmap-panel
     ports:
       - "3000:3000"
     volumes:
@@ -65,12 +65,6 @@ services:
       - loki
       - fluentbit
     user: "0"
-
-  renderer:
-    container_name: renderer
-    image: grafana/grafana-image-renderer:3.4.2
-    ports:
-    - "8081:8081"
 
   data-scraper:
     image: groupddevops/data-scraper:f16c0db
