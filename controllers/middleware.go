@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"math"
 	"minitwit/metrics"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // error handling middleware (could be reused for logging as well)

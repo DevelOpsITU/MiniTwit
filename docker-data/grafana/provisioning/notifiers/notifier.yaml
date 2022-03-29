@@ -1,0 +1,18 @@
+# from https://grafana.com/docs/grafana/latest/administration/provisioning/
+notifiers:
+  - name: discord-channel
+    type: discord
+    uid: discordGrafana
+    org_id: 1
+    is_default: true
+    frequency: 1h
+    settings:
+      use_discord_username: true
+      url: $DISCORD_WEBHOOK_URL
+    secure_settings:
+      url: $DISCORD_WEBHOOK_URL
+
+delete_notifiers:
+  - name: discord-channel
+    uid: discordGrafana
+    org_id: 1
