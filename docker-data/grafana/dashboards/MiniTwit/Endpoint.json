@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -965,200 +965,6 @@
       ],
       "title": "Average response time",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 36
-      },
-      "id": 9,
-      "panels": [],
-      "title": "Heatmaps",
-      "type": "row"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "calculation": "mean",
-            "colorPalette": "interpolateOranges",
-            "colorSpace": "rgb",
-            "groupBy": 60,
-            "invertPalette": false,
-            "nullValueColor": "rgb(155, 155, 155)"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 37
-      },
-      "id": 28,
-      "interval": "1h",
-      "options": {
-        "from": "0",
-        "legendGradientQuality": "high",
-        "showCellBorder": false,
-        "showLegend": true,
-        "showTooltip": true,
-        "showValueIndicator": false,
-        "to": "0"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "sum(increase(minitwit_total_http[$__interval]))",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total HTTP Requests",
-      "type": "marcusolsson-hourly-heatmap-panel"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "calculation": "mean",
-            "colorPalette": "interpolateGreens",
-            "colorSpace": "rgb",
-            "groupBy": 60,
-            "invertPalette": false,
-            "nullValueColor": "rgb(155, 155, 155)"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 37
-      },
-      "id": 29,
-      "interval": "1h",
-      "options": {
-        "from": "0",
-        "legendGradientQuality": "high",
-        "showCellBorder": false,
-        "showLegend": true,
-        "showTooltip": true,
-        "showValueIndicator": false,
-        "to": "0"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "sum(increase(minitwit_total_http{code=~\"2.*|3.*\"}[$__interval]))",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Successful HTTP Requests",
-      "type": "marcusolsson-hourly-heatmap-panel"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "calculation": "mean",
-            "colorPalette": "interpolateReds",
-            "colorSpace": "rgb",
-            "groupBy": 60,
-            "invertPalette": false,
-            "nullValueColor": "rgb(155, 155, 155)"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 37
-      },
-      "id": 30,
-      "interval": "1h",
-      "options": {
-        "from": "0",
-        "legendGradientQuality": "high",
-        "showCellBorder": false,
-        "showLegend": true,
-        "showTooltip": true,
-        "showValueIndicator": false,
-        "to": "0"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus12345678"
-          },
-          "exemplar": true,
-          "expr": "sum(increase(minitwit_total_http{code=~\"4.*|5.*\"}[$__interval]))",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed HTTP Requests",
-      "type": "marcusolsson-hourly-heatmap-panel"
     }
   ],
   "refresh": "5s",
@@ -1176,6 +982,6 @@
   "timezone": "",
   "title": "Endpoint",
   "uid": "P9sNjkEnkk",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
