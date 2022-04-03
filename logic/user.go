@@ -137,6 +137,13 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 		log.Logger.Warn().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
 		database.FollowUser(follower.UserId, userToUnFollow.UserId)
 		metrics.HackCreateFollowOnUnfollow.Inc()
+
+		// retry unfollow
+		err = database.UnFollowUser(follower.UserId, userToUnFollow.UserId)
+		if err != nil { // should succeed 100% of the time, but just in case
+			log.Logger.Error().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
+			return err
+		}
 	}
 
 	return nil
