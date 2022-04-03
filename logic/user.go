@@ -115,6 +115,8 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 			Password2: "123",
 		})
 		metrics.HackCreateUserOnFollow.Inc()
+		metrics.HackCreateFollowOnUnfollow.Inc()
+		return nil
 	}
 
 	userToUnFollow, err := database.GetUserFromDb(unfollowUsername)
@@ -128,6 +130,8 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 			Password2: "123",
 		})
 		metrics.HackCreateUserOnFollow.Inc()
+		metrics.HackCreateFollowOnUnfollow.Inc()
+		return nil
 	}
 
 	//TODO: Check that the user is not already following the user Issue #47
@@ -135,8 +139,6 @@ func UnFollowUserFromUsername(followerUsername string, unfollowUsername string) 
 
 	if err != nil {
 		log.Logger.Warn().Err(err).Caller().Str("follower", followerUsername).Str("followed", unfollowUsername).Msg("Could not unfollow user")
-		metrics.HackCreateFollowOnUnfollow.Inc()
-		}
 	}
 
 	return nil
