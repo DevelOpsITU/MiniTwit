@@ -8,3 +8,10 @@ var HackCreateUserOnFollow = prometheus.NewCounter(
 		Help: "total number of times that a user have been created on follow",
 	},
 )
+
+var HackCreateFollowOnUnfollow = prometheus.NewCounter(
+	prometheus.CounterOpts{
+		Name: "minitwit_total_hack_create_follow_on_unfollow",
+		Help: "total number of times that a follow entry has been created on unfollow",
+	},
+)
