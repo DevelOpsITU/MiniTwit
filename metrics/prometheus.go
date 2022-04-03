@@ -11,4 +11,6 @@ func init() {
 	prometheus.MustRegister(EndpointResponseTime)
 	prometheus.MustRegister(EndpointResponseTimeHistogram)
 	prometheus.MustRegister(HackCreateUserOnFollow)
+
+	prometheus.MustRegister(PostgresData)
 }
