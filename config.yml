@@ -19,3 +19,6 @@ database:
 
 development:
   generateMockData: false
+
+services:
+  scrapeTimeInterval: 30 # written in seconds

@@ -2,3 +2,4 @@ DATABASE_HOSTNAME=postgres
 DATABASE_PASSWORD=example
 USER=0
 DISCORD_WEBHOOK_URL= ? %%%% Replace with DevelOps discord %%%%%
+SCRAPE_TIME_INTERVAL=30
