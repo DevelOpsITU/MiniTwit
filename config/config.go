@@ -23,6 +23,9 @@ type Configuration struct {
 	Development struct {
 		GenerateMockData bool `yaml:"generateMockData" envconfig:"DEVELOPMENT_GENERATE_MOCK_DATA"`
 	} `yaml:"development"`
+	Services struct {
+		scrapeTimeInterval int `yaml:"scrapeTimeInterval" envconfig:"SCRAPE_TIME_INTERVAL"`
+	} `yaml:"services"`
 }
 
 func processError(err error) {
