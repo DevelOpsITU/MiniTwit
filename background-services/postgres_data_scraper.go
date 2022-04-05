@@ -20,6 +20,8 @@ func start(p *program) {
 	if err != nil {
 		log.Logger.Info().Msg("Could not parse SCRAPE_TIME_INTERVAL. Defaults to 60 secs")
 		interval = 60
+	} else {
+		log.Logger.Info().Msg("going to scrape the database every " + strconv.Itoa(interval) + " secs")
 	}
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	p.cancellationToken = make(chan struct{})
