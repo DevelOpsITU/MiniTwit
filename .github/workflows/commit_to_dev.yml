@@ -1,4 +1,4 @@
-name: Build and publish docker images CI
+name: Build and publish minitwit-go-dev docker image CI
 
 on:
   push:

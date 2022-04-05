@@ -72,3 +72,7 @@ func InitGorm(dialector gorm.Dialector) (db *gorm.DB, err error) {
 
 	return db, nil
 }
+
+func GetGormDb() *gorm.DB {
+	return gormDb
+}
