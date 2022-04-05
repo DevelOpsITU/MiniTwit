@@ -4,6 +4,7 @@ import (
 	"errors"
 	"minitwit/database"
 	"minitwit/log"
+	"minitwit/metrics"
 	"minitwit/models"
 )
 
@@ -16,8 +17,14 @@ func AddMessageFromUsername(username string, message string) error {
 	user, err := database.GetUserFromDb(username)
 
 	if err != nil {
-		log.Logger.Error().Str("username", username).Msg("Could not get the user from the database")
-		return err
+		log.Logger.Warn().Err(err).Caller().Bool("hack", true).Str("username", username).Msg("Created user. Did not exists.")
+		user.UserId = database.AddUserToDb(models.RegistrationUser{
+			Username:  username,
+			Email:     "@",
+			Password1: "123",
+			Password2: "123",
+		})
+		metrics.HackCreateUserOnAddMessage.Inc()
 	}
 
 	err = database.AddMessage(user.UserId, message)
