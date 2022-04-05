@@ -13,7 +13,7 @@ type program struct {
 
 // background timer to scrape every 5 seconds
 func start(p *program) {
-	ticker := time.NewTicker(time.Duration(config.GetConfig().Services.scrapeTimeInterval) * time.Second)
+	ticker := time.NewTicker(time.Duration(config.GetConfig().Services.ScrapeTimeInterval) * time.Second)
 	p.cancelationtoken = make(chan struct{})
 	go func() { // run async
 		for {

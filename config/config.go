@@ -24,7 +24,7 @@ type Configuration struct {
 		GenerateMockData bool `yaml:"generateMockData" envconfig:"DEVELOPMENT_GENERATE_MOCK_DATA"`
 	} `yaml:"development"`
 	Services struct {
-		scrapeTimeInterval int `yaml:"scrapeTimeInterval" envconfig:"SCRAPE_TIME_INTERVAL"`
+		ScrapeTimeInterval int `yaml:"scrapeTimeInterval" envconfig:"SCRAPE_TIME_INTERVAL"`
 	} `yaml:"services"`
 }
 
