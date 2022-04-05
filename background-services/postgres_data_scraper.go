@@ -3,18 +3,26 @@ package backgroundservices
 import (
 	"minitwit/config"
 	"minitwit/database"
+	"minitwit/log"
 	"minitwit/metrics"
+	"strconv"
 	"time"
 )
 
 type program struct {
-	cancelationtoken chan struct{}
+	cancellationToken chan struct{}
 }
 
-// background timer to scrape every 5 seconds
 func start(p *program) {
-	ticker := time.NewTicker(time.Duration(config.GetConfig().Services.ScrapeTimeInterval) * time.Second)
-	p.cancelationtoken = make(chan struct{})
+
+	interval, err := strconv.Atoi(config.GetConfig().Services.ScrapeTimeInterval)
+
+	if err != nil {
+		log.Logger.Info().Msg("Could not parse SCRAPE_TIME_INTERVAL. Defaults to 60 secs")
+		interval = 60
+	}
+	ticker := time.NewTicker(time.Duration(interval) * time.Second)
+	p.cancellationToken = make(chan struct{})
 	go func() { // run async
 		for {
 			select {
@@ -22,7 +30,7 @@ func start(p *program) {
 				observeCount((&database.User{}).TableName())
 				observeCount((&database.Follower{}).TableName())
 				observeCount((&database.Message{}).TableName())
-			case <-p.cancelationtoken:
+			case <-p.cancellationToken:
 				ticker.Stop()
 				return
 			}
@@ -31,13 +39,14 @@ func start(p *program) {
 }
 
 func stop(p *program) {
-	close(p.cancelationtoken)
+	close(p.cancellationToken)
 }
 
-func observeCount(tablename string) {
+func observeCount(tableName string) {
 	var count int64
 	database.GetGormDb().
-		Table(tablename).
+		Table(tableName).
 		Count(&count)
-	metrics.PostgresData.WithLabelValues(tablename).Set(float64(count))
+	metrics.PostgresData.WithLabelValues(tableName).Set(float64(count))
+	log.Logger.Info().Int64("value", count).Str("table", tableName).Msg("Pulled count from database")
 }
