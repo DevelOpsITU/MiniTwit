@@ -57,12 +57,7 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.{{.Name}}
     depends_on:
-      - fluentd
       - loki
     user: "0"
 
