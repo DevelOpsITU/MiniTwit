@@ -14,10 +14,6 @@ services:
     depends_on:
       - postgres
       - fluentbit
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.{{.Name}}
 
   postgres:
     image: postgres:13.5
@@ -57,31 +53,24 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.{{.Name}}
     depends_on:
       - loki
       - fluentbit
     user: "0"
 
-  data-scraper:
-    image: groupddevops/data-scraper:f16c0db
-    container_name: data-scraper
-    environment:
-      - INTERVAL=5
+#  data-scraper:
+#    image: groupddevops/data-scraper:f16c0db
+#    container_name: data-scraper
+#    environment:
+#      - INTERVAL=5
 
-  fluentbit:
-    image: fluent/fluent-bit:1.9.0-debug
-    container_name: fluentbit
-    ports:
-      - "24224:24224"
-      - "24224:24224/udp"
+  promtail:
+    image: grafana/promtail:1.4.1
+    container_name: promtail
     volumes:
-      - ./docker-data/fluentbit/config/:/fluent-bit/etc/
-    depends_on:
-      - loki
+      - dockerlogs:/var/lib/docker/containers/
+      - ./docker-data/promtail/config/:/etc/promtail/
+    command: -config.file=/etc/promtail/promtail.yaml
 
   nginx:
     container_name: nginx
@@ -90,10 +79,6 @@ services:
       - "80:80"
     volumes:
       - ./docker-data/nginx/:/etc/nginx/
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.{{.Name}}
     depends_on:
       - minitwit
       - fluentbit
@@ -109,3 +94,9 @@ services:
 
     command: -config.file=/etc/loki/loki.yaml
     user: "0"
+
+volumes:
+  dockerlogs:
+    driver_opts:
+      type: cifs
+      device: //wsl$$/docker-desktop-data/version-pack-data/community/docker/containers/
