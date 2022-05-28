@@ -62,7 +62,11 @@ On each server are there a fluentd service running that either reads docker logs
 Then forwards the logs to Loki, which then can be queried either directly with a CLI or through the Grafana interface. 
 
 
-![](./LogFlow.png)
+
+
+<p align = "center">
+<img src = "./LogFlow.png">
+</p>
 <p align = "center">
 Fig.1 - Log flow
 </p>
@@ -75,7 +79,9 @@ Elastic search or a mix.
 The outcome of the design and setup is that Loki can be queried from Grafana and all logs form all services or hosts 
 is collected in one place and can be queried.
 
-![GrafanaLoki.png](./GrafanaLoki.png)
+<p align = "center">
+<img src = "./GrafanaLoki.png">
+</p>
 <p align = "center">
 Fig.2 - Grafana dashboard for querying loki
 </p>
