@@ -13,7 +13,7 @@ services:
       - 8080:8080
     depends_on:
       - postgres
-      - fluentbit
+      - fluentd
     logging:
       driver: fluentd
       options:
@@ -57,13 +57,8 @@ services:
       - ./docker-data/grafana/internal/:/var/lib/grafana/
       - ./docker-data/grafana/provisioning/:/etc/grafana/provisioning/
       - ./docker-data/grafana/dashboards/:/etc/grafana/dashboards/
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.{{.Name}}
     depends_on:
       - loki
-      - fluentbit
     user: "0"
 
   data-scraper:
@@ -72,16 +67,22 @@ services:
     environment:
       - INTERVAL=5
 
-  fluentbit:
-    image: fluent/fluent-bit:1.9.0-debug
-    container_name: fluentbit
+  fluentd:
+    image: grafana/fluent-plugin-loki:master
+    container_name: fluentd
+    command:
+      - "fluentd"
+      - "-v"
+      - "-p"
+      - "/fluentd/plugins"
+    environment:
+      LOKI_URL: http://host.docker.internal:3100
+      LOKI_USERNAME:
+      LOKI_PASSWORD:
     ports:
       - "24224:24224"
-      - "24224:24224/udp"
     volumes:
-      - ./docker-data/fluentbit/config/:/fluent-bit/etc/
-    depends_on:
-      - loki
+      - ./docker-data/fluentd/config/fluentd.conf:/fluentd/etc/fluent.conf
 
   nginx:
     container_name: nginx
@@ -96,7 +97,7 @@ services:
         tag: docker.{{.Name}}
     depends_on:
       - minitwit
-      - fluentbit
+      - fluentd
 
   loki:
     image: grafana/loki:2.4.2
