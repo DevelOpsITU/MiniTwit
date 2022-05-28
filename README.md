@@ -24,13 +24,21 @@ The group is registed in the [ITU-Devops repositories.py file](https://github.co
 
 The application is hosted at [https://thomsen-it.dk](https://thomsen-it.dk).
 
-## Configuration
+## Image of application
 
-To start the application with an in memory sqlite database export this environment variable
+![](./Docs/Images/Minitwit-Public.png)
 
-````Shell
-export DB_CONNECTION_STRING=file::memory:
-````
+## Documentation
+
+In the [./Docs](./Docs) folder are the documentation of the project. Here are some quick browsing links:
+
+- [Application](./Docs/Application)
+- [Deployment](./Docs/Deployment)
+- [Monitoring](./Docs/Monitoring)
+- [Logging](./Docs/Logging)
+- [Alerting](./Docs/Alerting)
+- [Deployment](./Docs/Deployment)
+
 
 ## Contribution
 
