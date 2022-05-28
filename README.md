@@ -37,7 +37,7 @@ In the [./Docs](./Docs) folder are the documentation of the project. Here are so
 - [Monitoring](./Docs/Monitoring)
 - [Logging](./Docs/Logging)
 - [Alerting](./Docs/Alerting)
-- [Deployment](./Docs/Deployment)
+- [Development](./Docs/Development)
 
 
 ## Contribution
