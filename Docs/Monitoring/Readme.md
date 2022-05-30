@@ -40,6 +40,21 @@ This dashboard shows:
 Fig.2 - Endpoint dashboard (The image, is not so good since it was taken after the services was stopped)
 </p>
 
+
+## Hosts/Instances
+
+This dashboard shows:
+- Average (CPU, RAM, IO, Network) consumption.
+- Very detailed information about stats of the Linux host machine.
+
+<p align = "center">
+<img src = "./Grafana-NodeExporter.png">
+</p>
+<p align = "center">
+Fig.3 - Node exporter dashboard
+</p>
+
+
 ## Simulator
 
 This dashboard shows:
@@ -53,6 +68,6 @@ which scrape the data from the [simulator](http://164.92.246.227/status.html)
 <img src = "./Grafana-Simulator.png">
 </p>
 <p align = "center">
-Fig.3 - Simulator dashboard
+Fig.4 - Simulator dashboard
 </p>
 
